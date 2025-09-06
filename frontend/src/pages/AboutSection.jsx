@@ -1,10 +1,10 @@
 import React from 'react'
-import EcoAboutChatbot3D from '@/components/EcoAboutChatbot3D'
+import AboutEchoVerse from '@/components/AboutEchoVerse'
 
 const AboutSection = () => {
   return (
     <div>
-      <EcoAboutChatbot3D/>
+      <AboutEchoVerse/>
     </div>
   )
 }

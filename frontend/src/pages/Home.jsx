@@ -153,6 +153,8 @@ const Home = () => {
         </div>
       </section>
 
+      
+
       {/* Features Section */}
       <section id="features" className="px-10 md:px-20 py-16 bg-green-50">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-12">

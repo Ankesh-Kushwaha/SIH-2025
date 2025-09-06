@@ -263,7 +263,7 @@ const EcoDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="p-4 rounded-2xl shadow-lg col-span-2">
           <CardTitle className="text-lg font-semibold mb-4">
-            3D-style Game Impact (Simulated)
+            Game Played
           </CardTitle>
           <CardContent>
             <div className="flex items-end overflow-x-auto py-6 px-4">
@@ -276,10 +276,6 @@ const EcoDashboard = () => {
                   color={COLORS[idx % COLORS.length]}
                 />
               ))}
-            </div>
-            <div className="mt-4 text-sm text-muted-foreground">
-              Tip: Replace the simulated bars with a react-three-fiber scene for
-              real 3D charts (I can add that integration).
             </div>
           </CardContent>
         </Card>
@@ -445,11 +441,6 @@ const EcoDashboard = () => {
       </Card>
 
       <div className="flex justify-between items-center">
-        <div className="text-sm text-muted-foreground">
-          Need real 3D charts? I can plug in react-three-fiber and a small
-          shader to render true 3D bars with lighting and interactive camera
-          controls.
-        </div>
         <div className="flex gap-3">
           <Button className="rounded-full">Integrate with API</Button>
           <Button className="rounded-full">Download Report</Button>

@@ -7,10 +7,12 @@ import {
 } from "@clerk/clerk-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
-import {Link} from  'react-router-dom'
+import {Link, useNavigate} from  'react-router-dom'
 import { ArrowBigRight } from "lucide-react";
 
+
 const Headers = () => {
+  const naviagte = useNavigate();
   return (
     <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -20,7 +22,7 @@ const Headers = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-2xl font-bold text-indigo-600 cursor-pointer"
         >
-          <span className="font-extrabold font-3xl text-orange-500">
+          <span onClick={()=>{naviagte('/')}} className="font-extrabold font-3xl text-orange-500">
             EchoVerse
           </span>
         </motion.div>

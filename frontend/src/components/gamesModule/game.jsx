@@ -1,52 +1,11 @@
-// DragAndDropWasteGame.jsx
-// Single-file React component (default export) using TailwindCSS for styling.
-// Instructions to run:
-// 1. Create a new React app (Vite or CRA). Example (Vite):
-//    npx create-vite@latest my-app --template react
-//    cd my-app
-// 2. Install TailwindCSS (follow Tailwind docs) or use a CDN for quick testing.
-// 3. Replace src/App.jsx with this file's contents and ensure Tailwind is configured.
-// 4. npm run dev / npm start
-
 import React, { useState, useEffect, useRef } from "react";
+import gamesData from "@/data/GameModuleData";
+import { Cross, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const ITEMS = [
-  { id: "1", label: "Plastic Bottle", type: "recyclable", emoji: "🧴" },
-  { id: "2", label: "Apple Core", type: "organic", emoji: "🍎" },
-  { id: "3", label: "Old Phone", type: "ewaste", emoji: "📱" },
-  { id: "4", label: "Styrofoam", type: "general", emoji: "🍽️" },
-  { id: "5", label: "Newspaper", type: "recyclable", emoji: "📰" },
-  { id: "6", label: "Banana Peel", type: "organic", emoji: "🍌" },
-  { id: "7", label: "Battery", type: "ewaste", emoji: "🔋" },
-  { id: "8", label: "Chip Packet", type: "general", emoji: "🍟" },
-];
+const ITEMS = gamesData.wasteSegregation.data.ITEMS;
+const BINS = gamesData.wasteSegregation.data.BINS;
 
-const BINS = [
-  {
-    id: "recyclable",
-    title: "Recyclable",
-    hint: "Paper, plastic, metal",
-    color: "bg-blue-300",
-  },
-  {
-    id: "organic",
-    title: "Organic",
-    hint: "Food waste",
-    color: "bg-green-300",
-  },
-  {
-    id: "ewaste",
-    title: "E-Waste",
-    hint: "Electronics & batteries",
-    color: "bg-yellow-300",
-  },
-  {
-    id: "general",
-    title: "General",
-    hint: "Non-recyclable",
-    color: "bg-gray-300",
-  },
-];
 
 export default function DragAndDropWasteGame() {
   const [shuffled, setShuffled] = useState(() => shuffleArray(ITEMS));
@@ -57,6 +16,7 @@ export default function DragAndDropWasteGame() {
   const [message, setMessage] = useState("Drag an item to the correct bin!");
   const [progress, setProgress] = useState(0);
   const audioCtxRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setProgress(
@@ -84,6 +44,7 @@ export default function DragAndDropWasteGame() {
         window.webkitAudioContext)();
     } catch (e) {
       audioCtxRef.current = null;
+      throw new Error(e);
     }
   }, []);
 
@@ -169,6 +130,15 @@ export default function DragAndDropWasteGame() {
               >
                 Restart
               </button>
+
+              <button
+                onClick={()=>{navigate('/gamesection')}}
+                className="px-3 py-1 flex flex-row justify-center rounded-full bg-red-500 text-white text-sm shadow cursor-pointer"
+              >
+                exit game
+                <X className="w-5 h-5" />
+              </button>
+
               <button
                 onClick={() => {
                   setMessage(

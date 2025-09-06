@@ -7,8 +7,11 @@ import { Routes,Route } from "react-router-dom";
 import Features from "./pages/Features";
 import LeaderBoard from "./pages/LeaderBoard";
 import Community from "./pages/Community";
-import GameSection from "./pages/GameSection";
+import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
+import GamePage from "./pages/GamePage";
+
+
 
 
 export default function App() {
@@ -21,8 +24,9 @@ export default function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/community" element={<Community />} />
-        <Route path="/gamesection" element={<GameSection />} />
-        <Route path="/about" element={<AboutSection/>} />
+        <Route path="/gamesection" element={<GameSectionPage />} />
+        <Route path="/about" element={<AboutSection />} />
+        <Route path="/game/:gameId" element={<GamePage />} />
       </Routes>
       <Footer />
     </>

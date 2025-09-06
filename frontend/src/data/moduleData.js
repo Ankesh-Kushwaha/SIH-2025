@@ -1,12 +1,18 @@
+import DragAndDropWasteGame from "@/components/gamesModule/game";
+import gamesData from "./GameModuleData";
+import RecycleRush from "@/components/gamesModule/RecycleRush";
+
 export const modulesData = [
   {
     id: 1,
     title: "Waste Management",
+   
     lessons: [
       {
-        id: 101,
+        id: 101, // must match GameModuleData key
         title: "Waste Segregation",
         description: "Learn how to separate waste effectively.",
+        gameId: gamesData.wasteSegregation.gameId,
         steps: [
           "Identify dry and wet waste",
           "Segregate them into separate bins",
@@ -20,9 +26,10 @@ export const modulesData = [
         ],
       },
       {
-        id: 102,
+        id: 103,
         title: "Recycling Basics",
         description: "Understand recycling processes and impacts.",
+        gameId: gamesData.RecycleRush.gameId,
         steps: [
           "Collect recyclable materials",
           "Clean and separate them",
@@ -37,14 +44,17 @@ export const modulesData = [
       },
     ],
   },
+
+
   {
     id: 2,
     title: "Energy Conservation",
     lessons: [
       {
-        id: 201,
+        id: 204,
         title: "Save Electricity",
         description: "Learn tips to reduce power consumption.",
+        gameId: 201,
         steps: [
           "Switch off unused appliances",
           "Use LED lights",
@@ -60,6 +70,7 @@ export const modulesData = [
     ],
   },
 ];
+
 
 
 export const xpImages = [
@@ -87,4 +98,20 @@ export const xpImages = [
     max: 1000,
     img: "/images/guardian.png",
   },
+];
+
+
+
+
+export const gameComponent = [
+  {
+    gameComponentId: gamesData.wasteSegregation.gameId,
+    component: DragAndDropWasteGame,
+    data: gamesData.wasteSegregation.data,
+  },
+  {
+    gameComponentId: gamesData.RecycleRush.gameId,
+    component: RecycleRush,
+    data: gamesData.RecycleRush.data,
+  }
 ];
