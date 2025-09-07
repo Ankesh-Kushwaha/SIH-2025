@@ -10,6 +10,8 @@ import Community from "./pages/Community";
 import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
 import GamePage from "./pages/GamePage";
+import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/admin";
 
 
 
@@ -21,6 +23,8 @@ export default function App() {
       {/**Define all the routes here  */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/admin-dashboard" element={<Admin/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/features" element={<Features />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/community" element={<Community />} />
