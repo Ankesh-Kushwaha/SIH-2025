@@ -10,6 +10,7 @@ import Community from "./pages/Community";
 import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
 import GamePage from "./pages/GamePage";
+import StudentDashboard from "./pages/StudentDashboard";
 
 
 
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/gamesection" element={<GameSectionPage />} />
         <Route path="/about" element={<AboutSection />} />
         <Route path="/game/:gameId" element={<GamePage />} />
+        <Route path="/student/dashboard" element={StudentDashboard } />
       </Routes>
       <Footer />
     </>
