@@ -1,7 +1,13 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 
+// Default export React component for EchoVerse Features section
+// - TailwindCSS required
+// - framer-motion required
+// - Drop into a page (e.g. /components/FeaturesSection.jsx)
+
 export default function EchoVerseFeatures() {
+  // mock state (replace with real API calls)
   const [xp, setXp] = useState(4200);
   const [points, setPoints] = useState(240);
   const [tasks, setTasks] = useState([
@@ -16,8 +22,9 @@ export default function EchoVerseFeatures() {
     { id: 3, title: "Tree Planting", organizers: 4, impact: "High" },
   ]);
 
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(true); // flip to preview as teacher/admin
 
+  // Quiz generator form state (simulated)
   const [quizForm, setQuizForm] = useState({
     title: "",
     questions: 3,
@@ -25,7 +32,10 @@ export default function EchoVerseFeatures() {
   });
   const [quizzes, setQuizzes] = useState([]);
 
-  const xpLevel = useMemo(() => Math.floor(xp / 1000), [xp]);
+  const xpLevel = useMemo(() => {
+    // Simple level calc: every 1000 xp == level
+    return Math.floor(xp / 1000);
+  }, [xp]);
 
   function completeTask(id) {
     setTasks((prev) =>
@@ -48,59 +58,46 @@ export default function EchoVerseFeatures() {
       createdAt: new Date().toISOString(),
     };
     setQuizzes((q) => [newQuiz, ...q]);
+    // reset small
     setQuizForm({ title: "", questions: 3, difficulty: "Medium" });
   }
 
   return (
     <section className="mx-auto max-w-7xl p-6">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-5xl font-extrabold text-gray-800">
-          Admin{" "}
-          <span className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
-            Dashboard
-          </span>
-        </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-extrabold tracking-tight">
+          EchoVerse — Features Dashboard
+        </h2>
         <div className="flex items-center gap-4">
-          <div className="text-right">
-            <p className="font-bold text-lg text-amber-500">+{points} Points</p>
-            <p className="text-sm text-gray-500">Admin Action</p>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-            A
-          </div>
+          <div className="text-sm text-muted-foreground">Preview mode:</div>
+          <button
+            onClick={() => setIsAdmin((v) => !v)}
+            className="px-3 py-1 rounded-full border shadow-sm text-sm"
+          >
+            {isAdmin ? "Admin/Teacher" : "Student"}
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column */}
-        <div className="lg:col-span-2 space-y-8">
-          {/* Quiz Builder */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white rounded-2xl shadow-lg border border-blue-100"
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left column: 3D style feature cards */}
+        <div className="space-y-6">
+          <FeatureCard
+            title="Engaging Quiz Builder"
+            subtitle="Teachers / Admins can create quizzes, randomize questions and schedule tests."
+            icon="🧠"
+            accent="bg-emerald-50"
           >
-            <div className="flex items-center space-x-6">
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-4 rounded-2xl shadow-md">
-                <span className="material-icons text-5xl text-blue-500">
-                  extension
-                </span>
-              </div>
-              <div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                  Engaging Quiz Builder
-                </h2>
-                <p className="text-gray-600 text-lg">
-                  Craft interactive quizzes with our playful drag & drop
-                  builder.
-                </p>
-              </div>
-            </div>
-
+            <p className="text-sm leading-relaxed">
+              Admins generate quizzes with multiple question types (MCQ,
+              True/False, Image-based). Quizzes can be assigned to classes or
+              groups and automatically grade to update XP and points.
+            </p>
             {isAdmin && (
-              <div className="mt-6">
-                <form onSubmit={generateQuiz} className="space-y-3">
+              <div className="mt-4">
+                <form onSubmit={generateQuiz} className="space-y-2">
                   <input
+                    aria-label="Quiz title"
                     placeholder="Quiz title (e.g. Waste Sorting 101)"
                     value={quizForm.title}
                     onChange={(e) =>
@@ -108,7 +105,7 @@ export default function EchoVerseFeatures() {
                     }
                     className="w-full rounded-md border px-3 py-2"
                   />
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     <input
                       type="number"
                       min={1}
@@ -135,22 +132,22 @@ export default function EchoVerseFeatures() {
                       <option>Medium</option>
                       <option>Hard</option>
                     </select>
-                    <button className="ml-auto rounded-md px-4 py-2 bg-green-500 hover:bg-green-600 text-white">
+                    <button className="ml-auto rounded-md px-4 py-2 bg-emerald-600 text-white">
                       Generate
                     </button>
                   </div>
                 </form>
 
-                <div className="mt-4 space-y-2">
+                <div className="mt-3 space-y-2">
                   {quizzes.length === 0 ? (
-                    <p className="text-sm text-gray-400">
+                    <div className="text-xs text-muted-foreground">
                       No quizzes yet — generate one to preview behavior.
-                    </p>
+                    </div>
                   ) : (
                     quizzes.map((q) => (
                       <div
                         key={q.id}
-                        className="text-sm rounded-md border p-2 bg-blue-50"
+                        className="text-sm rounded-md border p-2 bg-white/60"
                       >
                         <div className="font-semibold">
                           {q.title || "Untitled quiz"}
@@ -164,144 +161,209 @@ export default function EchoVerseFeatures() {
                 </div>
               </div>
             )}
-          </motion.div>
+          </FeatureCard>
 
-          {/* Daily Task Journey */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white rounded-2xl shadow-lg border border-green-100"
+          <FeatureCard
+            title="Daily Task Dashboard"
+            subtitle="Assign short daily micro-tasks and reward completion with XP & points."
+            icon="✅"
+            accent="bg-sky-50"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-              <span className="material-icons text-4xl mr-3 text-green-500">
-                map
-              </span>
-              Daily Task Journey
-            </h2>
-            <div className="flex flex-col gap-4">
+            <div className="space-y-3">
               {tasks.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center justify-between rounded-xl border p-3 bg-blue-50"
+                  className="flex items-center justify-between rounded-lg border p-3 bg-white/60"
                 >
                   <div>
                     <div className="font-medium">{t.title}</div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       Reward: {t.xp} XP
                     </div>
                   </div>
-                  <button
-                    onClick={() => completeTask(t.id)}
-                    disabled={t.completed}
-                    className={`rounded-lg px-4 py-2 font-medium ${
-                      t.completed
-                        ? "bg-gray-300"
-                        : "bg-green-500 hover:bg-green-600 text-white"
-                    }`}
-                  >
-                    {t.completed ? "Completed" : "Complete"}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <div className="text-sm">
+                      {t.completed ? "Completed" : "Pending"}
+                    </div>
+                    <button
+                      onClick={() => completeTask(t.id)}
+                      disabled={t.completed}
+                      className="rounded-md px-3 py-1 border"
+                    >
+                      {t.completed ? "✔" : "Complete"}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </FeatureCard>
 
-          {/* Community Drives */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white rounded-2xl shadow-lg border border-yellow-100"
+          <FeatureCard
+            title="Community & Institutional Drives"
+            subtitle="Create and join drives — track organizers and impact."
+            icon="🌱"
+            accent="bg-yellow-50"
           >
-            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center">
-              <span className="material-icons text-4xl mr-3 text-pink-500">
-                military_tech
-              </span>
-              Community Drives
-            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {communityDrives.map((d) => (
-                <div key={d.id} className="rounded-lg border p-3 bg-yellow-50">
+                <div key={d.id} className="rounded-lg border p-3 bg-white/60">
                   <div className="font-semibold">{d.title}</div>
-                  <div className="text-xs text-gray-600">
+                  <div className="text-xs text-muted-foreground">
                     Organizers: {d.organizers}
                   </div>
                   <div className="text-xs">Impact: {d.impact}</div>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </FeatureCard>
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-8">
-          {/* User Progress */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white rounded-2xl shadow-lg border border-blue-100 text-center"
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              User Progress
-            </h2>
-            <div className="relative inline-block mb-4">
-              <div className="w-40 h-40 bg-gradient-to-br from-green-300 to-blue-300 rounded-full flex flex-col items-center justify-center shadow-lg">
-                <span className="text-5xl font-extrabold bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent">
-                  {xpLevel}
-                </span>
-                <span className="font-bold text-gray-700">Eco-Warrior</span>
+        {/* Middle column: 3D simulation + XP panel */}
+        <div className="col-span-1 lg:col-span-1">
+          <div className="rounded-2xl border p-4 shadow-2xl bg-gradient-to-b from-white/60 to-white/40">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold">
+                User Progress (Simulated 3‑D)
+              </h3>
+              <div className="text-sm">
+                Level {xpLevel} • {points} pts
               </div>
             </div>
-            <p className="text-lg font-semibold text-gray-700">
-              <span className="bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent font-bold">
-                {points} / 400 pts
-              </span>
-            </p>
-            <div className="bg-blue-100 rounded-full h-5 mt-4 relative overflow-hidden">
-              <div
-                className="bg-green-500 h-5 text-xs text-center font-bold text-white"
-                style={{ width: `${Math.min((xp % 1000) / 10, 100)}%` }}
-              >
+
+            <div className="relative h-64">
+              {/* Simulated 3D isometric bar chart made with skewed divs */}
+              <IsoGraph xp={xp} />
+            </div>
+
+            <div className="mt-4">
+              <div className="text-xs text-muted-foreground">XP</div>
+              <div className="mt-1 h-3 w-full rounded-full border overflow-hidden bg-white/30">
+                <div
+                  style={{ width: `${Math.min((xp % 1000) / 10, 100)}%` }}
+                  className="h-full rounded-full bg-emerald-500/80 transition-all"
+                />
+              </div>
+              <div className="mt-2 text-sm">
+                {xp} XP — Progress to next level:{" "}
                 {Math.round(((xp % 1000) / 1000) * 100)}%
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Quick Actions */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-white rounded-2xl shadow-lg border border-blue-100"
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-6">
-              Quick Power-Ups
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              <button className="p-4 bg-yellow-300 rounded-xl font-bold text-gray-900 shadow-md hover:scale-105 transition">
-                Create Quiz
+          <div className="mt-6 rounded-2xl border p-4 shadow bg-white/50">
+            <h4 className="font-semibold mb-3">Quick Actions</h4>
+            <div className="flex gap-2">
+              <button className="flex-1 rounded-md border px-4 py-2">
+                Open Quiz
               </button>
-              <button className="p-4 bg-green-300 rounded-xl font-bold text-gray-900 shadow-md hover:scale-105 transition">
+              <button className="flex-1 rounded-md border px-4 py-2">
                 Assign Task
               </button>
-              <button className="p-4 bg-blue-300 rounded-xl font-bold text-gray-900 shadow-md hover:scale-105 transition">
+              <button className="flex-1 rounded-md border px-4 py-2">
                 Start Drive
               </button>
-              <button className="p-4 bg-pink-300 rounded-xl font-bold text-gray-900 shadow-md hover:scale-105 transition">
-                Give Reward
-              </button>
             </div>
-          </motion.div>
+          </div>
+        </div>
 
-          {/* Why EchoVerse */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            className="p-8 bg-blue-50 rounded-2xl shadow-lg border border-blue-200"
-          >
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Why EchoVerse?
-            </h2>
-            <p className="text-blue-800 text-lg font-medium">
-              We turn learning into an exciting adventure, empowering students
-              to make a real-world impact!
+        {/* Right column: feature highlights & admin panel */}
+        <div className="space-y-6">
+          <div className="rounded-2xl border p-4 shadow bg-white/60">
+            <h4 className="font-semibold">Platform Features</h4>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li>• Role-based access (Admin, Teacher, Student)</li>
+              <li>• Quiz scheduling & auto grading</li>
+              <li>• Daily micro-tasks with XP & leaderboard</li>
+              <li>• Community drives module with impact tracking</li>
+              <li>• 3-D style visualizations and interactive cards</li>
+              <li>• Export reports (CSV / PDF) and class analytics</li>
+            </ul>
+          </div>
+
+          {isAdmin && (
+            <div className="rounded-2xl border p-4 shadow bg-white/60">
+              <h4 className="font-semibold">Admin Control Panel (Preview)</h4>
+              <div className="mt-3 space-y-3">
+                <div className="text-sm">
+                  Create campaigns, set rewards, and moderate community drives.
+                </div>
+                <div className="flex gap-2">
+                  <button className="rounded-md px-3 py-2 border">
+                    Create Drive
+                  </button>
+                  <button className="rounded-md px-3 py-2 border">
+                    Export Report
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="rounded-2xl border p-4 shadow bg-white/60">
+            <h4 className="font-semibold">Why EchoVerse?</h4>
+            <p className="text-sm mt-2">
+              We combine gamified learning with community impact. Students gain
+              points and meaningful experience — institutes track real-world
+              drives and learning outcomes.
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function FeatureCard({ title, subtitle, children, icon, accent = "bg-white" }) {
+  return (
+    <motion.div
+      whileHover={{ y: -6, scale: 1.02 }}
+      className={`rounded-2xl p-4 border shadow-lg ${accent} bg-white/40`}
+    >
+      <div className="flex items-start gap-3">
+        <div className="text-3xl">{icon}</div>
+        <div>
+          <div className="font-semibold text-lg">{title}</div>
+          <div className="text-xs text-muted-foreground">{subtitle}</div>
+        </div>
+      </div>
+
+      <div className="mt-3">{children}</div>
+
+      {/* A simple 3D tilt effect on hover (CSS) */}
+      <style jsx>{`
+        .tilt-sim:hover {
+          transform: perspective(800px) rotateX(3deg) rotateY(-6deg);
+        }
+      `}</style>
+    </motion.div>
+  );
+}
+
+function IsoGraph({ xp = 0 }) {
+  // create several bars with depths to simulate 3D bars
+  const bars = [120, 230, 150, 300, Math.min(340, xp / 4)];
+  return (
+    <div className="absolute inset-0 flex items-end justify-center">
+      <div className="flex items-end gap-3 transform -rotate-6">
+        {bars.map((h, i) => (
+          <div key={i} className="relative">
+            {/* top face */}
+            <div
+              style={{ height: `${h / 4}px`, width: 60 }}
+              className="rounded-t-md border-b-2 border-emerald-900/10 overflow-hidden"
+            >
+              <div className="h-full flex items-end justify-center text-xs font-semibold pb-1">
+                {Math.round(h)} XP
+              </div>
+            </div>
+            {/* depth shadow to create isometric illusion */}
+            <div
+              style={{ height: `${h / 12}px`, width: 60 }}
+              className="transform translate-y-[-6px] translate-x-3 skew-x-12 rounded-b-md opacity-70 bg-emerald-600/40"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

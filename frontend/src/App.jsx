@@ -11,6 +11,8 @@ import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
 import GamePage from "./pages/GamePage";
 import StudentDashboard from "./pages/StudentDashboard";
+import Admin from "./pages/Admin";
+import Dashboard from "./pages/Dashboard";
 
 
 
@@ -22,13 +24,15 @@ export default function App() {
       {/**Define all the routes here  */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/admin-dashboard" element={<Admin/>} />
+        <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/features" element={<Features />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/community" element={<Community />} />
         <Route path="/gamesection" element={<GameSectionPage />} />
         <Route path="/about" element={<AboutSection />} />
         <Route path="/game/:gameId" element={<GamePage />} />
-        <Route path="/student/dashboard" element={StudentDashboard } />
+        <Route path="/student/dashboard" element={StudentDashboard} />
       </Routes>
       <Footer />
     </>
