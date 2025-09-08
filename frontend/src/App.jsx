@@ -18,6 +18,9 @@ import Community from "./pages/Community";
 import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
 import GamePage from "./pages/GamePage";
+ newankit/admin
+import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/admin";
 import StudentDashboard from "./pages/StudentDashboard";
 import Admin from "./pages/Admin";
 import Dashboard from "./pages/Dashboard";
@@ -27,6 +30,7 @@ import Dashboard from "./pages/Dashboard";
 // ✅ Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useUser();
+ main
 
   if (!user) {
     // Not signed in → Redirect to Clerk sign-in page
@@ -56,6 +60,8 @@ export default function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
+        <Route path="/admin-dashboard" element={<Admin/>} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/features" element={<Features />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/about" element={<AboutSection />} />
