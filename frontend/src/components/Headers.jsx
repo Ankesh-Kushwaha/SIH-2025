@@ -1,18 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
   UserButton,
+  useUser,
 } from "@clerk/clerk-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
-import {Link, useNavigate} from  'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowBigRight } from "lucide-react";
 
-
 const Headers = () => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
+  const { user, isSignedIn } = useUser();
+ useEffect(() => {
+  if (!isSignedIn || !user) return;
+
+  const role = user.publicMetadata?.role || "user";
+
+  // ✅ Only redirect if they're on the homepage or login page
+  if (
+    window.location.pathname === "/sign-in"
+  ) {
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+    } else if (role === "student") {
+      navigate("/student/dashboard");
+    } else {
+      navigate("/user-dashboard");
+    }
+  }
+}, [isSignedIn, user, navigate]);
+
   return (
     <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -22,8 +42,13 @@ const Headers = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-2xl font-bold text-indigo-600 cursor-pointer"
         >
-          <span onClick={()=>{naviagte('/')}} className="font-extrabold font-3xl text-orange-500">
-            EchoVerse
+          <span
+            onClick={() => {
+              navigate("/");
+            }}
+            className="font-extrabold font-3xl text-orange-500"
+          >
+            Planet Guardian's
           </span>
         </motion.div>
 
@@ -50,7 +75,10 @@ const Headers = () => {
           >
             Community
           </Link>
-          <Link to="/gamesection" className="hover:text-indigo-600 transition-colors">
+          <Link
+            to="/gamesection"
+            className="hover:text-indigo-600 transition-colors"
+          >
             GameSection
           </Link>
         </nav>

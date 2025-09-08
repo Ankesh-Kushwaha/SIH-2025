@@ -38,7 +38,7 @@ const Home = () => {
           </motion.h1>
 
           <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-            EcoVerse is your{" "}
+            Planet Guardian's is your{" "}
             <span className="font-bold text-orange-500">
               gamified platform{" "}
             </span>
