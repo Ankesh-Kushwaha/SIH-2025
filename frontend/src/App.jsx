@@ -18,19 +18,15 @@ import Community from "./pages/Community";
 import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
 import GamePage from "./pages/GamePage";
- newankit/admin
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/admin";
 import StudentDashboard from "./pages/StudentDashboard";
-import Admin from "./pages/Admin";
-import Dashboard from "./pages/Dashboard";
 
 
 
 // ✅ Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useUser();
- main
 
   if (!user) {
     // Not signed in → Redirect to Clerk sign-in page

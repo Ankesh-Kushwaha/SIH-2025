@@ -9,27 +9,25 @@ import {
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowBigRight } from "lucide-react";
 
 const Headers = () => {
   const navigate = useNavigate();
   const { user, isSignedIn } = useUser();
- useEffect(() => {
-  if (!isSignedIn || !user) return;
 
-  const role = user.publicMetadata?.role || "user";
+  useEffect(() => {
+    if (!isSignedIn || !user) return;
 
-  // ✅ Only redirect if they're on the homepage or login page
-  if (
-    window.location.pathname === "/sign-in"
-  ) {
-    if (role === "admin") {
-      navigate("/admin/dashboard");
-    } else if (role === "user") {
-      navigate("/student/dashboard");
-    } 
-  }
-}, [isSignedIn, user, navigate]);
+    const role = user.publicMetadata?.role || "user";
+
+    // ✅ Redirect only after sign-in
+    if (window.location.pathname === "/sign-in") {
+      if (role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "user") {
+        navigate("/student/dashboard");
+      }
+    }
+  }, [isSignedIn, user, navigate]);
 
   return (
     <header className="sticky top-0 left-0 right-0 bg-white shadow-md z-50">
@@ -39,23 +37,12 @@ const Headers = () => {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-2xl font-[Fredoka One] text-cyan-600 flex items-center gap-2 cursor-pointer"
-          onClick={() => {
-            naviagte("/");
-          }}
+          onClick={() => navigate("/")}
         >
- newankit/admin
-          
-          Planet Guardian <span className="text-2xl">🐢</span>
-
-          <span
-            onClick={() => {
-              navigate("/");
-            }}
-            className="font-extrabold font-3xl text-orange-500"
-          >
-            Planet Guardian's
+          {/* ✅ Pick one version of branding */}
+          <span className="font-extrabold text-orange-500">
+            Planet Guardian 🐢
           </span>
-main
         </motion.div>
 
         {/* Navigation */}
@@ -86,10 +73,7 @@ main
           </Link>
           <Link
             to="/gamesection"
- newankit/admin
-            className="text-gray-700 hover:text-cyan-500 transition-colors
-            className="hover:text-indigo-600 transition-colors"
- main
+            className="text-gray-700 hover:text-cyan-500 transition-colors"
           >
             GameSection
           </Link>
