@@ -9,7 +9,6 @@ const GameHeader = () => {
 
   return (
     <div className="bg-green-50 rounded-2xl shadow-xl p-6">
-      <Xprender />
       <h1 className="text-3xl font-bold text-green-700 mb-2">
         🌍 How EcoVerse Games Work
       </h1>

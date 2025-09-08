@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
   UserButton,
+  useUser,
 } from "@clerk/clerk-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
@@ -11,7 +12,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowBigRight } from "lucide-react";
 
 const Headers = () => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
+  const { user, isSignedIn } = useUser();
+ useEffect(() => {
+  if (!isSignedIn || !user) return;
+
+  const role = user.publicMetadata?.role || "user";
+
+  // ✅ Only redirect if they're on the homepage or login page
+  if (
+    window.location.pathname === "/sign-in"
+  ) {
+    if (role === "admin") {
+      navigate("/admin/dashboard");
+    } else if (role === "student") {
+      navigate("/student/dashboard");
+    } else {
+      navigate("/user-dashboard");
+    }
+  }
+}, [isSignedIn, user, navigate]);
+
   return (
     <header className="sticky top-0 left-0 right-0 bg-white shadow-md z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -24,8 +45,19 @@ const Headers = () => {
             naviagte("/");
           }}
         >
+ newankit/admin
           
           Planet Guardian <span className="text-2xl">🐢</span>
+
+          <span
+            onClick={() => {
+              navigate("/");
+            }}
+            className="font-extrabold font-3xl text-orange-500"
+          >
+            Planet Guardian's
+          </span>
+main
         </motion.div>
 
         {/* Navigation */}
@@ -56,7 +88,10 @@ const Headers = () => {
           </Link>
           <Link
             to="/gamesection"
-            className="text-gray-700 hover:text-cyan-500 transition-colors"
+ newankit/admin
+            className="text-gray-700 hover:text-cyan-500 transition-colors
+            className="hover:text-indigo-600 transition-colors"
+ main
           >
             GameSection
           </Link>
