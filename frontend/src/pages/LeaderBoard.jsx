@@ -47,7 +47,6 @@ const samplePlayers = [
     id: 3,
     name: "Kabir",
     score: 900,
-    gamesPlayed: 9,
     ecoPoints: 380,
     carbonSaved: 18,
     engagement: 82,
@@ -78,27 +77,31 @@ const sampleGameImpacts = [
     game: "Water Wars",
     sessions: 1200,
     waterSavedLiters: 48000,
-    avgLearningGain: 0.18,
+    avgLearningGain: 0.8,
+    treesPlanted: 40000,
   },
   {
     id: 2,
-    game: "EcoRace",
+    game: "EcoRacer",
     sessions: 800,
-    treesPlanted: 320,
-    avgLearningGain: 0.12,
+    carbonSaved: 50000,
+    treesPlanted: 1200,
+    avgLearningGain: 0.52,
   },
   {
     id: 3,
     game: "Zero-Waste Kitchen",
     sessions: 600,
-    foodSavedKg: 420,
-    avgLearningGain: 0.15,
+    foodSavedKg: 800,
+    carbonReduced: 60,
+    avgLearningGain: 0.35,
   },
   {
     id: 4,
-    game: "Ocean Odyssey",
+    game: "Green Odyssey",
     sessions: 450,
-    marineCleanupPoints: 7600,
+    biodiversityImproved: "15%",
+    naturalHabitatEnhanced: 1500,
     avgLearningGain: 0.2,
   },
 ];
@@ -177,268 +180,320 @@ const EcoDashboard = () => {
     (s, g) => s + (g.waterSavedLiters || 0),
     0
   );
+  const totalCarbonSaved = players.reduce(
+    (s, p) => s + (p.carbonSaved || 0),
+    0
+  );
   const avgLearningGain =
     gameImpacts.reduce((s, g) => s + (g.avgLearningGain || 0), 0) /
     Math.max(1, gameImpacts.length);
 
+  // Recharts data for the doughnut chart based on the HTML example
+  const pieData = [
+    { name: "Completed", value: avgLearningGain * 100 },
+    { name: "Remaining", value: 100 - avgLearningGain * 100 },
+  ];
+
+  // Recharts data for the line chart based on the HTML example
+  const engagementTrendData = [
+    { name: "Jan", engagement: 420 },
+    { name: "Feb", engagement: 400 },
+    { name: "Mar", engagement: 380 },
+    { name: "Apr", engagement: 390 },
+    { name: "May", engagement: 370 },
+    { name: "Jun", engagement: 360 },
+    { name: "Jul", engagement: 350 },
+    { name: "Aug", engagement: 340 },
+  ];
+
   return (
-    <div className="p-8 space-y-8 bg-gradient-to-b from-green-50 to-white min-h-screen">
+    <div className="p-8 space-y-8 bg-[#f0f4f8] min-h-screen font-['Poppins',_sans-serif]">
       {/* Overview Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="p-4 rounded-2xl shadow-lg">
-          <CardTitle className="text-md font-semibold">
-            Planet Guardian
-          </CardTitle>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold">
-                  {players[0]?.name || "—"}
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">
-                  Top overall score & community impact
-                </div>
-              </div>
-              <div className="text-6xl">🏆</div>
+        {/* Planet Guardian Card */}
+        <div className="card p-8 rounded-[1.5rem] shadow-lg transition-all hover:scale-[1.05] hover:shadow-xl">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Planet Guardian</h2>
+            <div className="p-3 bg-yellow-100 rounded-full">
+              <span className="material-icons text-yellow-500 text-2xl">
+                home_work
+              </span>
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground">Score</div>
-                <div className="font-semibold">{players[0]?.score || 0}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground">Eco Points</div>
-                <div className="font-semibold">
-                  {players[0]?.ecoPoints || 0}
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground">
-                  Carbon Saved
-                </div>
-                <div className="font-semibold">
-                  {players[0]?.carbonSaved || 0} kg
-                </div>
-              </div>
+          </div>
+          <p className="text-3xl font-bold text-indigo-600 mt-4">
+            {players[0]?.name || "—"}
+          </p>
+          <p className="text-gray-500 text-sm">Your score & community impact</p>
+          <div className="flex justify-between mt-6 text-center">
+            <div>
+              <p className="text-gray-500">Score</p>
+              <p className="text-2xl font-bold text-gray-800">
+                {players[0]?.score || 0}
+              </p>
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-gray-500">Eco Points</p>
+              <p className="text-2xl font-bold text-gray-800">
+                {players[0]?.ecoPoints || 0}
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-500">Carbon Saved</p>
+              <p className="text-2xl font-bold text-gray-800">
+                {players[0]?.carbonSaved || 0} kg
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="p-4 rounded-2xl shadow-lg">
-          <CardTitle className="text-md font-semibold">
-            Platform Reach
-          </CardTitle>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {totalSessions.toLocaleString()}
+        {/* Platform Reach Card */}
+        <div className="card p-8 rounded-[1.5rem] shadow-lg transition-all hover:scale-[1.05] hover:shadow-xl">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Platform Reach</h2>
+            <div className="p-3 bg-indigo-100 rounded-full">
+              <span className="material-icons text-indigo-500 text-2xl">
+                groups
+              </span>
             </div>
-            <div className="text-sm text-muted-foreground mt-2">
-              Total sessions across game modules
-            </div>
-            <div className="mt-4">
-              <Button className="rounded-full">Export CSV</Button>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-5xl font-bold text-indigo-600 mt-4">
+            {totalSessions.toLocaleString()}
+          </p>
+          <p className="text-gray-500 text-sm">
+            Total sessions across game modules
+          </p>
+          <div className="mt-6">
+            <Button className="btn btn-secondary w-full justify-between items-center rounded-[0.75rem] text-left">
+              <span>Export CSV</span>
+              <span className="material-icons">download</span>
+            </Button>
+          </div>
+        </div>
 
-        <Card className="p-4 rounded-2xl shadow-lg">
-          <CardTitle className="text-md font-semibold">
-            Learning Impact
-          </CardTitle>
-          <CardContent>
-            <div className="text-3xl font-bold">
-              {(avgLearningGain * 100).toFixed(1)}%
+        {/* Learning Impact Card */}
+        <div className="card p-8 rounded-[1.5rem] shadow-lg transition-all hover:scale-[1.05] hover:shadow-xl">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-800">Learning Impact</h2>
+            <div className="p-3 bg-green-100 rounded-full">
+              <span className="material-icons text-green-500 text-2xl">
+                school
+              </span>
             </div>
-            <div className="text-sm text-muted-foreground mt-2">
-              Average measured learning gain per session
-            </div>
-            <div className="mt-4 text-xs text-muted-foreground">
-              Estimates based on pre/post quiz and in-game micro-assessments
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <p className="text-5xl font-bold text-green-600 mt-4">
+            {(avgLearningGain * 100).toFixed(1)}%
+          </p>
+          <p className="text-gray-500 text-sm">
+            Average measured learning gain per session
+          </p>
+          <p className="text-gray-500 text-xs mt-2">
+            Estimates based on pre/post quiz and in-game micro-assessments
+          </p>
+        </div>
       </div>
 
       {/* Impact Visualizations */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="p-4 rounded-2xl shadow-lg col-span-2">
-          <CardTitle className="text-lg font-semibold mb-4">
-            Game Played
-          </CardTitle>
-          <CardContent>
-            <div className="flex items-end overflow-x-auto py-6 px-4">
-              {gameImpacts.map((g, idx) => (
-                <ThreeDSimBar
-                  key={g.id}
-                  value={g.sessions}
-                  max={Math.max(...gameImpacts.map((x) => x.sessions))}
-                  label={g.game}
-                  color={COLORS[idx % COLORS.length]}
+        <div className="card lg:col-span-2 p-8 rounded-[1.5rem] shadow-lg">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Games Played</h2>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={gameImpacts.map((g) => ({
+                  name: g.game,
+                  sessions: g.sessions,
+                }))}
+              >
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Bar
+                  dataKey="sessions"
+                  fill="#4f46e5"
+                  radius={[8, 8, 0, 0]}
+                  barSize={40}
                 />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-        <Card className="p-4 rounded-2xl shadow-lg">
-          <CardTitle className="text-lg font-semibold mb-4">
+        <div className="card lg:col-span-1 flex flex-col justify-between p-8 rounded-[1.5rem] shadow-lg">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">
             Environmental KPIs
-          </CardTitle>
-          <CardContent>
-            <div className="grid gap-3">
-              <div className="flex justify-between">
-                <div>
-                  <div className="text-sm text-muted-foreground">
-                    Water Saved (L)
-                  </div>
-                  <div className="font-semibold">
-                    {totalWaterSaved.toLocaleString()}
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-sm text-muted-foreground">
-                    Avg Learning Gain
-                  </div>
-                  <div className="font-semibold">
-                    {(avgLearningGain * 100).toFixed(1)}%
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-3">
-                <ResponsiveContainer width="100%" height={180}>
-                  <PieChart>
-                    <Pie
-                      data={players}
-                      dataKey="ecoPoints"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={60}
-                      label
-                    >
-                      {players.map((p, i) => (
-                        <Cell
-                          key={`cell-${i}`}
-                          fill={COLORS[i % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+          </h2>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-gray-500">Water Saved (L)</p>
+              <p className="text-3xl font-bold text-gray-800">
+                {totalWaterSaved.toLocaleString()}
+              </p>
             </div>
-          </CardContent>
-        </Card>
+            <div className="text-right">
+              <p className="text-gray-500">Avg Learning Gain</p>
+              <p className="text-2xl font-bold text-green-600">
+                {(avgLearningGain * 100).toFixed(1)}%
+              </p>
+            </div>
+          </div>
+          <div className="relative h-48 w-48 mx-auto mt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={samplePlayers}
+                  dataKey="ecoPoints"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={70}
+                  label={({ ecoPoints }) => ecoPoints}
+                  labelLine={false}
+                >
+                  {samplePlayers.map((p, i) => (
+                    <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       {/* Per-Game Detail Cards */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-2xl font-bold text-gray-800">
             Game Modules — Effects on Learning & Environment
           </h3>
-          <div className="text-sm text-muted-foreground">
-            Sorted by sessions
-          </div>
+          <Button className="btn btn-secondary rounded-[0.75rem] text-sm">
+            <span>Select by seasons</span>
+            <span className="material-icons align-middle ml-2">
+              expand_more
+            </span>
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {gameImpacts.map((g, idx) => (
-            <Card key={g.id} className="p-4 rounded-2xl shadow-md">
-              <div className="flex items-start gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-lg font-semibold">{g.game}</div>
-                      <div className="text-sm text-muted-foreground">
-                        Sessions: {g.sessions.toLocaleString()}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-muted-foreground">
-                        Avg Learning Gain
-                      </div>
-                      <div className="font-semibold">
-                        {(g.avgLearningGain * 100).toFixed(1)}%
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-3">
-                    <div className="text-sm">Environmental effects:</div>
-                    <ul className="list-disc ml-5 mt-2 text-sm">
-                      {g.waterSavedLiters && (
-                        <li>
-                          Water saved: {g.waterSavedLiters.toLocaleString()} L
-                        </li>
-                      )}
-                      {g.treesPlanted && (
-                        <li>Trees planted (est): {g.treesPlanted}</li>
-                      )}
-                      {g.foodSavedKg && (
-                        <li>Food waste avoided: {g.foodSavedKg} kg</li>
-                      )}
-                      {g.marineCleanupPoints && (
-                        <li>
-                          Marine cleanup points earned: {g.marineCleanupPoints}
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-
-                  <div className="mt-4 flex gap-2">
-                    <Button className="rounded-full">View Players</Button>
-                    <Button className="rounded-full">
-                      Run Impact Simulation
-                    </Button>
-                  </div>
+            <div
+              key={g.id}
+              className="card p-6 rounded-2xl border border-gray-200 hover:bg-gray-50 transition"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-800">{g.game}</h3>
+                  <p className="text-sm text-gray-500">
+                    Sessions: {g.sessions.toLocaleString()}
+                  </p>
                 </div>
-
-                <div className="w-28 h-28 flex items-center justify-center">
-                  <div className="text-4xl">🌿</div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Avg. learning Gain</p>
+                  <p className="font-bold text-green-600 text-xl">
+                    {(g.avgLearningGain * 100).toFixed(1)}%
+                  </p>
                 </div>
               </div>
-            </Card>
+
+              <div className="mt-4 text-sm text-gray-600">
+                <ul className="list-disc ml-5 mt-2 text-sm">
+                  {g.waterSavedLiters && (
+                    <li>
+                      <span className="font-semibold">Water Saved:</span>{" "}
+                      {g.waterSavedLiters.toLocaleString()} L
+                    </li>
+                  )}
+                  {g.treesPlanted && (
+                    <li>
+                      <span className="font-semibold">
+                        Trees planted (est):
+                      </span>{" "}
+                      {g.treesPlanted}
+                    </li>
+                  )}
+                  {g.foodSavedKg && (
+                    <li>
+                      <span className="font-semibold">Food waste avoided:</span>{" "}
+                      {g.foodSavedKg} kg
+                    </li>
+                  )}
+                  {g.marineCleanupPoints && (
+                    <li>
+                      <span className="font-semibold">
+                        Marine cleanup points earned:
+                      </span>{" "}
+                      {g.marineCleanupPoints}
+                    </li>
+                  )}
+                  {g.carbonSaved && (
+                    <li>
+                      <span className="font-semibold">Carbon saved:</span>{" "}
+                      {g.carbonSaved} kg
+                    </li>
+                  )}
+                  {g.carbonReduced && (
+                    <li>
+                      <span className="font-semibold">
+                        Carbon emission reduced:
+                      </span>{" "}
+                      {g.carbonReduced} kg
+                    </li>
+                  )}
+                  {g.biodiversityImproved && (
+                    <li>
+                      <span className="font-semibold">
+                        Biodiversity improved:
+                      </span>{" "}
+                      {g.biodiversityImproved}
+                    </li>
+                  )}
+                  {g.naturalHabitatEnhanced && (
+                    <li>
+                      <span className="font-semibold">
+                        Natural habitat area enhanced:
+                      </span>{" "}
+                      {g.naturalHabitatEnhanced}
+                    </li>
+                  )}
+                </ul>
+              </div>
+
+              <div className="mt-4 flex space-x-2">
+                <Button className="btn btn-secondary text-sm rounded-full">
+                  View Players
+                </Button>
+                <Button className="btn btn-secondary text-sm rounded-full">
+                  Run Impact Simulation
+                </Button>
+              </div>
+            </div>
           ))}
         </div>
       </div>
 
       {/* Engagement Trend */}
-      <Card className="p-4 rounded-2xl shadow-lg">
-        <CardTitle className="text-lg font-semibold mb-4">
+      <div className="card p-8 rounded-2xl shadow-lg">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">
           Engagement & Learning Trend
-        </CardTitle>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={players.map((p) => ({
-                name: p.name,
-                Engagement: p.engagement,
-                EcoPoints: p.ecoPoints,
-              }))}
-            >
+        </h2>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={engagementTrendData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Line
                 type="monotone"
-                dataKey="Engagement"
-                stroke="#10B981"
+                dataKey="engagement"
+                stroke="#4f46e5"
                 strokeWidth={3}
-              />
-              <Line
-                type="monotone"
-                dataKey="EcoPoints"
-                stroke="#059669"
-                strokeWidth={2}
               />
             </LineChart>
           </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="flex justify-between items-center">
         <div className="flex gap-3">
