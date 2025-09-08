@@ -32,14 +32,21 @@ const Headers = () => {
 }, [isSignedIn, user, navigate]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-md shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <header className="sticky top-0 left-0 right-0 bg-white shadow-md z-50">
+      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo / Branding */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-2xl font-bold text-indigo-600 cursor-pointer"
+          className="text-2xl font-[Fredoka One] text-cyan-600 flex items-center gap-2 cursor-pointer"
+          onClick={() => {
+            naviagte("/");
+          }}
         >
+ newankit/admin
+          
+          Planet Guardian <span className="text-2xl">🐢</span>
+
           <span
             onClick={() => {
               navigate("/");
@@ -48,34 +55,41 @@ const Headers = () => {
           >
             Planet Guardian's
           </span>
+main
         </motion.div>
 
         {/* Navigation */}
-        <nav className="hidden md:flex gap-8 text-gray-700 font-medium">
+        <nav className="hidden md:flex items-center space-x-8 text-lg font-medium">
           <Link
             to="/features"
-            className="hover:text-indigo-600 transition-colors"
+            className="text-gray-700 hover:text-cyan-500 transition-colors"
           >
             Features
           </Link>
           <Link
             to="/leaderboard"
-            className="hover:text-indigo-600 transition-colors"
+            className="text-gray-700 hover:text-cyan-500 transition-colors"
           >
             LeaderBoard
           </Link>
-          <Link to="/about" className="hover:text-indigo-600 transition-colors">
+          <Link
+            to="/about"
+            className="text-gray-700 hover:text-cyan-500 transition-colors"
+          >
             About
           </Link>
           <Link
             to="/community"
-            className="hover:text-indigo-600 transition-colors"
+            className="text-gray-700 hover:text-cyan-500 transition-colors"
           >
             Community
           </Link>
           <Link
             to="/gamesection"
+ newankit/admin
+            className="text-gray-700 hover:text-cyan-500 transition-colors
             className="hover:text-indigo-600 transition-colors"
+ main
           >
             GameSection
           </Link>
@@ -85,9 +99,8 @@ const Headers = () => {
         <div className="flex items-center gap-3">
           <SignedOut>
             <SignInButton>
-              <Button className="rounded-full px-6 bg-orange-500 hover:bg-orange-700 text-white">
+              <Button className="bg-yellow-400 hover:bg-yellow-500 text-white px-6 py-2 rounded-full text-lg font-semibold shadow-md">
                 Login
-                <ArrowBigRight className="h-1" />
               </Button>
             </SignInButton>
           </SignedOut>

@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Apply Poppins to the entire body as the default font */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Explicitly apply the Fredoka One font to headings or other elements */
+.font-fredoka {
+  font-family: 'Fredoka One', sans-serif;
+}
