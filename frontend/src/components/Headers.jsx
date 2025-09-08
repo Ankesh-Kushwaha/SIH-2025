@@ -25,11 +25,9 @@ const Headers = () => {
   ) {
     if (role === "admin") {
       navigate("/admin/dashboard");
-    } else if (role === "student") {
+    } else if (role === "user") {
       navigate("/student/dashboard");
-    } else {
-      navigate("/user-dashboard");
-    }
+    } 
   }
 }, [isSignedIn, user, navigate]);
 

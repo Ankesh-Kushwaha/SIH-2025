@@ -99,12 +99,12 @@ export default function App() {
         <Route
           path="/student/dashboard"
           element={
-            <ProtectedRoute allowedRoles={["user", "admin"]}>
+            <ProtectedRoute allowedRoles={["user"]}>
               <StudentDashboard />
             </ProtectedRoute>
           }
         />
-        
+
 
         {/* Normal dashboard route, auto redirect handled in ProtectedRoute */}
         <Route
