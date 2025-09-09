@@ -2,20 +2,23 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import avatar from "../assets/master.png";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Area,
-  AreaChart,
 } from "recharts";
-import { Medal, Gamepad2, Star, Users } from "lucide-react";
+import { Medal, Gamepad2, Star, Users, Award } from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const StudentDashboard = () => {
+  const navigate = useNavigate();
+
   const [student] = useState({
     name: "Aarav Sharma",
     avatar: "/images/student-avatar.png",
@@ -48,34 +51,37 @@ const StudentDashboard = () => {
   ];
 
   return (
-    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 bg-gradient-to-br from-green-50 via-white to-purple-50 min-h-screen">
+    <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 bg-gradient-to-br from-green-50 via-white to-emerald-50 min-h-screen">
       {/* Student Profile */}
-      <Card className="lg:col-span-1 shadow-2xl rounded-2xl border border-gray-200 bg-white">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-green-700">
-            Student Profile
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center">
-          <img
-            src={student.avatar}
-            alt="Avatar"
-            className="w-28 h-28 rounded-full border-4 border-green-400 shadow-lg"
-          />
-          <h2 className="text-xl font-bold mt-4">{student.name}</h2>
-          <p className="text-gray-600 text-sm">Level {student.level}</p>
-          <div className="mt-4 w-full">
-            <Progress value={(student.xp % 1000) / 10} className="h-3" />
-            <p className="text-sm mt-1 text-gray-500">XP: {student.xp}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <motion.div whileHover={{ scale: 1.02 }} className="lg:col-span-1">
+        <Card className="shadow-2xl rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-green-50">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-green-700">
+              Student Profile
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center">
+            <motion.img
+              src={avatar}
+              alt="Avatar"
+              whileHover={{ rotate: 2, scale: 1.05 }}
+              className="w-28 h-28 rounded-full border-4 border-green-400 shadow-lg"
+            />
+            <h2 className="text-xl font-bold mt-4">{student.name}</h2>
+            <p className="text-gray-600 text-sm">Level {student.level}</p>
+            <div className="mt-4 w-full">
+              <Progress value={(student.xp % 1000) / 10} className="h-3" />
+              <p className="text-sm mt-1 text-gray-500">XP: {student.xp}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {/* XP Progress Chart */}
       <Card className="lg:col-span-2 shadow-2xl rounded-2xl border border-gray-200 bg-white">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-green-700">
-            Day-by-Day XP Progress
+            XP Progress This Week
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -83,8 +89,8 @@ const StudentDashboard = () => {
             <AreaChart data={progressData}>
               <defs>
                 <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#34d399" stopOpacity={0.8} />
+                  <stop offset="95%" stopColor="#34d399" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -100,7 +106,7 @@ const StudentDashboard = () => {
               <Area
                 type="monotone"
                 dataKey="xp"
-                stroke="#10b981"
+                stroke="#059669"
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#xpGradient)"
@@ -114,18 +120,19 @@ const StudentDashboard = () => {
       <Card className="lg:col-span-1 shadow-2xl rounded-2xl border border-gray-200 bg-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl font-bold text-yellow-600">
-            <Medal /> Badges
+            <Medal /> Earned Badges
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
             {student.badges.map((badge, index) => (
-              <span
+              <motion.div
                 key={index}
-                className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold shadow-md"
+                whileHover={{ scale: 1.1, rotate: 1 }}
+                className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-xl text-sm font-semibold shadow"
               >
-                {badge}
-              </span>
+                <Award className="w-4 h-4" /> {badge}
+              </motion.div>
             ))}
           </div>
         </CardContent>
@@ -135,23 +142,27 @@ const StudentDashboard = () => {
       <Card className="lg:col-span-2 shadow-2xl rounded-2xl border border-gray-200 bg-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl font-bold text-purple-700">
-            <Gamepad2 /> Play Games to Boost XP
+            <Gamepad2 /> Play Games to Earn XP
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {student.games.map((game) => (
-            <div
+            <motion.div
               key={game.id}
+              whileHover={{ scale: 1.03 }}
               className="flex justify-between items-center bg-purple-50 p-4 rounded-xl shadow hover:shadow-xl transition"
             >
               <div>
                 <h3 className="font-semibold text-lg">{game.title}</h3>
                 <p className="text-sm text-gray-500">+{game.xpBoost} XP</p>
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-5 py-2">
+              <Button
+                className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-5 py-2"
+                onClick={() => navigate("/gamesection")} // ✅ redirect on click
+              >
                 Play Now
               </Button>
-            </div>
+            </motion.div>
           ))}
         </CardContent>
       </Card>
@@ -181,9 +192,17 @@ const StudentDashboard = () => {
                       user.name === student.name
                         ? "bg-green-50 font-semibold"
                         : ""
+                    } ${
+                      index === 0
+                        ? "bg-yellow-50"
+                        : index === 1
+                        ? "bg-gray-100"
+                        : index === 2
+                        ? "bg-orange-50"
+                        : ""
                     }`}
                   >
-                    <td className="p-3">#{index + 1}</td>
+                    <td className="p-3 font-bold">#{index + 1}</td>
                     <td className="p-3">{user.name}</td>
                     <td className="p-3 flex items-center gap-2">
                       {user.xp} <Star className="text-yellow-500 w-4 h-4" />

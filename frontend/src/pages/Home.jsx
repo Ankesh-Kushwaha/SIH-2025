@@ -1,10 +1,10 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState,useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Leaf, Trophy, Users, Star } from "lucide-react";
-import heroTurtle from "../assets/hero-turtle.png"; // ✅ keep one version
+import { Leaf, Trophy, Users, Star, X } from "lucide-react";
+import heroTurtle from "../assets/unnamed.png";
 import winnerAvatar from "../assets/winner-avatar.png";
-
 import {
   BarChart,
   Bar,
@@ -23,62 +23,120 @@ const data = [
 ];
 
 const Home = () => {
+  const [showDemo, setShowDemo] = useState(false);
+   const videoRef = useRef(null);
+
+   const handleClose = () => {
+     if (videoRef.current) {
+       videoRef.current.pause(); // ⏸ pause video
+       videoRef.current.currentTime = 0; // 🔄 reset to start
+     }
+     setShowDemo(false);
+   };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-100 to-green-50 font-poppins">
+    <div className="min-h-screen bg-[#E8F9FF] font-poppins">
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;500;600;700&display=swap');
+
+          body {
+            font-family: 'Poppins', sans-serif;
+          }
+
+          .font-fredoka {
+            font-family: 'Fredoka One', sans-serif;
+          }
+        `}
+      </style>
+
       {/* Hero Section */}
-      <section className="flex flex-col md:flex-row items-center justify-between px-10 md:px-20 py-16">
-        <div className="md:w-1/2 space-y-6">
+      <section className="container mx-auto px-6 pt-32 pb-20 grid md:grid-cols-2 gap-12 items-center relative">
+        <div className="space-y-6 text-center md:text-left">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-6xl md:text-7xl font-extrabold leading-tight text-gray-800"
+            className="text-6xl md:text-7xl font-fredoka leading-tight text-gray-800"
           >
             Learn. Play. <br /> and Save the
-            <span className="text-green-600"> Planet 🌍</span>
+            <span className="text-cyan-500"> Planet 🌍</span>
           </motion.h1>
-
-          <p className="text-lg md:text-xl text-gray-700 leading-relaxed">
-            Planet Guardian is a{" "}
-            <span className="font-bold text-green-600">gamified platform</span>{" "}
-            for environmental education. Explore fun missions, earn rewards, and
-            become an EcoHero!
+          <p className="text-lg text-gray-600 max-w-xl">
+            Planet Guardian is a super fun platform for environmental education.
+            Explore awesome missions, earn shiny rewards, and become an EcoHero!
           </p>
-
-          <div className="flex space-x-4">
-            <Button className="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6 py-3 text-lg">
-              Get Started
+          <div className="flex justify-center md:justify-start gap-4">
+            <Button className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full shadow-lg text-lg font-semibold">
+              Get Started!
             </Button>
             <Button
-              variant="outline"
-              className="border-green-600 text-green-700 hover:bg-green-100 rounded-xl px-6 py-3 text-lg"
+              onClick={() => setShowDemo(true)}
+              className="bg-white border-2 border-green-500 hover:bg-gray-100 text-green-600 px-6 py-3 rounded-full shadow-lg text-lg font-semibold"
             >
               Watch Demo
             </Button>
           </div>
         </div>
-
         <motion.div
-          initial={{ opacity: 0, y: 50, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 2 }}
-          className="md:w-1/2 flex justify-center mt-10 md:mt-0"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="flex justify-center"
         >
-          <motion.img
-            src={heroTurtle}
-            alt="Planet Guardian Turtle"
-            className="w-96 drop-shadow-2xl rounded-full"
-            initial={{ y: 0 }}
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
+          <div className="bg-gradient-to-br from-cyan-100 to-cyan-200 rounded-full p-6 shadow-xl">
+            <motion.img
+              src={heroTurtle}
+              alt="Planet Guardian Turtle"
+              className="w-72 md:w-80 h-80 object-cover rounded-full"
+              initial={{ y: 0 }}
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
+          </div>
         </motion.div>
       </section>
+
+      {/* Demo Video Popup */}
+      <AnimatePresence>
+        {showDemo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="bg-white rounded-xl shadow-lg p-4 relative w-11/12 max-w-md"
+            >
+              {/* Close Button */}
+              <button
+                onClick={handleClose}
+                className="absolute flex items-center top-3 right-3 text-yellow-500 hover:text-gray-900"
+              >
+                <X className="w-7 h-7" />
+              </button>
+
+              {/* Demo Video */}
+              <video
+                ref={videoRef}
+                src="/demo.mp4"
+                controls
+                autoPlay
+                className="w-full h-96 rounded-lg mt-6"
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* EcoHero of the Month */}
       <section className="bg-white py-20">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
+          <h2 className="text-4xl font-fredoka text-center text-gray-800 mb-12">
             🌟 EcoHero of the Month 🌟
           </h2>
           <div className="grid md:grid-cols-3 gap-8 items-center">
@@ -95,8 +153,15 @@ const Home = () => {
                   <Star key={i} className="h-6 w-6 fill-yellow-400" />
                 ))}
               </div>
+              <div className="flex flex-col gap-3 w-full">
+                <Button className="bg-green-100 text-green-700 hover:bg-green-200 rounded-full py-2 text-md font-semibold">
+                  + Follow
+                </Button>
+                <Button className="bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-full py-2 text-md font-semibold">
+                  View Profile
+                </Button>
+              </div>
             </div>
-
             <Card className="md:col-span-2 shadow-lg rounded-2xl p-6">
               <h4 className="text-xl font-semibold text-gray-700 text-center mb-6">
                 Social Service Activity
@@ -108,7 +173,11 @@ const Home = () => {
                   <Tooltip />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {data.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill="#22c55e" />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill="#22c55e"
+                        className="hover:fill-green-600"
+                      />
                     ))}
                   </Bar>
                 </BarChart>
@@ -119,9 +188,9 @@ const Home = () => {
       </section>
 
       {/* Why Join Planet Guardian */}
-      <section className="bg-green-50 py-20">
+      <section className="bg-[#E8F9FF] py-20">
         <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
+          <h2 className="text-4xl font-fredoka text-center text-gray-800 mb-12">
             Why Join Planet Guardian?
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -134,7 +203,8 @@ const Home = () => {
                   Gamified Learning
                 </h3>
                 <p className="text-gray-600">
-                  Learn our planet with fun games, challenges, and missions!
+                  Learn our planet with fun games, challenges, and exciting
+                  missions!
                 </p>
               </CardContent>
             </Card>

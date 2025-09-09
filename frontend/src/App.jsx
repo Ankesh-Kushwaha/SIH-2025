@@ -22,30 +22,42 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/admin";
 import StudentDashboard from "./pages/StudentDashboard";
 
-
-
 // ✅ Protected Route Component
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useUser();
 
   if (!user) {
-    // Not signed in → Redirect to Clerk sign-in page
     return <RedirectToSignIn />;
   }
 
-  // If no role is defined, default to "user"
   const role = user?.publicMetadata?.role || "user";
 
-  // If roles are restricted but user's role not allowed
   if (allowedRoles && !allowedRoles.includes(role)) {
     return role === "admin" ? (
-      <Navigate to="/admin/dashboard" />
+      <Navigate to="/admin/dashboard" replace />
     ) : (
-      <Navigate to="/student/dashboard" />
+      <Navigate to="/student/dashboard" replace />
     );
   }
 
   return children;
+}
+
+// ✅ HomeRedirect Component
+function HomeRedirect() {
+  const { user, isSignedIn } = useUser();
+
+  if (!isSignedIn) {
+    return <Home />; // Show normal landing page
+  }
+
+  const role = user?.publicMetadata?.role || "user";
+
+  return role === "admin" ? (
+    <Navigate to="/admin/dashboard" replace />
+  ) : (
+    <Navigate to="/student/dashboard" replace />
+  );
 }
 
 export default function App() {
@@ -54,10 +66,10 @@ export default function App() {
       <Headers />
 
       <Routes>
+        {/* ✅ Root route: signed-out → Home, signed-in → role dashboard */}
+        <Route path="/" element={<HomeRedirect />} />
+
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/admin-dashboard" element={<Admin/>} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/features" element={<Features />} />
         <Route path="/leaderboard" element={<LeaderBoard />} />
         <Route path="/about" element={<AboutSection />} />
@@ -97,7 +109,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/student/dashboard"
           element={
@@ -106,9 +117,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
-
-        {/* Normal dashboard route, auto redirect handled in ProtectedRoute */}
         <Route
           path="/dashboard"
           element={
@@ -118,7 +126,7 @@ export default function App() {
           }
         />
 
-        {/* Fallback → Sign-in page */}
+        {/* Fallback → Sign-in */}
         <Route
           path="*"
           element={

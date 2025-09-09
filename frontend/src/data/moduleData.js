@@ -1,6 +1,11 @@
 import DragAndDropWasteGame from "@/components/gamesModule/game";
 import gamesData from "./GameModuleData";
 import RecycleRush from "@/components/gamesModule/RecycleRush";
+import WasteSortingGame from "@/components/gamesModule/wasteSegregation2";
+import { data } from "react-router-dom";
+import ClimateCrisisSimulator from "@/components/gamesModule/ClimateCrisisSimulator";
+import EnergyConservationGame from "@/components/gamesModule/EnergyConservationGame";
+import PlantationGame from "@/components/gamesModule/PlantationGame";
 
 export const modulesData = [
   {
@@ -42,6 +47,23 @@ export const modulesData = [
           { step: "Final Impact", impact: 100 },
         ],
       },
+      {
+        id: 104,
+        title: "Waste Sorting Basics",
+        description: "Sorting the waste on the basis of their type.",
+        gameId: gamesData.WasteSortingGame.gameId,
+        steps: [
+          "Collect recyclable materials",
+          "Clean and separate them",
+          "Send them to recycling units",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
     ],
   },
 
@@ -52,7 +74,7 @@ export const modulesData = [
     lessons: [
       {
         id: 204,
-        title: "Save Electricity",
+        title: "Energy Crisis simulator",
         description: "Learn tips to reduce power consumption.",
         gameId: 201,
         steps: [
@@ -67,8 +89,66 @@ export const modulesData = [
           { step: "Solar Power", impact: 95 },
         ],
       },
+      {
+        id: 205,
+        title: "Climate Crisis Simulator ",
+        description: "Learn about the global emission impact",
+        gameId: gamesData.ClimateCrisisSimulator.gameId,
+        steps: [
+          "Switch off unused appliances",
+          "Use LED lights",
+          "Install solar panels",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Switch Off", impact: 40 },
+          { step: "LED Usage", impact: 65 },
+          { step: "Solar Power", impact: 95 },
+        ],
+      },
+      {
+        id: 205,
+        title: "Save electricity",
+        description: "learn how to conserve energy",
+        gameId: gamesData.EnergyConservationGame.gameId,
+        steps: [
+          "Switch off unused appliances",
+          "Use LED lights",
+          "Install solar panels",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Switch Off", impact: 40 },
+          { step: "LED Usage", impact: 65 },
+          { step: "Solar Power", impact: 95 },
+        ],
+      },
     ],
   },
+
+  {
+    id: 3,
+    title: "Plantation",
+    lessons: [
+      {
+        id: 205,
+        title: "Plant and Grow",
+        description: "learn how to do proper plantation",
+        gameId: gamesData.PlantationGame.gameId,
+        steps: [
+          "Plant a tree with the seed",
+          "Look after it",
+          "Grow as tree and turn your field in mini forest",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Plant", impact: 40 },
+          { step: "Look after", impact: 65 },
+          { step: "Grow as tree", impact: 95 },
+        ],
+      },
+    ]
+  }
 ];
 
 
@@ -113,5 +193,26 @@ export const gameComponent = [
     gameComponentId: gamesData.RecycleRush.gameId,
     component: RecycleRush,
     data: gamesData.RecycleRush.data,
+  },
+  {
+    gameComponentId: gamesData.WasteSortingGame.gameId,
+    component: WasteSortingGame,
+     data:gamesData.WasteSortingGame.data
+    
+  },
+  {
+    gameComponentId: gamesData.ClimateCrisisSimulator.gameId,
+    component: ClimateCrisisSimulator,
+    data:gamesData.ClimateCrisisSimulator.data
+  },
+  {
+    gameComponentId: gamesData.EnergyConservationGame.gameId,
+    component: EnergyConservationGame,
+    data:gamesData.EnergyConservationGame.data
+  },
+  {
+    gameComponentId: gamesData.PlantationGame.gameId,
+    component: PlantationGame,
+    data:gamesData.PlantationGame.data
   }
 ];

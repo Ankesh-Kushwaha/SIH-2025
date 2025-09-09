@@ -51,21 +51,22 @@ import {
 // ------------------------------------------------------------
 const sampleBadges = [
   { id: 1, label: "Tree Planter", icon: <Leaf className="h-3.5 w-3.5" /> },
-  { id: 2, label: "Plastic Buster", icon: <Flame className="h-3.5 w-3.5" /> },
-  { id: 3, label: "Solar Champ", icon: <Sparkles className="h-3.5 w-3.5" /> },
+  { id: 2, label: "Plastic Warrior", icon: <Flame className="h-3.5 w-3.5" /> },
+  { id: 3, label: "Soil Champ", icon: <Sparkles className="h-3.5 w-3.5" /> },
 ];
 
 const me = {
   id: "u_me",
   name: "Aarav Gupta",
-  username: "@eco_aarav",
+  username: "@aarav_gupta",
   bio: "Building a greener campus, one habit at a time.",
   description:
     "I organize weekly clean-up drives and help schools set up waste segregation.",
-  avatar: "",
-  followers: 1280,
-  following: 312,
-  points: 8420,
+  avatar:
+    "https://images.unsplash.com/photo-1511367461989-f834a9fc27b7?q=80&w=320&auto=format&fit=crop",
+  followers: 312,
+  following: 1280,
+  points: 9420,
   levelProgress: 72,
   badges: sampleBadges,
 };
@@ -78,12 +79,12 @@ const demoPosts = [
       username: "@neha.green",
     },
     content:
-      "Planted 50 saplings near the riverbank with our college eco-club! 🌱✨",
+      "Planted 50 saplings near the riverbank with our college eco-club! So fulfilling to see them grow. 🌱✨",
     image:
       "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=1200&auto=format&fit=crop",
     likes: 214,
-    comments: 39,
-    time: "2h",
+    comments: 28,
+    time: "4h ago",
     tags: ["tree-planting", "college", "community"],
   },
   {
@@ -93,53 +94,57 @@ const demoPosts = [
       username: "@rahulv",
     },
     content:
-      "Conducted a workshop on home composting. Kids loved the DIY compost bin activity! ♻️",
-    image:
-      "https://images.unsplash.com/photo-1528323273322-d81458248d40?q=80&w=1200&auto=format&fit=crop",
-    likes: 168,
-    comments: 22,
-    time: "5h",
-    tags: ["composting", "workshop"],
+      "Just finished my week-long challenge of going zero-waste. It was tough but rewarding. Check out my blog for tips!",
+    image: "",
+    likes: 156,
+    comments: 42,
+    time: "1d ago",
+    tags: ["zerowaste", "sustainability", "challenge"],
   },
   {
     id: "p3",
     author: {
-      name: "Ishita Roy",
-      username: "@ishita.r",
+      name: "Isha Roy",
+      username: "@isharoy",
     },
     content:
-      "Beach cleanup drive with 120 volunteers. 300 kg waste removed. Proud of the team! 🏖️",
+      "Our community garden is finally showing some colors! 🍅🥕 So proud of what we achieved together. #communitygarden #urbanfarming",
     image:
-      "https://images.unsplash.com/photo-1508186225823-0963cf9ab0de?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1628102491629-a23d83d16687?q=80&w=1200&auto=format&fit=crop",
     likes: 302,
     comments: 51,
-    time: "1d",
+    time: "2d ago",
     tags: ["cleanup", "beach", "volunteers"],
   },
 ];
 
 const leaderboard = [
-  { id: "l1", name: "Zara Khan", points: 9800 },
-  { id: "l2", name: "Arjun Mehta", points: 9520 },
-  { id: "l3", name: "Ishita Roy", points: 9340 },
-  { id: "l4", name: "Rahul Verma", points: 9105 },
-  { id: "l5", name: "Neha Sharma", points: 9050 },
-  { id: "l6", name: "Kabir Singh", points: 8990 },
-  { id: "l7", name: "Aman Jain", points: 8740 },
-  { id: "l8", name: "Riya Patel", points: 8665 },
-  { id: "l9", name: "Devika Nair", points: 8540 },
-  { id: "l10", name: "Harsh Vardhan", points: 8425 },
+  { id: "l1", name: "Isha Roy", points: 10410 },
+  { id: "l2", name: "Rahul Verma", points: 9820 },
+  { id: "l3", name: "Aarav Gupta", points: 9420 },
+  { id: "l4", name: "Neha Sharma", points: 9500 }, // Note: Points from image
+  { id: "l5", name: "Kabir Singh", points: 8990 },
 ];
 
 const initialChats = [
   {
     id: "c1",
-    from: "Zara",
-    text: "Anyone joining the e-waste drive?",
-    time: "09:12",
+    from: "bot",
+    text: "Welcome to the Learning Hub! Ready to boost your eco-knowledge?",
+    time: null,
   },
-  { id: "c2", from: "Aarav (you)", text: "Count me in!", time: "09:14" },
-  { id: "c3", from: "Rahul", text: "Let’s prep a checklist.", time: "09:16" },
+  {
+    id: "c2",
+    from: "you",
+    text: "Yes! Tell me about composting.",
+    time: null,
+  },
+  {
+    id: "c3",
+    from: "bot",
+    text: "Great choice! Composting is nature's way of recycling. You mix organic waste (like fruit peels & coffee grounds) and let it decompose. The result is nutrient-rich soil for your plants!",
+    time: null,
+  },
 ];
 
 // ------------------------------------------------------------
@@ -147,31 +152,38 @@ const initialChats = [
 // ------------------------------------------------------------
 function NumberStat({ label, value }) {
   return (
-    <div className="flex flex-col items-center p-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 shadow-sm">
-      <span className="text-xl font-semibold">{value.toLocaleString()}</span>
-      <span className="text-xs text-muted-foreground">{label}</span>
+    <div className="flex flex-col items-center p-2 rounded-lg bg-gray-50 text-sm">
+      <span className="text-lg font-bold">{value.toLocaleString()}</span>
+      <span className="text-gray-500">{label}</span>
     </div>
   );
 }
 
+// Custom SVG-based progress ring
 function ProgressDonut({ value = 65 }) {
-  const chartData = useMemo(() => [{ name: "progress", value }], [value]);
+  const strokeDasharray =` ${value}, 100`;
   return (
-    <div className="h-28 w-28">
-      <ResponsiveContainer width="100%" height="100%">
-        <RadialBarChart
-          innerRadius="70%"
-          outerRadius="100%"
-          data={chartData}
-          startAngle={90}
-          endAngle={-270}
-        >
-          <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-          <RadialBar dataKey="value" cornerRadius={50} />
-        </RadialBarChart>
-      </ResponsiveContainer>
-      <div className="-mt-20 flex items-center justify-center">
-        <span className="text-sm font-medium">{value}%</span>
+    <div className="relative w-16 h-16">
+      <svg className="w-full h-full" viewBox="0 0 36 36">
+        <path
+          className="text-gray-200"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+        ></path>
+        <path
+          className="text-green-500"
+          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          fill="none"
+          stroke="currentColor"
+          strokeDasharray={strokeDasharray}
+          strokeLinecap="round"
+          strokeWidth="3"
+        ></path>
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center text-lg font-bold">
+        {value}%
       </div>
     </div>
   );
@@ -256,495 +268,325 @@ export default function EcoVerseCommunityPage() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen w-full bg-gradient-to-br from-emerald-50 via-white to-sky-50 dark:from-zinc-400 dark:via-zinc-450 dark:to-zinc-500">
+      <div className="min-h-screen w-full bg-gray-100">
         <div className="mx-auto max-w-7xl px-4 py-6 md:py-8">
           {/* Header */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <motion.div
-                initial={{ scale: 0.9, rotate: -8 }}
-                animate={{ scale: 1, rotate: 0 }}
-                className="h-10 w-10 rounded-2xl bg-emerald-600 text-white grid place-items-center shadow-lg"
-              >
+          <header className="flex justify-between items-center mb-8">
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 rounded-2xl bg-green-500 text-white grid place-items-center shadow-lg">
                 <Leaf className="h-6 w-6" />
-              </motion.div>
+              </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-                  EcoVerse Community
+                <h1 className="text-3xl font-bold text-gray-800">
+                  Planet Guardian Community
                 </h1>
-                <p className="text-sm text-muted-foreground">
-                  Share your impact. Learn together. Level up for the planet.
+                <p className="text-gray-500 text-sm">
+                  Where green impacts come together - one leaf at a time on the
+                  planet.
                 </p>
               </div>
             </div>
-            <div className="hidden md:flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center space-x-4">
+              <div className="relative hidden md:flex">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <Input
-                  placeholder="Search people, posts, tags"
-                  className="pl-8 w-72"
+                  placeholder="Search people, posts, tags..."
+                  className="pl-10 pr-4 py-2 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-green-400 w-64 transition-all"
                 />
               </div>
-              <Button className="gap-2">
-                <PlusCircle className="h-4 w-4" /> New Post
+              <Button className="flex items-center bg-green-500 text-white font-semibold px-4 py-2 rounded-full hover:bg-green-600 transition-colors shadow-md">
+                <PlusCircle className="mr-2 h-5 w-5" /> New Post
               </Button>
             </div>
-          </div>
+          </header>
 
-          <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left: Profile */}
-            <div className="lg:col-span-3">
-              <Card className="rounded-2xl shadow-md border-emerald-100/60">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Users className="h-5 w-5 text-emerald-600" /> Your Profile
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left: Profile & Events */}
+            <aside className="col-span-12 lg:col-span-3 space-y-8">
+              {/* Profile Card */}
+              <Card className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="text-xl font-bold flex items-center">
+                    <Users className="text-green-500 mr-2 h-6 w-6" /> Your
+                    Profile
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-5">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-14 w-14 border-2 border-emerald-500/40">
-                      <AvatarImage src={me.avatar} alt={me.name} />
-                      <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-sky-500 text-white">
-                        AG
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-semibold leading-tight">
-                        {me.name}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {me.username}
-                      </div>
-                    </div>
-                    <div className="ml-auto">
-                      <Badge variant="secondary" className="gap-1">
-                        <Crown className="h-3.5 w-3.5 text-amber-500" /> Pro
+                <CardContent className="p-0 space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
+                      <Avatar className="w-16 h-16 rounded-full border-4 border-green-400">
+                        <AvatarImage src={me.avatar} alt={me.name} />
+                        <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-sky-500 text-white">
+                          AG
+                        </AvatarFallback>
+                      </Avatar>
+                      <Badge className="absolute bottom-0 right-0 bg-blue-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                        Pro
                       </Badge>
                     </div>
-                  </div>
-
-                  <p className="text-sm text-muted-foreground">{me.bio}</p>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <NumberStat label="Followers" value={me.followers} />
-                    <NumberStat label="Following" value={me.following} />
-                    <NumberStat label="Eco Points" value={me.points} />
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-sm font-medium">Next Badge</div>
-                      <div className="text-xs text-muted-foreground">
-                        Progress towards "River Saver"
-                      </div>
+                      <h3 className="font-bold text-lg">{me.name}</h3>
+                      <p className="text-gray-500 text-sm">{me.username}</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 mb-4 text-sm">{me.bio}</p>
+                  <div className="grid grid-cols-3 gap-2 text-center text-sm mb-6">
+                    <NumberStat label="Following" value={me.following} />
+                    <NumberStat label="Followers" value={me.followers} />
+                    <NumberStat label="Points" value={me.points} />
+                  </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="font-semibold">Next Badge</p>
+                      <p className="text-sm text-gray-500">
+                        Progress Crusader: Silver
+                      </p>
                     </div>
                     <ProgressDonut value={me.levelProgress} />
                   </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {me.badges.map((b) => (
-                      <Tooltip key={b.id}>
-                        <TooltipTrigger asChild>
-                          <Badge className="gap-1" variant="outline">
-                            {b.icon} {b.label}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>{b.label}</TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </div>
-
-                  <div className="rounded-xl bg-emerald-50 dark:bg-zinc-900/40 p-3 text-xs text-emerald-800 dark:text-emerald-300 border border-emerald-100/60 dark:border-zinc-800">
-                    {me.description}
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button
-                      className="w-full"
-                      variant={following ? "secondary" : "default"}
-                      onClick={() => setFollowing((f) => !f)}
-                    >
-                      {following ? "Following" : "Follow"}
-                    </Button>
-                    <Button className="w-full" variant="outline">
-                      <BookOpen className="h-4 w-4 mr-1" /> Lessons
-                    </Button>
+                  <div className="space-y-2">
+                    <Badge className="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+                      <Award className="h-4 w-4 mr-2" /> Tree Planter
+                    </Badge>
+                    <Badge className="bg-yellow-100 text-yellow-800 text-sm font-semibold px-3 py-1 rounded-full">
+                      <Flame className="h-4 w-4 mr-2" /> Plastic Warrior
+                    </Badge>
+                    <Badge className="bg-purple-100 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full">
+                      <Sparkles className="h-4 w-4 mr-2" /> Soil Champ
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
 
-              <div className="mt-5 w-4xl">
-                <Card className="rounded-2xl shadow-md border-green-200 bg-gradient-to-br from-green-50 via-white to-green-100">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg text-green-700">
-                      <Leaf className="h-5 w-5 text-green-600" /> Upcoming
-                      Drives & Social Events
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex gap-4 overflow-x-auto pb-3 no-scrollbar">
-                      {[
-                        {
-                          id: 1,
-                          title: "Beach Cleanup Drive",
-                          date: "10 Sept 2025",
-                          location: "Juhu Beach, Mumbai",
-                          points: 300,
-                        },
-                        {
-                          id: 2,
-                          title: "E-Waste Recycling Camp",
-                          date: "14 Sept 2025",
-                          location: "Delhi Tech Park",
-                          points: 250,
-                        },
-                        {
-                          id: 3,
-                          title: "Tree Plantation Drive",
-                          date: "18 Sept 2025",
-                          location: "Cubbon Park, Bangalore",
-                          points: 400,
-                        },
-                        {
-                          id: 4,
-                          title: "Sustainable Living Workshop",
-                          date: "22 Sept 2025",
-                          location: "IIT Madras, Chennai",
-                          points: 200,
-                        },
-                      ].map((event) => (
-                        <motion.div
-                          key={event.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="min-w-[250px] rounded-xl border bg-white p-4 shadow-sm hover:shadow-lg transition"
-                        >
-                          <h3 className="font-semibold text-green-700 text-base">
-                            {event.title}
-                          </h3>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {event.date}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {event.location}
-                          </p>
-                          <div className="mt-3 flex items-center justify-between">
-                            <Badge
-                              variant="secondary"
-                              className="bg-green-100 text-green-800"
-                            >
-                              +{event.points} pts
-                            </Badge>
-                            <Button
-                              size="sm"
-                              className="bg-green-600 hover:bg-green-700 text-white"
-                            >
-                              Join Now
-                            </Button>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Middle: Feed */}
-            <div className="lg:col-span-6 space-y-6">
-              <ScrollArea className="h-[620px] pr-2">
-                <div className="space-y-4">
-                  {sortedPosts.map((p) => (
-                    <Card
-                      key={p.id}
-                      className="rounded-2xl overflow-hidden border-green-200"
-                    >
-                      <CardContent className="p-4 md:p-5">
-                        <div className="flex items-start gap-3">
-                          <Avatar className="h-10 w-10">
-                            <AvatarFallback className="bg-green-600 text-white">
-                              {p.author.name.slice(0, 2)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <div className="font-semibold leading-tight">
-                                  {p.author.name}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {p.author.username} • {p.time}
-                                </div>
-                              </div>
-                            </div>
-                            <p className="mt-3 text-sm">{p.content}</p>
-                            {p.image && (
-                              <div className="mt-3 overflow-hidden rounded-xl">
-                                <img
-                                  src={p.image}
-                                  alt="post"
-                                  className="w-full object-cover max-h-[360px]"
-                                />
-                              </div>
-                            )}
-                            <div className="mt-4 flex items-center gap-3">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="gap-1"
-                              >
-                                <ThumbsUp className="h-4 w-4" /> {p.likes}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="gap-1"
-                              >
-                                <MessageCircle className="h-4 w-4" />{" "}
-                                {p.comments}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="gap-1 ml-auto"
-                              >
-                                <Share2 className="h-4 w-4" /> Share
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </ScrollArea>
-
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">Filter:</span>
-                {[
-                  { key: "recent", label: "Recent" },
-                  { key: "trending", label: "Trending" },
-                  { key: "most-liked", label: "Most Liked" },
-                ].map((f) => (
-                  <Pill
-                    key={f.key}
-                    active={filter === f.key}
-                    onClick={() => setFilter(f.key)}
-                  >
-                    {f.label}
-                  </Pill>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Leaderboard + Chat */}
-            <div className="lg:col-span-3 space-y-6">
-              <Card className="rounded-2xl shadow-md border-amber-100/60">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Trophy className="h-5 w-5 text-amber-500" /> Top 10 This
-                    Month
+              {/* Upcoming Events Card */}
+              <Card className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="text-xl font-bold flex items-center">
+                    <Leaf className="text-purple-500 mr-2 h-6 w-6" /> Upcoming
+                    Events
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <ScrollArea className="h-[360px] pr-2">
-                    <div className="space-y-2">
-                      {leaderboard.map((u, i) => (
-                        <div
-                          key={u.id}
-                          className="flex items-center gap-3 rounded-xl p-2 hover:bg-amber-50/60 dark:hover:bg-zinc-900/40 transition"
-                        >
-                          <div className="h-9 w-9 rounded-full grid place-items-center bg-gradient-to-br from-amber-500 to-rose-500 text-white font-semibold">
-                            {i + 1}
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-sm font-medium flex items-center gap-2">
-                              {u.name}
-                              {i < 3 && (
-                                <Award className="h-4 w-4 text-amber-500" />
-                              )}
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {u.points.toLocaleString()} pts
-                            </div>
-                          </div>
-                          {i === 0 && (
-                            <Badge className="gap-1">
-                              <Crown className="h-3.5 w-3.5" /> Champion
-                            </Badge>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-2xl shadow-md border-sky-100/60">
-                <CardHeader className="pb-2">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <MessageCircle className="h-5 w-5 text-sky-600" /> Learning
-                    Chat
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="rounded-xl border bg-white/70 dark:bg-zinc-900/50 p-2">
-                    <div className="h-64 overflow-y-auto space-y-2 pr-2">
-                      {chat.map((m) => (
-                        <div
-                          key={m.id}
-                          className={`flex ${
-                            m.from.includes("you")
-                              ? "justify-end"
-                              : "justify-start"
-                          }`}
-                        >
-                          <div
-                            className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm shadow-sm ${
-                              m.from.includes("you")
-                                ? "bg-sky-600 text-white"
-                                : "bg-white dark:bg-zinc-800 border"
-                            }`}
-                          >
-                            {!m.from.includes("you") && (
-                              <div className="text-[10px] text-muted-foreground mb-0.5">
-                                {m.from}
-                              </div>
-                            )}
-                            <div>{m.text}</div>
-                            <div
-                              className={`text-[10px] mt-0.5 ${
-                                m.from.includes("you")
-                                  ? "text-white/80"
-                                  : "text-muted-foreground"
-                              }`}
-                            >
-                              {m.time}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-2 flex items-center gap-2">
-                      <Input
-                        value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value)}
-                        placeholder="Ask a question about today’s lesson..."
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            sendMsg();
-                          }
-                        }}
-                      />
-                      <Button onClick={sendMsg} className="gap-2">
-                        <Send className="h-4 w-4" /> Send
+                <CardContent className="p-0 space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-bold">Beach Cleanup Drive</h3>
+                    <p className="text-sm text-gray-500">
+                      15 Sept 2023 | Juhu Beach, Mumbai
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-green-500 font-bold bg-green-100 px-3 py-1 rounded-full text-sm">
+                        +200 pts
+                      </span>
+                      <Button
+                        size="sm"
+                        className="bg-green-500 text-white font-semibold px-3 py-1 rounded-full hover:bg-green-600 text-sm transition-colors"
+                      >
+                        Join
                       </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Real-time via
-                    Socket.IO (stubbed here)
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-bold">E-Waste Recycling Camp</h3>
+                    <p className="text-sm text-gray-500">
+                      18 Sept 2023 | Sublic Tech Park
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-green-500 font-bold bg-green-100 px-3 py-1 rounded-full text-sm">
+                        +250 pts
+                      </span>
+                      <Button
+                        size="sm"
+                        className="bg-green-500 text-white font-semibold px-3 py-1 rounded-full hover:bg-green-600 text-sm transition-colors"
+                      >
+                        Join
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h3 className="font-bold">Sustainable Living Workshop</h3>
+                    <p className="text-sm text-gray-500">
+                      23 Sept 2023 | Online Event
+                    </p>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-blue-500 font-bold bg-blue-100 px-3 py-1 rounded-full text-sm">
+                        21 attending
+                      </span>
+                      <Button
+                        size="sm"
+                        className="bg-blue-500 text-white font-semibold px-3 py-1 rounded-full hover:bg-blue-600 text-sm transition-colors"
+                      >
+                        Register
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
+            </aside>
 
-          {/* Floating chat dock (mobile) */}
-          <AnimatePresence>
-            {!chatOpen && (
-              <motion.button
-                onClick={() => setChatOpen(true)}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="fixed bottom-4 right-4 md:hidden rounded-full shadow-lg bg-sky-600 text-white p-4"
-                aria-label="Open chat"
-              >
-                <MessageCircle className="h-6 w-6" />
-              </motion.button>
-            )}
-          </AnimatePresence>
-
-          <AnimatePresence>
-            {chatOpen && (
-              <motion.div
-                initial={{ y: 300, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 300, opacity: 0 }}
-                className="fixed bottom-4 inset-x-4 md:hidden rounded-2xl border bg-white dark:bg-zinc-900 p-3 shadow-xl"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="font-medium flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4" /> Learning Chat
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setChatOpen(false)}
-                  >
-                    Close
-                  </Button>
-                </div>
-                <div className="h-56 overflow-y-auto space-y-2 pr-1">
-                  {chat.map((m) => (
-                    <div
-                      key={m.id}
-                      className={`flex ${
-                        m.from.includes("you") ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm shadow-sm ${
-                          m.from.includes("you")
-                            ? "bg-sky-600 text-white"
-                            : "bg-white dark:bg-zinc-800 border"
-                        }`}
-                      >
-                        {!m.from.includes("you") && (
-                          <div className="text-[10px] text-muted-foreground mb-0.5">
-                            {m.from}
-                          </div>
-                        )}
-                        <div>{m.text}</div>
-                        <div
-                          className={`text-[10px] mt-0.5 ${
-                            m.from.includes("you")
-                              ? "text-white/80"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {m.time}
+            {/* Middle: Feed */}
+            <main className="lg:col-span-6 space-y-8">
+              {sortedPosts.map((p) => (
+                <Card
+                  key={p.id}
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+                >
+                  <CardContent className="p-0">
+                    <div className="flex items-start space-x-4">
+                      <Avatar className="w-12 h-12 rounded-full">
+                        <AvatarFallback className="bg-green-600 text-white">
+                          {p.author.name.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-bold">{p.author.name}</h3>
+                          {p.author.name === "Neha Sharma" && (
+                            <span className="text-blue-500 text-lg">
+                              verified
+                            </span>
+                          )}
+                          <span className="text-sm text-gray-500">
+                            · {p.time}
+                          </span>
                         </div>
+                        <p className="mt-2 text-gray-800">{p.content}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <Input
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Type your message..."
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        sendMsg();
-                      }
-                    }}
-                  />
-                  <Button onClick={sendMsg} className="gap-2">
-                    <Send className="h-4 w-4" /> Send
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    {p.image && (
+                      <div className="mt-4">
+                        <img
+                          src={p.image}
+                          alt="post"
+                          className="rounded-2xl w-full h-auto object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center mt-4 text-gray-600">
+                      <div className="flex items-center space-x-4">
+                        <Button
+                          variant="ghost"
+                          className="flex items-center space-x-1 hover:text-red-500 transition-colors"
+                        >
+                          <ThumbsUp className="h-5 w-5" />
+                          <span>{p.likes}</span>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          className="flex items-center space-x-1 hover:text-blue-500 transition-colors"
+                        >
+                          <MessageCircle className="h-5 w-5" />
+                          <span>{p.comments}</span>
+                        </Button>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        className="flex items-center space-x-1 hover:text-green-500 transition-colors"
+                      >
+                        <Share2 className="h-5 w-5" />
+                        <span>Share</span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </main>
 
-          <div className="mt-10 text-[11px] text-muted-foreground text-center">
-            Prototype • Posts, chat & leaderboard use mock data. Hook these to
-            your API/DB.
+            {/* Right: Leaderboard & Learning Hub */}
+            <aside className="col-span-12 lg:col-span-3 space-y-8">
+              {/* Leaderboard Card */}
+              <Card className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="text-xl font-bold flex items-center">
+                    <Trophy className="text-yellow-500 mr-2 h-6 w-6" />{" "}
+                    Leaderboard
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ul className="space-y-4">
+                    {leaderboard.map((u, i) => (
+                      <li key={u.id} className="flex items-center space-x-3">
+                        <span
+                          className={`text-lg font-bold w-6 text-center ${
+                            i === 0 ? "text-yellow-500" : "text-gray-400"
+                          }`}
+                        >
+                          {i + 1}
+                        </span>
+                        <Avatar className="w-10 h-10 rounded-full">
+                          <AvatarFallback className="bg-gray-200">
+                            {u.name.slice(0, 2)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold">{u.name}</p>
+                          <p className="text-sm text-gray-500">
+                            {u.points.toLocaleString()} pts
+                          </p>
+                        </div>
+                        {i === 0 && (
+                          <Badge className="ml-auto bg-yellow-100 text-yellow-800">
+                            <Crown className="h-3.5 w-3.5 mr-1" /> Champion
+                          </Badge>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className="mt-4 w-full text-green-600 font-semibold py-2 rounded-lg hover:bg-green-50 transition-colors"
+                    variant="ghost"
+                  >
+                    Show more
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Learning Hub Card */}
+              <Card className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="text-xl font-bold text-gray-800 flex items-center">
+                    <MessageCircle className="text-blue-500 mr-2 h-6 w-6" />{" "}
+                    Learning Hub
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="h-96 flex flex-col space-y-4 pr-2 overflow-y-auto">
+                    {initialChats.map((m) => (
+                      <div
+                        key={m.id}
+                        className={`flex ${
+                          m.from.includes("you")
+                            ? "justify-end"
+                            : "justify-start"
+                        }`}
+                      >
+                        <div
+                          className={`max-w-xs p-3 rounded-lg ${
+                            m.from.includes("you")
+                              ? "bg-blue-500 text-white rounded-br-none"
+                              : "bg-gray-100 text-gray-800 rounded-bl-none"
+                          }`}
+                        >
+                          <p className="text-sm">{m.text}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center relative">
+                    <Input
+                      className="w-full bg-gray-100 text-gray-800 placeholder-gray-500 rounded-full py-2 pl-4 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      placeholder="Ask something..."
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                    />
+                    <Button
+                      onClick={sendMsg}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 transition-colors"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </aside>
           </div>
         </div>
       </div>
