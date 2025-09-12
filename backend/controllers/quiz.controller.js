@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI('AIzaSyAenFro3lJEAHUOg1Of_XOoaLdtcvLM5-s'); // 🔑 Better: use env var
+const genAI = new GoogleGenerativeAI('AIzaSyC9TNmippOPnD6NY0th6o6JIBu0fNzsn60'); // 🔑 Better: use env var
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 async function generateWithRetry(prompt, retries = 3, delay = 1000) {
@@ -20,25 +20,42 @@ async function generateWithRetry(prompt, retries = 3, delay = 1000) {
   }
 }
 
-export const handleQuizgeneration = async (message) => {
+export const handleQuizgeneration = async (req,res) => {
   try {
+    const { topic, questions, level, length }=req.body;
     const prompt = `
-      You are EcoBot 🌱, an AI assistant for environmental awareness.
-      Answer user queries in **strict JSON format only**.
-      Do NOT include backticks, markdown, code blocks, or explanations.
+      You are a quiz generator. Generate a quiz in JSON format only, without extra text or explanation.  
 
-      JSON FORMAT:
+      The quiz must follow these rules:
+      - topic of the quiz: ${topic},
+      - Number of questions: ${questions}  
+      - Difficulty level: ${level}  
+      - Question length: ${length}  
+      - Each question must have:  
+        - "id" (unique number)  
+        - "question" (the question text)  
+        - "options" (list of 4 plausible answer choices)  
+        - "correct_answer" (the exact correct option string)  
+        - "points" (integer score for the question, e.g., 1–5 depending on difficulty)  
+
+      The JSON must be well-structured as:  
+
       {
-        "status": "success",
-        "query": "<repeat user query>",
-        "response": {
-          "summary": "<short summary>",
-          "data_points": ["Fact 1", "Fact 2", "Fact 3"],
-          "sources": ["https://source1.com", "https://source2.com"]
+        "quiz": {
+           "topic":${topic},
+          "level": "${level}",
+          "total_questions": ${questions},
+          "questions": [
+            {
+              "id": 1,
+              "question": "Sample question?",
+              "options": ["A", "B", "C", "D"],
+              "correct_answer": "B",
+              "eco-points": 2
+            }
+          ]
         }
-      }
-
-      User Query: ${message}
+        }
     `;
 
     // ✅ Call with retry
@@ -55,14 +72,18 @@ export const handleQuizgeneration = async (message) => {
 
     // ✅ Parse JSON safely
     const parsed = JSON.parse(generatedText);
-    return parsed;
-
+    console.log(parsed);
+    return res.status(200).json({
+      success: true,
+      message:"quiz generated successfully",
+      quiz:parsed
+    })
   } catch (error) {
     console.error("❌ Gemini API Error:", error);
     return {
       status: "error",
       response: {
-        summary: "⚠️ Sorry, I couldn't fetch environmental data right now. Try again later.",
+        summary: "⚠️ Sorry, I couldn't generate quiz data right now. Try again later.",
       },
     };
   }

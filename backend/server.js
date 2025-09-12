@@ -4,14 +4,17 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { handleChatMessage } from "./controllers/chat.controller.js";
 import chatRoute from "./routes/chatboat.route.js";
-import quizRoute from './controllers/quiz.controller.js'
-
+import quizRoute from './routes/quiz.route.js'
 dotenv.config();
+import databaseConnection from "./config/db.js";
+
+
 const app = express();
 const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
+databaseConnection(); 
 
 
 app.use("/api/chat", chatRoute);
@@ -28,7 +31,6 @@ app.use("/api/quiz",quizRoute)
 
 
 
-// Upgrade HTTP to WebSocket
 const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
