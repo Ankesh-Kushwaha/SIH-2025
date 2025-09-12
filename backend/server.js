@@ -7,6 +7,8 @@ import chatRoute from "./routes/chatboat.route.js";
 import quizRoute from './routes/quiz.route.js'
 dotenv.config();
 import databaseConnection from "./config/db.js";
+import { clerkMiddleware, } from '@clerk/express'
+import userRoutes from './routes/userRoutes/user.route.js'
 
 
 const app = express();
@@ -14,12 +16,13 @@ const PORT = 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(clerkMiddleware());
 databaseConnection(); 
 
 
 app.use("/api/chat", chatRoute);
 app.use("/api/quiz",quizRoute)
-
+app.use("/api/user", userRoutes);
 
 
 

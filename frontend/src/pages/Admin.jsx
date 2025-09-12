@@ -1,7 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
+import { useAuth } from "@clerk/clerk-react";
+
+const backend_url = import.meta.env.VITE_API_BASE_URL;
 
 export default function Admin() {
+  const { getToken } = useAuth();
   const [xp, setXp] = useState(4200);
   const [points, setPoints] = useState(240);
   const [tasks, setTasks] = useState([
@@ -18,13 +23,16 @@ export default function Admin() {
 
   const [isAdmin] = useState(true);
 
+  // Quiz form state (fixed schema)
   const [quizForm, setQuizForm] = useState({
-    title: "",
+    topic: "",
     questions: 3,
-    difficulty: "Medium",
+    level: "Medium",
+    length: 1,
   });
-  const [quizzes, setQuizzes] = useState([]);
 
+  const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(false);
   const xpLevel = useMemo(() => Math.floor(xp / 1000), [xp]);
 
   function completeTask(id) {
@@ -40,19 +48,85 @@ export default function Admin() {
     );
   }
 
-  function generateQuiz(e) {
+  async function generateQuiz(e) {
     e.preventDefault();
-    const newQuiz = {
-      id: Date.now(),
-      ...quizForm,
-      createdAt: new Date().toISOString(),
+    if (!quizForm.topic) return alert("Please enter a quiz title.");
+    setLoading(true);
+    const token = await getToken();
+    try {
+      const response = await axios.post(
+        `${backend_url}/quiz/generate`,
+        quizForm, // sends topic, questions, level, length
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if(!response.data) {
+        console.error("Failed to generate quiz:");
+      }
+    } catch (err) {
+      console.error("Error generating quiz:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+ 
+    const getALLQuize = async () => {
+      const token = await getToken();
+      try {
+        const res = await axios.get(`${backend_url}/quiz/get-all-quiz`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // backend returns { quizes: [...], total: ... }
+        if (res.data && Array.isArray(res.data.quizes)) {
+          setQuizzes(res.data.quizes);
+        } else {
+          console.error("Unexpected response format:", res.data);
+        }
+      } catch (err) {
+        console.error("Error fetching quizzes:", err);
+      }
     };
-    setQuizzes((q) => [newQuiz, ...q]);
-    setQuizForm({ title: "", questions: 3, difficulty: "Medium" });
+
+    useEffect(() => {
+      getALLQuize();
+    }, []);
+  
+  const handleDelete = async (quizId) => {
+    const token = await getToken();
+    try {
+       const res = await axios.delete(
+         `${backend_url}/quiz/delete-a-single-quiz/${quizId}`,
+         {
+           headers: {
+             Authorization: `Bearer ${token}`,
+           },
+         }
+      );
+      
+    }
+    catch (err) {
+      console.log("error while deleting the quiz", err);
+    }
   }
 
   return (
     <section className="mx-auto max-w-7xl p-6">
+      {loading && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/40">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white mb-4"></div>
+          <h2 className="text-white text-2xl font-bold text-center">
+            Generating Quiz...
+            <br />
+            Please wait a few seconds
+          </h2>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-5xl font-extrabold text-gray-800">
@@ -102,9 +176,9 @@ export default function Admin() {
                 <form onSubmit={generateQuiz} className="space-y-3">
                   <input
                     placeholder="Quiz title (e.g. Waste Sorting 101)"
-                    value={quizForm.title}
+                    value={quizForm.topic}
                     onChange={(e) =>
-                      setQuizForm((s) => ({ ...s, title: e.target.value }))
+                      setQuizForm((s) => ({ ...s, topic: e.target.value }))
                     }
                     className="w-full rounded-md border px-3 py-2"
                   />
@@ -122,11 +196,11 @@ export default function Admin() {
                       className="w-24 rounded-md border px-3 py-2"
                     />
                     <select
-                      value={quizForm.difficulty}
+                      value={quizForm.level}
                       onChange={(e) =>
                         setQuizForm((s) => ({
                           ...s,
-                          difficulty: e.target.value,
+                          level: e.target.value,
                         }))
                       }
                       className="rounded-md border px-3 py-2"
@@ -135,31 +209,101 @@ export default function Admin() {
                       <option>Medium</option>
                       <option>Hard</option>
                     </select>
+
+                    <input
+                      type="number"
+                      min={1}
+                      max={10}
+                      value={quizForm.length}
+                      onChange={(e) =>
+                        setQuizForm((s) => ({
+                          ...s,
+                          length: Number(e.target.value),
+                        }))
+                      }
+                      className="w-24 rounded-md border px-3 py-2"
+                      placeholder="Lines"
+                    />
+
                     <button className="ml-auto rounded-md px-4 py-2 bg-green-500 hover:bg-green-600 text-white">
                       Generate
                     </button>
                   </div>
                 </form>
 
-                <div className="mt-4 space-y-2">
+                {/* Quiz Slider */}
+
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                    Available Quizzes ({quizzes.length})
+                  </h3>
+
                   {quizzes.length === 0 ? (
-                    <p className="text-sm text-gray-400">
-                      No quizzes yet — generate one to preview behavior.
-                    </p>
+                    <p className="text-gray-400">No quizzes available.</p>
                   ) : (
-                    quizzes.map((q) => (
-                      <div
-                        key={q.id}
-                        className="text-sm rounded-md border p-2 bg-blue-50"
-                      >
-                        <div className="font-semibold">
-                          {q.title || "Untitled quiz"}
-                        </div>
-                        <div className="text-xs">
-                          {q.questions} questions • {q.difficulty}
-                        </div>
-                      </div>
-                    ))
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                      {quizzes.map((q) => (
+                        <motion.div
+                          key={q._id}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          className="relative cursor-pointer rounded-2xl border border-gray-200 p-6 shadow-md 
+             bg-gradient-to-br from-blue-50 to-blue-100 hover:shadow-xl transition-all duration-300"
+                        >
+                          {/* Quiz Title */}
+                          <div
+                            onClick={() =>
+                              (window.location.href = `/takequiz/${q._id}`)
+                            }
+                            className="font-bold text-lg text-gray-800 mb-2 line-clamp-1"
+                          >
+                            {q.topic || "Untitled Quiz"}
+                          </div>
+
+                          {/* Quiz Details */}
+                          <div
+                            onClick={() =>
+                              (window.location.href = `/takequiz/${q._id}`)
+                            }
+                            className="text-sm text-gray-600 space-y-1"
+                          >
+                            <p>📘 {q.questions?.length || 0} questions</p>
+                            <p>⚡ Level: {q.level}</p>
+                            <p>📝 {q.length} lines</p>
+                          </div>
+
+                          {/* Delete Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // prevent card navigation
+                              handleDelete(q._id);
+                            }}
+                            className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1
+                              text-xs font-medium rounded-md
+                              bg-transparent text-red-500
+                              hover:bg-red-50 hover:text-red-600
+                              border border-transparent hover:border-red-300
+                              transition-all duration-200"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-4 h-4"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                            Delete
+                          </button>
+                        </motion.div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>

@@ -1,19 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SignedIn,
   SignedOut,
   SignInButton,
   UserButton,
+  useAuth,
 } from "@clerk/clerk-react";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+
+const backend_url = import.meta.env.VITE_API_BASE_URL;
+
 
 const Headers = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isSignedIn, getToken } = useAuth();
 
   const isActive = (path) => location.pathname === path;
+
+  // Call backend API when user logs in
+  useEffect(() => {
+    const callBackend = async () => {
+      if (isSignedIn) {
+        try {
+          const token = await getToken();
+          const res = await axios.get(`${backend_url}/user/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          console.log(res.message);
+        } catch (err) {
+          console.error("Error fetching /me:", err);
+        }
+      }
+    };
+
+    callBackend();
+  }, [isSignedIn, getToken]);
 
   return (
     <header className="sticky top-0 left-0 right-0 z-50 shadow-lg">
@@ -21,7 +48,7 @@ const Headers = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-green-100 via-emerald-50 to-cyan-100 backdrop-blur-md"></div>
 
       <div className="relative container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo / Branding */}
+        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}

@@ -21,8 +21,11 @@ import GamePage from "./pages/GamePage";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/admin";
 import StudentDashboard from "./pages/StudentDashboard";
+import QuizPage from "./pages/QuizPage";
+
 
 // ✅ Protected Route Component
+
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useUser();
 
@@ -60,11 +63,11 @@ function HomeRedirect() {
   );
 }
 
-export default function App() {
+export default  function App() {
+ 
   return (
     <>
       <Headers />
-
       <Routes>
         {/* ✅ Root route: signed-out → Home, signed-in → role dashboard */}
         <Route path="/" element={<HomeRedirect />} />
@@ -96,6 +99,15 @@ export default function App() {
           element={
             <ProtectedRoute>
               <GamePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/takequiz/:quizId"
+          element={
+            <ProtectedRoute>
+              <QuizPage />
             </ProtectedRoute>
           }
         />
