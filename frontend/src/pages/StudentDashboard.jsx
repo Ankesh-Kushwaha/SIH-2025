@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -12,12 +12,49 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Medal, Gamepad2, Star, Users, Award } from "lucide-react";
+import {
+  Medal,
+  Gamepad2,
+  Star,
+  Award,
+  Newspaper,
+  Activity,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {useAuth} from '@clerk/clerk-react'
+const backend_url = import.meta.env.VITE_API_BASE_URL;
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
+  const [availableQuizzes, setAvailableQuize] = useState([]);
+  const { getToken} = useAuth();
+
+   const getALLQuize = async () => {
+        const token = await getToken();
+        try {
+          const res = await axios.get(`${backend_url}/quiz/get-all-quiz`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          // backend returns { quizes: [...], total: ... }
+          if (res.data && Array.isArray(res.data.quizes)) {
+            setAvailableQuize(res.data.quizes);
+            console.log(res.data.quizes);
+          } else {
+            console.error("Unexpected response format:", res.data);
+          }
+        } catch (err) {
+          console.error("Error fetching quizzes:", err);
+        }
+      };
+
+  useEffect(() => {
+    getALLQuize(); 
+  },[])
 
   const [student] = useState({
     name: "Aarav Sharma",
@@ -42,12 +79,44 @@ const StudentDashboard = () => {
     { day: "Sun", xp: 1500 },
   ];
 
-  const leaderboardData = [
-    { name: "Aarav Sharma", xp: 3200 },
-    { name: "Priya Verma", xp: 3000 },
-    { name: "Kabir Singh", xp: 2800 },
-    { name: "Ananya Das", xp: 2600 },
-    { name: "Rohan Mehta", xp: 2400 },
+  // Dummy data for new sections
+ const communityPosts = [
+   {
+     id: 1,
+     title: "Beach Cleanup Highlights",
+     img: "../../public/communityPostDemo/img1.jpg",
+   },
+   {
+     id: 2,
+     title: "Plastic-Free Market Day",
+     img: "../../public/communityPostDemo/img2.jpg",
+   },
+   {
+     id: 3,
+     title: "Tree Plantation Drive",
+     img: "../../public/communityPostDemo/img3.jpg",
+   },
+   {
+     id: 3,
+     title: "Tree Plantation Drive",
+     img: "../../public/communityPostDemo/img4.jpg",
+   },
+   {
+     id: 3,
+     title: "Tree Plantation Drive",
+     img: "../../public/communityPostDemo/img1.jpg",
+   },
+   {
+     id: 3,
+     title: "Tree Plantation Drive",
+     img: "../../public/communityPostDemo/img2.jpg",
+   },
+  ];
+  
+  const eventDrives = [
+    { id: 1, title: "River Cleaning Drive", date: "20 Sept" },
+    { id: 2, title: "Urban Gardening Week", date: "25 Sept" },
+    { id: 3, title: "E-Waste Collection", date: "30 Sept" },
   ];
 
   return (
@@ -158,7 +227,7 @@ const StudentDashboard = () => {
               </div>
               <Button
                 className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-5 py-2"
-                onClick={() => navigate("/gamesection")} // ✅ redirect on click
+                onClick={() => navigate("/gamesection")}
               >
                 Play Now
               </Button>
@@ -167,50 +236,93 @@ const StudentDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Leaderboard Section */}
+      {/* Available Quizzes */}
       <Card className="lg:col-span-3 shadow-2xl rounded-2xl border border-gray-200 bg-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xl font-bold text-blue-700">
-            <Users /> Leaderboard
+            <Star /> Available Quizzes
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full table-auto border-collapse">
-              <thead>
-                <tr className="bg-blue-100">
-                  <th className="p-3 text-left">Rank</th>
-                  <th className="p-3 text-left">Student</th>
-                  <th className="p-3 text-left">XP</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboardData.map((user, index) => (
-                  <tr
-                    key={index}
-                    className={`border-b ${
-                      user.name === student.name
-                        ? "bg-green-50 font-semibold"
-                        : ""
-                    } ${
-                      index === 0
-                        ? "bg-yellow-50"
-                        : index === 1
-                        ? "bg-gray-100"
-                        : index === 2
-                        ? "bg-orange-50"
-                        : ""
-                    }`}
-                  >
-                    <td className="p-3 font-bold">#{index + 1}</td>
-                    <td className="p-3">{user.name}</td>
-                    <td className="p-3 flex items-center gap-2">
-                      {user.xp} <Star className="text-yellow-500 w-4 h-4" />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {availableQuizzes.map((quiz) => (
+              <motion.div
+                key={quiz._id}
+                whileHover={{ scale: 1.03 }}
+                className="min-w-[250px] bg-blue-50 rounded-xl shadow p-4 flex flex-col justify-between"
+              >
+                <h3 className="font-semibold text-lg mb-2">{quiz.topic}</h3>
+                <p className="text-gray-600 mb-3">
+                  Earn {" "}
+                  {quiz.level === "Easy"
+                    ? quiz.total_questions * 2
+                    : quiz.level === "Medium"
+                    ? quiz.total_questions * 3
+                      : quiz.total_questions * 5}
+                  {" "}
+                  Points
+                </p>
+
+                <Button
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+                  onClick={() =>
+                    navigate((window.location.href = `/takequiz/${quiz._id}`))
+                  }
+                >
+                  Take Quiz
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Current Event Drives */}
+      <Card className="lg:col-span-3 shadow-2xl rounded-2xl border border-gray-200 bg-white">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl font-bold text-red-700">
+            <Activity /> Current Event Drives
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {eventDrives.map((event) => (
+              <motion.div
+                key={event.id}
+                whileHover={{ scale: 1.03 }}
+                className="min-w-[250px] bg-red-50 rounded-xl shadow p-4"
+              >
+                <h3 className="font-semibold text-lg mb-2">{event.title}</h3>
+                <p className="text-gray-600">Date: {event.date}</p>
+              </motion.div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Community Posts */}
+      <Card className="lg:col-span-3 shadow-2xl rounded-2xl border border-gray-200 bg-white">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl font-bold text-green-700">
+            <Newspaper /> Community Posts
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {communityPosts.map((post) => (
+              <motion.div
+                key={post.id}
+                whileHover={{ scale: 1.03 }}
+                className="min-w-[250px] bg-green-50 rounded-xl shadow p-3"
+              >
+                <img
+                  src={post.img}
+                  alt={post.title}
+                  className="w-full h-32 object-cover rounded-lg mb-2"
+                />
+                <h3 className="font-semibold text-lg">{post.title}</h3>
+              </motion.div>
+            ))}
           </div>
         </CardContent>
       </Card>
