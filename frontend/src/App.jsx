@@ -8,7 +8,7 @@ import {
 } from "@clerk/clerk-react";
 
 import { Button } from "@/components/ui/button";
-import DragAndDropWasteGame from "./components/gamesModule/game";
+
 import Headers from "./components/Headers";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
@@ -22,7 +22,9 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/admin";
 import StudentDashboard from "./pages/StudentDashboard";
 import QuizPage from "./pages/QuizPage";
+import SchoolDashboard from "./pages/SchoolDashboard";
 import { useAuth } from "@clerk/clerk-react";
+
 
 // ✅ Protected Route Component
 
@@ -153,6 +155,8 @@ export default  function App() {
             </SignedOut>
           }
         />
+
+        <Route path="/school/dashboard" element={<SchoolDashboard/>} />
       </Routes>
 
       <Footer />

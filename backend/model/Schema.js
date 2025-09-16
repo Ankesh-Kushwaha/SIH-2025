@@ -7,7 +7,8 @@ const SchoolSchema = new mongoose.Schema({
   address: { type: String, required: true },
   schoolCode:{ type :Number,required:true},
   leaderboard: { type: Schema.Types.ObjectId, ref: "Leaderboard" },
-  users: [{ type: Schema.Types.ObjectId, ref: "User" }]
+  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  createdAt: { type: Date, default: Date.now }
 });
 
 
