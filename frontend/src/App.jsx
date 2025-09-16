@@ -23,13 +23,13 @@ import Admin from "./pages/admin";
 import StudentDashboard from "./pages/StudentDashboard";
 import QuizPage from "./pages/QuizPage";
 import SchoolDashboard from "./pages/SchoolDashboard";
+import { useAuth } from "@clerk/clerk-react";
 
 
 // ✅ Protected Route Component
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useUser();
-
   if (!user) {
     return <RedirectToSignIn />;
   }
@@ -50,7 +50,7 @@ function ProtectedRoute({ children, allowedRoles }) {
 // ✅ HomeRedirect Component
 function HomeRedirect() {
   const { user, isSignedIn } = useUser();
-
+ 
   if (!isSignedIn) {
     return <Home />; // Show normal landing page
   }
@@ -65,7 +65,14 @@ function HomeRedirect() {
 }
 
 export default  function App() {
- 
+   const { getToken } = useAuth();
+
+   const token_generate = async () => {
+     const token = await getToken();
+     console.log(token);
+  };
+  
+  token_generate();
   return (
     <>
       <Headers />

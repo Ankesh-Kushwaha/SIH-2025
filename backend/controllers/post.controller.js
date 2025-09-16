@@ -1,0 +1,205 @@
+import {cloudinary,uploadToCloudinary }from '../config/cloudinary.js'
+import { Posts } from '../model/Schema.js';
+
+export const createPostController = async (req, res) => {
+  try {
+    const file = req.file;
+    const { content } = req.body;
+    const userId = req.userId;  
+    //console.log(req.userId);
+
+    if (!file) {
+      return res.status(401).json({
+        success: false,
+        message:"image file required for post",
+        })
+    }
+
+    //post the image to the cloudinary 
+    const upoladed_image = await uploadToCloudinary(req.file.buffer);
+    const mediaUrl = upoladed_image.secure_url;
+
+    const newPost = await Posts.create({ content, mediaUrl,user:userId, });
+
+    if (!newPost) {
+      return res.json({ message: "error while creating post" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "post created successfully",
+      post:newPost,
+    })
+  }
+  catch (err) {
+    throw new Error('error while creating post', err.message);
+    res.status(500).json({
+      success: false,
+      message:"something went wrong try after sometime."
+    })
+  }
+}
+
+export const updatePostController = async (req, res) => {
+  try {
+    const { content } = req.body;
+    const { postId } = req.params;
+    const file = req.file;
+    const userId = req.userId;
+
+    if (!content && !file) {
+      return res.status(400).json({ success: false, message: "Content or image required to update the post." });
+    }
+
+    const post_before_update = await Posts.findById(postId);
+    if (!post_before_update) {
+      return res.status(404).json({ success: false, message: "Post does not exist" });
+    }
+
+    if (post_before_update.user.toString()!== userId.toString()) {
+      return res.status(403).json({ success: false, message: "Post does not belong to you." });
+    }
+
+    let mediaUrl;
+    if (file) {
+      const uploaded_image = await uploadToCloudinary(file.buffer);
+      mediaUrl = uploaded_image.secure_url;
+    }
+
+    const updateData = {};
+    if (content) updateData.content = content;
+    if (mediaUrl) updateData.mediaUrl = mediaUrl;
+
+    const updated_post = await Posts.findByIdAndUpdate(postId, updateData, { new: true, runValidators: true });
+
+    if (!updated_post) {
+      return res.status(400).json({ success: false, message: "Post could not be updated" });
+    }
+
+    res.status(200).json({ success: true, message: "Post updated successfully", post: updated_post });
+  } catch (err) {
+    console.error('updatePostController error:', err);
+    return res.status(500).json({ success: false, message: "Something went wrong. Please try again later" });
+  }
+};
+
+
+export const deletePostController = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.userId;
+    
+    if (!postId) return res.status(400).json({ message: "postId is required" });
+    const post = await Posts.findById(postId);
+    if (!post) {
+      return res.status(400).json({
+        success: false,
+        message:"post does not exist",
+      })
+    }
+
+    if (post.user.toString() !== userId.toString()) {
+      return res.status(400).json({
+        success: false,
+        message:"You cannot delete the Post.Because it does not belong to you."
+       })
+    }
+
+    //delete the particular post ;
+    const deletedPost = await Posts.findByIdAndDelete(postId);
+    if (!deletedPost) {
+      return res.status(400).json({
+        success: false,
+        message:"post cannot be delete.try after sometime"
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "post deleted successfully",
+      deletedPost,
+    })
+  }
+  catch (error) {
+    throw new Error("error while deleting the post", error.message);
+    res.status(500).json({
+      success: false,
+      message:"something went wrong",
+    })
+  }
+}
+
+export const getSinglePostController = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    if (!postId) {
+      return res.status(400).json({
+        success: false,
+        message:"postId is required"
+      })
+    }
+    const post = await Posts.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message:"no post exist",
+       })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "post fetched successfully",
+      post,
+    })
+  }
+  catch (err) {
+    throw new Error("error while fetching a single post");
+    res.status(200).json({
+      success: true,
+      message:"something went wrong.try after sometime."
+    })
+  }
+}
+
+export const getAllPostController = async (req, res) => {
+  try {
+    const posts = await Posts.aggregate([
+            // Add fields for counts
+            {
+              $addFields: {
+                likesCount: { $size: '$likes' },
+                commentsCount: { $size: '$comments' },
+              }
+            },
+            // Sort by likesCount and/or commentsCount
+            {
+              $sort: {
+                likesCount: -1,      // descending: most liked first
+                commentsCount: -1,   // then most commented first
+                createdAt: -1        // optional: newest first if tie
+              }
+            }
+    ]);
+    
+    res.status(200).json({
+      success: true,
+      message: "post fetched successfully",
+      posts,
+    })
+  }
+  catch (err) {
+    throw new Error("error while getting all Posts", err.message);
+    res.status(500).json({
+      success: false,
+      message:"something went wrong"
+    })
+  }
+}
+
+export const postLikeController = async (req, res) => {
+  
+}
+
+export const postCommentController = async (req, res) => {
+  
+}

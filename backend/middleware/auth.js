@@ -1,6 +1,27 @@
 import { clerkClient, getAuth } from "@clerk/express";
 import User from "../model/userSchema.js";
 
+
+export const isLogin = async (req, res,next) => {
+  try {
+      const { userId: clerkId } = getAuth(req);
+      if (!clerkId) return res.status(401).json({ message: 'Unauthorized' });
+
+      const mongoUser = await User.findOne({ clerkId });
+      if (!mongoUser) return res.status(404).json({ message: 'User not found' });
+
+      req.userId = mongoUser._id;
+      next();
+  }
+  catch (err) {
+    throw new Error("error in isLogin controller", err);
+    res.status(500).json({
+      success: false,
+      message:"something went wrong please try after sometime",
+    })
+  }
+}
+
 export const authController = async (req, res) => {
   try {
     const { userId } = getAuth(req);
@@ -15,6 +36,7 @@ export const authController = async (req, res) => {
     const role = privateData.role || "user";
     const firstName = user.firstName || "";
     const lastName = user.lastName || "";
+    const clerkId = userId || "";
     const email =
       (user.emailAddresses && user.emailAddresses[0]?.emailAddress) || null;
 
@@ -33,6 +55,7 @@ export const authController = async (req, res) => {
         name: `${firstName} ${lastName}`.trim(),
         email,
         role,
+        clerkId,
       });
 
       if (!newUser) {
