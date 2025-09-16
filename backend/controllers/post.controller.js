@@ -3,42 +3,39 @@ import { Posts } from '../model/Schema.js';
 
 export const createPostController = async (req, res) => {
   try {
-    const file = req.file;
     const { content } = req.body;
-    const userId = req.userId;  
-    //console.log(req.userId);
+    const userId = req.userId;
+    const file = req.file;
 
     if (!file) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
-        message:"image file required for post",
-        })
+        message: "Image file required for post",
+      });
     }
 
-    //post the image to the cloudinary 
-    const upoladed_image = await uploadToCloudinary(req.file.buffer);
-    const mediaUrl = upoladed_image.secure_url;
+    // Upload to Cloudinary
+    const uploaded = await uploadToCloudinary(file.buffer);
+    const mediaUrl = uploaded.secure_url;
 
-    const newPost = await Posts.create({ content, mediaUrl,user:userId, });
+    // Create post
+    const newPost = await Posts.create({ content, mediaUrl, user: userId });
 
-    if (!newPost) {
-      return res.json({ message: "error while creating post" });
-    }
-
-    res.status(200).json({
+    return res.status(201).json({
       success: true,
-      message: "post created successfully",
-      post:newPost,
-    })
-  }
-  catch (err) {
-    throw new Error('error while creating post', err.message);
-    res.status(500).json({
+      message: "Post created successfully",
+      post: newPost,
+    });
+  } catch (err) {
+    console.error("Create post error:", err);
+    return res.status(500).json({
       success: false,
-      message:"something went wrong try after sometime."
-    })
+      message: "Server error while creating post",
+      error: err.message,
+    });
   }
-}
+};
+
 
 export const updatePostController = async (req, res) => {
   try {
@@ -163,38 +160,26 @@ export const getSinglePostController = async (req, res) => {
 
 export const getAllPostController = async (req, res) => {
   try {
-    const posts = await Posts.aggregate([
-            // Add fields for counts
-            {
-              $addFields: {
-                likesCount: { $size: '$likes' },
-                commentsCount: { $size: '$comments' },
-              }
-            },
-            // Sort by likesCount and/or commentsCount
-            {
-              $sort: {
-                likesCount: -1,      // descending: most liked first
-                commentsCount: -1,   // then most commented first
-                createdAt: -1        // optional: newest first if tie
-              }
-            }
-    ]);
-    
+    const posts = await Posts.find({})
+      .populate("user", "name")
+      .sort({ createdAt: -1 })
+      .lean();
+
     res.status(200).json({
       success: true,
-      message: "post fetched successfully",
+      message: "posts fetched successfully",
       posts,
-    })
-  }
-  catch (err) {
-    throw new Error("error while getting all Posts", err.message);
+    });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({
       success: false,
-      message:"something went wrong"
-    })
+      message: "error while getting all Posts",
+    });
   }
-}
+};
+
+
 
 export const postLikeController = async (req, res) => {
   

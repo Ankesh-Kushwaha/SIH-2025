@@ -2,25 +2,35 @@ import { clerkClient, getAuth } from "@clerk/express";
 import User from "../model/userSchema.js";
 
 
-export const isLogin = async (req, res,next) => {
+export const isLogin = async (req, res, next) => {
+  // Skip preflight requests from the browser
+  if (req.method === 'OPTIONS') return next();
+
   try {
-      const { userId: clerkId } = getAuth(req);
-      if (!clerkId) return res.status(401).json({ message: 'Unauthorized' });
+    // If getAuth is async, use await
+    const authResult = await getAuth(req);
 
-      const mongoUser = await User.findOne({ clerkId });
-      if (!mongoUser) return res.status(404).json({ message: 'User not found' });
+    const { userId: clerkId } = authResult;
 
-      req.userId = mongoUser._id;
-      next();
-  }
-  catch (err) {
-    throw new Error("error in isLogin controller", err);
-    res.status(500).json({
+    if (!clerkId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const mongoUser = await User.findOne({ clerkId });
+    if (!mongoUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    req.userId = mongoUser._id;
+    next();
+  } catch (err) {
+    console.error('Error in isLogin middleware:', err);
+    return res.status(500).json({
       success: false,
-      message:"something went wrong please try after sometime",
-    })
+      message: 'Something went wrong, please try again later',
+    });
   }
-}
+};
 
 export const authController = async (req, res) => {
   try {

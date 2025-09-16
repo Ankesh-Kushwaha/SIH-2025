@@ -11,12 +11,12 @@ const upload = multer({
   },
 });
 
+router.get('/get-all-post', getAllPostController);
 router.use(isLogin);
 router.post('/create',upload.single('image'), createPostController);
 router.put('/update-post/:postId',upload.single('image'), updatePostController);
 router.delete('/delete-post/:postId', deletePostController);
 router.get('/get-a-single-post/:postId', getSinglePostController);
-router.get('/get-all-post', getAllPostController);
 router.post('/likes/:postId', postLikeController);
 router.post('/comments/:postId', postCommentController);
 

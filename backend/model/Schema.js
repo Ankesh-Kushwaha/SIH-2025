@@ -128,6 +128,7 @@ const TaskSchema = new Schema({
 
 const PostSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
+  userName: { type: String },
   content: String,
   mediaUrl: String,
   likes: [
