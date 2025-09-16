@@ -6,7 +6,8 @@ const SchoolSchema = new mongoose.Schema({
   name: { type: String, required: true },
   address: String,
   leaderboard: { type: Schema.Types.ObjectId, ref: "Leaderboard" },
-  users: [{ type: Schema.Types.ObjectId, ref: "User" }]
+  users: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  createdAt: { type: Date, default: Date.now }
 });
 
 
