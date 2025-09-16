@@ -3,6 +3,7 @@ import { Schema } from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  clerkId:{type:String,required:true},
   email: { type: String, unique: true, required: true },
   role:{type:String,required:true,default:"user"},
   school: { type: Schema.Types.ObjectId, ref: "School" },

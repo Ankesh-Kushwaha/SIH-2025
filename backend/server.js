@@ -9,6 +9,7 @@ dotenv.config();
 import databaseConnection from "./config/db.js";
 import { clerkMiddleware, } from '@clerk/express'
 import userRoutes from './routes/userRoutes/user.route.js'
+import postRoute from './routes/postRoutes/postRoute.js'
 
 
 const app = express();
@@ -23,11 +24,7 @@ databaseConnection();
 app.use("/api/chat", chatRoute);
 app.use("/api/quiz",quizRoute)
 app.use("/api/user", userRoutes);
-
-
-
-
-
+app.use('/api/post', postRoute);
 
 
 
