@@ -10,7 +10,7 @@ import databaseConnection from "./config/db.js";
 import { clerkMiddleware, } from '@clerk/express'
 import userRoutes from './routes/userRoutes/user.route.js'
 import postRoute from './routes/postRoutes/postRoute.js'
-
+import DrivesRoutes from './routes/drives.route.js'
 
 const app = express();
 const PORT = 5000;
@@ -25,11 +25,12 @@ app.use(cors({
 app.use(clerkMiddleware());
 databaseConnection(); 
 
-
+//all routes requests
 app.use("/api/chat", chatRoute);
 app.use("/api/quiz",quizRoute)
 app.use("/api/user", userRoutes);
 app.use('/api/post', postRoute);
+app.use('/api/drives', DrivesRoutes);
 
 
 
@@ -76,3 +77,5 @@ wss.on("connection", (ws) => {
 
   ws.on("close", () => console.log("❌ Client disconnected"));
 });
+
+

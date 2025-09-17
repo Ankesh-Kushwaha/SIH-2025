@@ -5,11 +5,9 @@ import User from "../model/userSchema.js";
 export const isLogin = async (req, res, next) => {
   // Skip preflight requests from the browser
   if (req.method === 'OPTIONS') return next();
-
   try {
     // If getAuth is async, use await
     const authResult = await getAuth(req);
-
     const { userId: clerkId } = authResult;
 
     if (!clerkId) {

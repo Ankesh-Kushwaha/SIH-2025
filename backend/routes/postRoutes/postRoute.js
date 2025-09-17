@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import multer from 'multer'
-import { createPostController, updatePostController, deletePostController, getSinglePostController, getAllPostController, postLikeController, postCommentController } from '../../controllers/post.controller.js'
+import { createPostController, updatePostController, deletePostController, getSinglePostController, getAllPostController, postLikeController, postCommentController, getALLPostofCurrentUser } from '../../controllers/post.controller.js'
 import { isLogin } from '../../middleware/auth.js';
 
 const upload = multer({
@@ -19,5 +19,6 @@ router.delete('/delete-post/:postId', deletePostController);
 router.get('/get-a-single-post/:postId', getSinglePostController);
 router.post('/likes/:postId', postLikeController);
 router.post('/comments/:postId', postCommentController);
+router.get('/get-user-post', getALLPostofCurrentUser);
 
 export default router;

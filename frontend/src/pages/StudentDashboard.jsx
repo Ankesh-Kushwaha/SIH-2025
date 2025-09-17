@@ -19,17 +19,25 @@ import {
   Award,
   Newspaper,
   Activity,
+  X,
+  Trash2
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion ,AnimatePresence} from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {useAuth} from '@clerk/clerk-react'
+import { useAuth } from '@clerk/clerk-react';
 const backend_url = import.meta.env.VITE_API_BASE_URL;
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const [availableQuizzes, setAvailableQuize] = useState([]);
-  const { getToken} = useAuth();
+  const [communityPost, setCommunityPost] = useState([]);
+  const [drives, setDrives] = useState([]);
+  const { getToken } = useAuth();
+  const [registered, setRegistered] = useState({});
+  const [activeDrive, setActiveDrive] = useState(null);
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState(null);
 
    const getALLQuize = async () => {
         const token = await getToken();
@@ -43,17 +51,111 @@ const StudentDashboard = () => {
           // backend returns { quizes: [...], total: ... }
           if (res.data && Array.isArray(res.data.quizes)) {
             setAvailableQuize(res.data.quizes);
-            console.log(res.data.quizes);
           } else {
             console.error("Unexpected response format:", res.data);
           }
         } catch (err) {
           console.error("Error fetching quizzes:", err);
         }
-      };
+  };
+  
+  const getAllCommunityPost = async () => {
+    const token = await getToken();
+    
+    try {
+        const res = await axios.get(`${backend_url}/post/get-user-post`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+      setCommunityPost(res.data.posts);
+    }
+    catch (err) {
+      alert('error in fetching community Post');
+      console.log(err.message);
+    }
+
+    
+  }
+  
+  const handleDelete = async (postId)=>{
+    const token =  await  getToken();
+    try {
+        const res = await axios.delete(
+          `${backend_url}/post/delete-post/${postId}`, {
+            headers: {
+                Authorization:`Bearer ${token}`
+             }
+          }
+      );
+      
+      alert(res.data.message);
+    }
+    catch (err) {
+      alert("error while deleting the post");
+      console.log("error while deleting the post", err.message);
+    }
+  }
+  
+  const fetchedAllDrive = async () => {
+      const token = await getToken();
+      try {
+        const res = await axios.get(`${backend_url}/drives/get-all-drives`, {
+          headers: {
+              Authorization:`Bearer ${token}`
+            }
+        })
+        
+        if (!res.data.success) {
+          alert("error while fetching drive data");
+        }
+        setDrives(res.data.drives);
+        console.log(res.data.drives);
+      }
+      catch (err) {
+        alert('error while fetching drives data');
+        console.log("error while fetching drive data", err.message);
+      }
+    }
+  
+  const handleEnter = (id) => {
+    setRegistered((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const handleComplete = (drive) => {
+    setActiveDrive(drive);
+  };
+
+  const handleSubmitCompletion = async (e) => {
+    e.preventDefault();
+    if (!activeDrive) return;
+
+    const formData = new FormData();
+    formData.append("description", description);
+    if (image) formData.append("image", image);
+
+    try {
+      await axios.post(
+        `${backend_url}/community/complete-drive/${activeDrive._id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      alert("✅ Drive completed successfully!");
+      setActiveDrive(null);
+      setDescription("");
+      setImage(null);
+    } catch (err) {
+      console.error("Error completing drive:", err);
+      alert("❌ Failed to complete drive");
+    }
+  };
+
 
   useEffect(() => {
-    getALLQuize(); 
+    getALLQuize();
+    getAllCommunityPost();
+    fetchedAllDrive();
   },[])
 
   const [student] = useState({
@@ -79,45 +181,6 @@ const StudentDashboard = () => {
     { day: "Sun", xp: 1500 },
   ];
 
-  // Dummy data for new sections
- const communityPosts = [
-   {
-     id: 1,
-     title: "Beach Cleanup Highlights",
-     img: "../../public/communityPostDemo/img1.jpg",
-   },
-   {
-     id: 2,
-     title: "Plastic-Free Market Day",
-     img: "../../public/communityPostDemo/img2.jpg",
-   },
-   {
-     id: 3,
-     title: "Tree Plantation Drive",
-     img: "../../public/communityPostDemo/img3.jpg",
-   },
-   {
-     id: 3,
-     title: "Tree Plantation Drive",
-     img: "../../public/communityPostDemo/img4.jpg",
-   },
-   {
-     id: 3,
-     title: "Tree Plantation Drive",
-     img: "../../public/communityPostDemo/img1.jpg",
-   },
-   {
-     id: 3,
-     title: "Tree Plantation Drive",
-     img: "../../public/communityPostDemo/img2.jpg",
-   },
-  ];
-  
-  const eventDrives = [
-    { id: 1, title: "River Cleaning Drive", date: "20 Sept" },
-    { id: 2, title: "Urban Gardening Week", date: "25 Sept" },
-    { id: 3, title: "E-Waste Collection", date: "30 Sept" },
-  ];
 
   return (
     <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 bg-gradient-to-br from-green-50 via-white to-emerald-50 min-h-screen">
@@ -253,14 +316,13 @@ const StudentDashboard = () => {
               >
                 <h3 className="font-semibold text-lg mb-2">{quiz.topic}</h3>
                 <p className="text-gray-600 mb-3">
-                  Earn {" "}
+                  Earn{" "}
                   {quiz.level === "Easy"
                     ? quiz.total_questions * 2
                     : quiz.level === "Medium"
                     ? quiz.total_questions * 3
-                      : quiz.total_questions * 5}
-                  {" "}
-                  Points
+                    : quiz.total_questions * 5}{" "}
+                  Eco-Points
                 </p>
 
                 <Button
@@ -286,19 +348,131 @@ const StudentDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {eventDrives.map((event) => (
+            {drives.map((d) => (
               <motion.div
-                key={event.id}
+                key={d._id}
                 whileHover={{ scale: 1.03 }}
-                className="min-w-[250px] bg-red-50 rounded-xl shadow p-4"
+                className="flex-shrink-0 w-72 p-4 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-md flex flex-col gap-3 transition-all"
               >
-                <h3 className="font-semibold text-lg mb-2">{event.title}</h3>
-                <p className="text-gray-600">Date: {event.date}</p>
+                {/* Title + delete */}
+                <div className="flex justify-between items-start">
+                  <p className="font-semibold text-gray-900 text-base line-clamp-1">
+                    {d.title}
+                  </p>
+                  <button
+                    onClick={() => deleteDrive(d._id)}
+                    className="p-1.5 rounded-full hover:bg-red-100 transition"
+                  >
+                    <Trash2 className="w-5 h-5 text-red-500" />
+                  </button>
+                </div>
+
+                {/* Details */}
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-xs text-gray-600">
+                    👥 By {d.creator?.name}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    🌍 Impact: {d.impactLevel}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    👤 {d.total_participants} slots
+                  </p>
+                  <p className="text-xs font-medium text-green-700">
+                    ✨ +{d.ecoPoints} eco-points / participant
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                {registered[d._id] ? (
+                  <p className="text-sm font-medium text-green-600 bg-green-100 rounded-lg px-3 py-1 text-center">
+                    ✅ Registered
+                  </p>
+                ) : (
+                  <button
+                    onClick={() => handleEnter(d._id)}
+                    className="w-full py-2 text-sm rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 transition"
+                  >
+                    🚀 Enter
+                  </button>
+                )}
+
+                <button
+                  onClick={() => handleComplete(d)}
+                  className="w-full py-2 text-sm rounded-xl font-semibold text-white bg-yellow-500 hover:bg-yellow-600 transition"
+                >
+                  ✅ Complete
+                </button>
               </motion.div>
             ))}
           </div>
         </CardContent>
+
+        {/* Complete Modal */}
+        <AnimatePresence>
+          {activeDrive && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="relative w-full max-w-lg mx-4 bg-white rounded-2xl shadow-2xl p-6"
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+              >
+                <button
+                  onClick={() => setActiveDrive(null)}
+                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl"
+                >
+                  ✕
+                </button>
+
+                <h3 className="text-2xl font-bold text-green-700 mb-4">
+                  Complete Drive: {activeDrive.title}
+                </h3>
+
+                <form onSubmit={handleSubmitCompletion} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <textarea
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={3}
+                      placeholder="Describe what was done in this drive..."
+                      className="w-full rounded-lg border px-4 py-2 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Upload Image
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setImage(e.target.files[0])}
+                      className="w-full rounded-lg border px-4 py-2 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 transition"
+                  >
+                    Submit Completion
+                  </button>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Card>
+
 
       {/* Community Posts */}
       <Card className="lg:col-span-3 shadow-2xl rounded-2xl border border-gray-200 bg-white">
@@ -309,18 +483,36 @@ const StudentDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 overflow-x-auto pb-2">
-            {communityPosts.map((post) => (
+            {communityPost.map((post) => (
               <motion.div
-                key={post.id}
+                key={post._id}
                 whileHover={{ scale: 1.03 }}
-                className="min-w-[250px] bg-green-50 rounded-xl shadow p-3"
+                className="relative min-w-[250px] bg-green-50 rounded-xl shadow-lg p-3 flex flex-col"
               >
+                {/* Delete button (cross icon) */}
+                <button
+                  onClick={() => handleDelete(post._id)}
+                  className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 hover:shadow-md transition"
+                >
+                  <X size={16} strokeWidth={2.5} />
+                </button>
+
+                {/* Post image */}
                 <img
-                  src={post.img}
+                  src={post.mediaUrl}
                   alt={post.title}
-                  className="w-full h-32 object-cover rounded-lg mb-2"
+                  className="w-full h-32 object-cover rounded-lg mb-3"
                 />
-                <h3 className="font-semibold text-lg">{post.title}</h3>
+
+                {/* Post content */}
+                <h3 className="font-semibold text-base text-gray-800 mb-1">
+                  {post.content.slice(0, 25)}...
+                </h3>
+
+                {/* Optional: small footer */}
+                <p className="text-xs text-gray-500">
+                  By: {post.user?.name || "Unknown"}
+                </p>
               </motion.div>
             ))}
           </div>

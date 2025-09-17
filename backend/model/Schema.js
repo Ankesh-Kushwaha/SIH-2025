@@ -119,12 +119,36 @@ const EventSchema = new Schema({
   submissions: [{ type: Schema.Types.ObjectId, ref: "Submission" }]
 });
 
-const TaskSchema = new Schema({
-  title: { type: String, required: true },
-  description: String,
-  ecoPointsReward: Number,
-  event: { type: Schema.Types.ObjectId, ref: "Event" }
-});
+
+
+const CommunityDriveSchema = new Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    creator: { type: Schema.Types.ObjectId, ref: "User" }, 
+    organiser: { type: String, required: true, trim: true },
+    impactLevel: {
+      type: String,
+      enum: ["Local", "District", "State", "National"],
+      required: true,
+    },
+    total_participants: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    driveDateTime: { type: Date, required: true },
+    location: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
+    ecoPoints: { type: Number, default: 0, min: 0 },
+    event: { type: Schema.Types.ObjectId, ref: "Event" },
+  },
+  {
+    timestamps: true, 
+  }
+);
+
+
 
 const PostSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
@@ -148,7 +172,7 @@ const PostSchema = new Schema({
 
 
 const Posts = mongoose.model('Posts', PostSchema);
-const Tasks = mongoose.model('Tasks', TaskSchema);
+const Drives = mongoose.model('Drives', CommunityDriveSchema);
 const Events = mongoose.model('Events', EventSchema);
 const TaskSubmission = mongoose.model('TaskSubmission', TaskSubmissionSchema);
 const userGameProgress = mongoose.model("userGameProgress", UserGameProgressSchema);
@@ -169,6 +193,6 @@ export {
   userGameProgress,
   TaskSubmission,
   Events,
-  Tasks,
+  Drives,
  Posts
 }

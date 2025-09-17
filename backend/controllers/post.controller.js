@@ -179,6 +179,38 @@ export const getAllPostController = async (req, res) => {
   }
 };
 
+export const getALLPostofCurrentUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+    if (!userId) res.status(401).json({
+      success: false,
+      message:"unauthorised",
+    })
+    
+  const posts = await Posts.find({ user: userId }).populate("user", "name");
+
+    if (!posts) {
+      return res.status(404).json({
+        success: true,
+        message:"no post found"
+       })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "post fetched successfully",
+      posts,
+    })
+  }
+  catch (err) {
+    new Error("error while getting user post", err.message);
+    res.status(500).json({
+      success: false,
+      message: "something went wrong",
+      error:err.message,
+    })
+  }
+}
 
 
 export const postLikeController = async (req, res) => {
