@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 import { number } from 'zod';
 
+//left
 const SchoolSchema = new mongoose.Schema({
   name: { type: String, required: true },
   address: { type: String, required: true },
@@ -12,6 +13,7 @@ const SchoolSchema = new mongoose.Schema({
 });
 
 
+//completed
 const QuizeSchema = new mongoose.Schema({
   topic: {
     type: String,
@@ -61,6 +63,8 @@ const QuizeSchema = new mongoose.Schema({
   ],
 });
 
+
+//left
 const LeaderboardSchema = new Schema({
   school: { type: Schema.Types.ObjectId, ref: "School" },
   rankings: [
@@ -72,14 +76,15 @@ const LeaderboardSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
-
+//left 
 const BadgeSchema = new Schema({
   title: { type: String, required: true },
-  description: String,
-  iconUrl: String,
-  criteria: String, // e.g. "Complete 10 missions", "Score 1000 points"
+  description: {type:String,required:true},
+  iconUrl: {type:String,required:true},
+  criteria: {type:String,required:true}, // e.g. "Complete 10 missions", "Score 1000 points"
 });
 
+//left
 const EcoPointSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   points: Number,
@@ -87,13 +92,14 @@ const EcoPointSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+//left
 const GameSchema = new Schema({
   title: { type: String, required: true },
   description: String,
   ecoPointsReward: Number
 });
 
-
+//left
 const UserGameProgressSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   game: { type: Schema.Types.ObjectId, ref: "Game" },
@@ -103,14 +109,20 @@ const UserGameProgressSchema = new Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+//competed partially-> taskSubmissionStatus updation and ecopoints updation left
 const TaskSubmissionSchema=new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
-  mission: { type: Schema.Types.ObjectId, ref: "Mission" },
-  evidenceUrl: String, // photo/video of task
+  drives: { type: Schema.Types.ObjectId, ref: "Drives" },
+  dailyMission: { type: Schema.Types.ObjectId, ref: "dailyMission" },
+  uploadedBy:{type:String,required:true},
+  description:{type:String,required:true},
+  evidenceUrl: {type:String,required:true}, // photo/video of task
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
   createdAt: { type: Date, default: Date.now }
 });
 
+
+//left
 const EventSchema = new Schema({
   title: { type: String, required: true },
   description: String,
@@ -121,7 +133,7 @@ const EventSchema = new Schema({
 });
 
 
-
+//completed 
 const CommunityDriveSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },
@@ -151,16 +163,13 @@ const CommunityDriveSchema = new Schema(
 );
 
 
-
+//completed-> partially likes and comments 
 const PostSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   userName: { type: String },
   content: String,
   mediaUrl: String,
-  likes: [
-    { type: Schema.Types.ObjectId, ref: "User" },
-    {total:Number}
-  ],
+  likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
   comments: [
     {
       user: { type: Schema.Types.ObjectId, ref: "User" },
@@ -171,8 +180,10 @@ const PostSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+//completed->partially ->verification of ml model required
 const dailyMissionSchema = new Schema({
   title: { type: String, required: true },
+  mission_id:{type:String,},
   created_by:{ type: Schema.Types.ObjectId, ref: "User" }, 
   ecoPoints: { type: Number, required: true },
   required_Submission_Type: { type: String, required: true },

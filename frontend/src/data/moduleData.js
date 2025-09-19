@@ -6,6 +6,7 @@ import { data } from "react-router-dom";
 import ClimateCrisisSimulator from "@/components/gamesModule/ClimateCrisisSimulator";
 import EnergyConservationGame from "@/components/gamesModule/EnergyConservationGame";
 import PlantationGame from "@/components/gamesModule/PlantationGame";
+import WaterConservation1 from "@/components/gamesModule/waterConservation1";
 
 export const modulesData = [
   {
@@ -149,6 +150,30 @@ export const modulesData = [
       },
     ]
   }
+  ,
+  {
+    id: 4,
+    title: "Water Management",
+    lessons: [
+       {
+        id: 105,
+        title: "Water conservation basic",
+        description: "Sort the whole grid to conserve maximum water",
+        gameId: gamesData.WaterConservation1.gameId,
+        steps: [
+          "shows the grid ",
+          "Red is the area of leaking",
+          "make a logical way to connect and closed all the leaks.",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
+    ]
+  }
 ];
 
 
@@ -214,5 +239,10 @@ export const gameComponent = [
     gameComponentId: gamesData.PlantationGame.gameId,
     component: PlantationGame,
     data:gamesData.PlantationGame.data
+  },
+  {
+    gameComponentId: gamesData.WaterConservation1.gameId,
+    component: WaterConservation1,
+    data: gamesData.WaterConservation1.data
   }
 ];

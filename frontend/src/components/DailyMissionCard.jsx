@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import { Trophy, CheckCircle, Rocket, User } from "lucide-react";
 import {useAuth} from '@clerk/clerk-react'
 import axios from "axios";
 const backend_url = import.meta.env.VITE_API_BASE_URL;
+import profileImg from '../../public/images/master.png'
 
 // --- Hardcoded demo data ---
 const student = {
@@ -35,6 +37,7 @@ export default function Dashboard() {
   const { getToken } = useAuth();
   const [mission, setMission] = useState([]);
   const [accepted, setAccepted] = useState(false);
+  const [user, setUser] = useState({});
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -55,31 +58,32 @@ export default function Dashboard() {
     }
 
     const formData = new FormData();
-    formData.append("missionId", mission._id);
-    formData.append("submission", submission);
+    formData.append("mission_id", mission._id);
+    formData.append("image", submission);
     formData.append("description", description);
 
+    const token = await getToken(); // token from Clerk
+
     try {
-      // ✅ Replace with your backend endpoint
-      const res = await fetch("/api/missions/submit", {
-        method: "POST",
-        body: formData,
+      const res = await axios.post(`${backend_url}/task/submission`, formData, {
+        headers: {
+          // ✅ lowercase key
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      if (res.ok) {
-        alert("✅ Submission successful!");
-        setOpen(false);
-        setSubmission(null);
-        setDescription("");
-        setPreview(null);
-      } else {
-        alert("❌ Submission failed");
-      }
+      // Axios throws on non-2xx, so if we are here it's success:
+      alert("✅ Submission successful!");
+      setOpen(false);
+      setSubmission(null);
+      setDescription("");
+      setPreview(null);
     } catch (err) {
       console.error("Error submitting mission:", err);
       alert("❌ Something went wrong");
     }
   };
+
 
   const fetchTodayMission = async () => {
     const token = await getToken();
@@ -99,8 +103,27 @@ export default function Dashboard() {
     }
   }
 
+  const getUserProfile = async () => {
+      const token = await getToken();
+      try {
+        const res =await axios.get(`${backend_url}/user/get`, {
+          headers: {
+              Authorization:`Bearer ${token}`
+            }
+        })
+        
+        setUser(res.data.user);
+       
+      }
+      catch (err) {
+        alert("error while fetching user profile");
+        console.log("error while getting user profile", err.message);
+      }
+    }
+
   useEffect(() => {
     fetchTodayMission();
+    getUserProfile();
   },[])
 
   return (
@@ -116,17 +139,17 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <motion.img
-              src={student.avatar}
+              src={profileImg}
               alt="Avatar"
               whileHover={{ rotate: 2, scale: 1.05 }}
               className="w-28 h-28 rounded-full border-4 border-green-400 shadow-lg"
             />
-            <h2 className="text-xl font-bold mt-4">{student.name}</h2>
+            <h2 className="text-xl font-bold mt-4">{user.name}</h2>
             <p className="text-gray-600 text-sm">Level {student.level}</p>
             <div className="mt-4 w-full">
               <Progress value={(student.xp % 1000) / 10} className="h-3" />
               <p className="text-sm mt-1 text-gray-500 text-center">
-                XP: {student.xp}
+                XP: {user.ecoPoints}
               </p>
             </div>
           </CardContent>

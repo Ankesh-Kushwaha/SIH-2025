@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import avatar from "../assets/master.png";
 import {
   AreaChart,
   Area,
@@ -130,6 +129,7 @@ const StudentDashboard = () => {
     setActiveDrive(drive);
   };
 
+
   const handleSubmitCompletion = async (e) => {
     e.preventDefault();
     if (!activeDrive) return;
@@ -137,14 +137,17 @@ const StudentDashboard = () => {
     const formData = new FormData();
     formData.append("description", description);
     if (image) formData.append("image", image);
-
+    const token = await getToken();
     try {
-      await axios.post(
-        `${backend_url}/community/complete-drive/${activeDrive._id}`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      alert("✅ Drive completed successfully!");
+      const res = await axios.post(`${backend_url}/task/submission`, formData, {
+              headers: {
+                // ✅ lowercase key
+                Authorization: `Bearer ${token}`,
+              },
+      });
+      
+         alert("✅ Drive completed successfully!");
+     
       setActiveDrive(null);
       setDescription("");
       setImage(null);
@@ -154,9 +157,11 @@ const StudentDashboard = () => {
     }
   };
 
-    const handleCardClick = (id) => {
+  
+  const handleCardClick = (id) => {
       navigate(`/drive/${id}`); // Navigate to dedicated drive page
-    };
+  };
+  
 
   useEffect(() => {
     getALLQuize();

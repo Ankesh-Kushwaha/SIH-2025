@@ -8,6 +8,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { useEffect, useState } from "react";
 import axios from "axios";
 const backend_url = import.meta.env.VITE_API_BASE_URL;
+import profileImage from '../../../public/images/master.png'
 
 export default function ProfileCard({ me }) {
   const { getToken } = useAuth();
@@ -46,7 +47,7 @@ export default function ProfileCard({ me }) {
         <div className="flex items-center space-x-4">
           <div className="relative">
             <Avatar className="w-16 h-16 rounded-full border-4 border-green-400">
-              <AvatarImage src={me.avatar} alt={user.name} />
+              <AvatarImage src={profileImage} alt={user.name} />
               <AvatarFallback>AG</AvatarFallback>
             </Avatar>
             <Badge className="absolute bottom-0 right-0 bg-blue-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
@@ -55,7 +56,10 @@ export default function ProfileCard({ me }) {
           </div>
           <div>
             <h3 className="font-bold text-lg">{user.name}</h3>
-            <p className="text-gray-500 text-sm"> {user.email}.....</p>
+            <p className="text-gray-500 text-sm">
+              {" "}
+              {user?.email?.slice(0, 10) || ""}.....
+            </p>
           </div>
         </div>
 

@@ -1,9 +1,11 @@
 import ClimateCrisisSimulator from "@/components/gamesModule/ClimateCrisisSimulator";
 import EnergyConservationGame from "@/components/gamesModule/EnergyConservationGame";
 import DragAndDropWasteGame from "@/components/gamesModule/game";
+
 import PlantationGame from "@/components/gamesModule/PlantationGame";
 import RecycleRush from "@/components/gamesModule/RecycleRush";
 import WasteSortingGame from "@/components/gamesModule/wasteSegregation2";
+import WaterConservation1 from "@/components/gamesModule/waterConservation1";
 
 
 const gamesData = {
@@ -198,8 +200,18 @@ const gamesData = {
         { type: "pests", message: "🐛 Pest Attack! Save your trees!" },
     ],
     }
-  }
+  },
 
+  WaterConservation1: {
+    gameId: "108",
+    title: "Learn how to conserv water",
+    description: "Learn how to conserve water through a grid game. ",
+    thumbnail: "/images/water-conservation.png",
+    component: WaterConservation1,
+    data: {}
+  },
+
+ 
 
 };
 

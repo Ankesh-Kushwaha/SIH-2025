@@ -214,9 +214,71 @@ export const getALLPostofCurrentUser = async (req, res) => {
 
 
 export const postLikeController = async (req, res) => {
-  
-}
+    try {
+      const { postId } = req.params;           
+      const userId = req.userId;               
+
+      if (!postId) {
+        return res.status(400).json({ success: false, message: "postId required" });
+      }
+
+      const post = await Posts.findById(postId);
+      if (!post) {
+        return res.status(404).json({ success: false, message: "Post not found" });
+      }
+
+      const alreadyLiked = post.likes.includes(userId);
+
+      if (alreadyLiked) {
+        post.likes.pull(userId);
+      } else {
+        post.likes.push(userId);
+      }
+
+      await post.save();
+
+      res.status(200).json({
+        success: true,
+        liked: !alreadyLiked,
+        totalLikes: post.likes.length,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Error toggling like" });
+    }
+};
 
 export const postCommentController = async (req, res) => {
-  
-}
+    try {
+      const { postId } = req.params;            
+      const { text } = req.body;
+      const userId = req.userId;
+
+      if (!text) {
+        return res.status(400).json({ success: false, message: "Comment text required" });
+      }
+
+      const post = await Posts.findById(postId);
+      if (!post) {
+        return res.status(404).json({ success: false, message: "Post not found" });
+      }
+
+      const newComment = { user: userId, text };
+
+      post.comments.push(newComment);
+      await post.save();
+
+      // populate the user name of the new comment if you want to send it back
+      const populatedPost = await Posts.findById(postId)
+        .populate("comments.user", "name");
+
+      res.status(201).json({
+        success: true,
+        message: "Comment added",
+        comments: populatedPost.comments,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: "Error adding comment" });
+  }
+};

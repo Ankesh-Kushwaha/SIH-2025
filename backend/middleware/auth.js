@@ -6,8 +6,8 @@ export const isLogin = async (req, res, next) => {
   // Skip preflight requests from the browser
   if (req.method === 'OPTIONS') return next();
   try {
-    // If getAuth is async, use await
-    const authResult = await getAuth(req);
+    const authResult =  getAuth(req);
+    console.log(authResult);
     const { userId: clerkId } = authResult;
 
     if (!clerkId) {

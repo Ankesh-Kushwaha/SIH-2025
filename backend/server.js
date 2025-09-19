@@ -12,6 +12,8 @@ import userRoutes from './routes/userRoutes/user.route.js'
 import postRoute from './routes/postRoutes/postRoute.js'
 import DrivesRoutes from './routes/drives.route.js'
 import dailyMissionRoute from './routes/dailyMission.route.js'
+import taskSubmissionRoute from './routes/taskSubmission.route.js'
+import badgeRoute from './routes/badges.route.js'
 
 const app = express();
 const PORT = 5000;
@@ -33,8 +35,8 @@ app.use("/api/user", userRoutes);
 app.use('/api/post', postRoute);
 app.use('/api/drives', DrivesRoutes);
 app.use('/api/daily-mission', dailyMissionRoute);
-
-
+app.use('/api/task', taskSubmissionRoute);
+app.use('/api/badges', badgeRoute);
 
 
 

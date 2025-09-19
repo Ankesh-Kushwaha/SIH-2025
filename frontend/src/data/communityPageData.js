@@ -7,7 +7,7 @@ export const me = {
   avatar: "",
   following: 120,
   followers: 580,
-  points: 1420,
+  points: 300,
   levelProgress: 65,
 };
 

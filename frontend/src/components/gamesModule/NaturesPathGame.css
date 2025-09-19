@@ -1,0 +1,109 @@
+/* Basic Reset & Full-Screen Setup */
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Georgia', serif;
+}
+
+.nature-app {
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 1s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dark overlay to make text readable */
+.overlay {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  color: white;
+}
+
+/* Header & Score */
+.header {
+  padding: 20px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5em;
+}
+
+.respect-score {
+  font-size: 1.5em;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+/* Scene Description */
+.scene-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.scene-text {
+  font-size: 1.8em;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.feedback-message {
+  font-size: 1.2em;
+  font-style: italic;
+  margin-top: 15px;
+  color: #f1c40f;
+  /* A gold color for emphasis */
+}
+
+/* Choice Buttons */
+.choices-container {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.choice-button {
+  padding: 15px 30px;
+  font-size: 1.2em;
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 200px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-out;
+}
+
+.choice-button:hover {
+  background-color: #56ab2f;
+  /* Nature green */
+  color: white;
+  transform: translateY(-5px);
+}
