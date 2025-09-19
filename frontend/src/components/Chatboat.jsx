@@ -7,7 +7,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "👋 **Hi! I'm EcoBot** 🌱\nAsk me anything about **sustainability, climate change, or EchoVerse**!",
+      text: "👋 **Hi! I'm EcoBot** 🌱\nAsk me anything about **sustainability, climate change, or Planet guardian**!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -190,7 +190,7 @@ const ChatBot = () => {
       <div className="flex mt-4">
         <input
           type="text"
-          placeholder="🌿 Ask me about sustainability, climate change, or EchoVerse..."
+          placeholder="🌿 Ask me about sustainability, climate change, or Planet Guardian..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}

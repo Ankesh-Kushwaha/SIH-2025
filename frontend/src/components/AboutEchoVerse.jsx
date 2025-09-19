@@ -16,13 +16,13 @@ const AboutEchoVerse = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-emerald-700 text-shadow mb-4 flex items-center justify-center">
-            About EchoVerse
+            About Planet Guardian
             <span className="material-icons text-4xl ml-2 text-emerald-500">
               eco
             </span>
           </h1>
           <p className="text-lg text-emerald-600 max-w-3xl mx-auto">
-            Echoverse is a gamified environmental education platform designed to
+            Planet Guardian is a gamified environmental education platform designed to
             make sustainability fun and engaging! Through quizzes, challenges,
             leaderboards, and community-driven activities, we empower users to
             contribute to a greener planet.

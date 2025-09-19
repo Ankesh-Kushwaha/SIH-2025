@@ -1,0 +1,328 @@
+/* --- Purify Pipeline Modern UI --- */
+
+:root {
+  --bg: #f4f8fb;
+  --primary: #3498db;
+  --primary-dark: #2c80b4;
+  --success: #27ae60;
+  --error: #e74c3c;
+  --card: #ffffff;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Main container pinned above footer */
+.pg-game.pg-purify {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px);
+  /* leaves room if your site has a 60px footer */
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Header: back button + stats */
+.pg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.pg-back {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--primary-dark);
+  transition: color 0.2s;
+}
+
+.pg-back:hover {
+  color: var(--primary);
+}
+
+.pg-stats {
+  display: flex;
+  gap: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.pg-score {
+  font-size: 1rem;
+}
+
+.pg-lives .life {
+  margin-left: 3px;
+  font-size: 1.2rem;
+}
+
+/* Title and subtitle */
+.pg-title {
+  text-align: center;
+  font-size: 2rem;
+  margin: 0;
+  color: var(--primary-dark);
+}
+
+.pg-sub {
+  text-align: center;
+  color: #555;
+  margin: 8px 0 24px;
+}
+
+/* Pipeline area */
+.pipeline-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pipe-start,
+.pipe-end {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pipeline-slots {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pipeline-slot {
+  width: 110px;
+  min-height: 60px;
+  background: var(--card);
+  border-radius: 10px;
+  border: 2px dashed #bbb;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  text-align: center;
+  padding: 6px;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.pipeline-slot.filled {
+  border-style: solid;
+  border-color: var(--primary);
+}
+
+.pipeline-slot.flowing {
+  transform: scale(1.05);
+  border-color: var(--success);
+}
+
+.ok-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  color: var(--success);
+  font-size: 1.1rem;
+}
+
+.water-drop {
+  position: absolute;
+  bottom: 6px;
+  font-size: 1.2rem;
+}
+
+/* Module bay */
+.module-bay {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.module-bay h3 {
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.module-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.module-item {
+  background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+  color: #222;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  cursor: grab;
+  width: 140px;
+  text-align: center;
+  transition: transform 0.2s;
+  font-weight: 600;
+}
+
+.module-item:hover {
+  transform: scale(1.05);
+}
+
+.module-mini {
+  display: block;
+  font-size: 0.75rem;
+  color: #333;
+  margin-top: 4px;
+}
+
+/* Controls */
+.pg-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.pg-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.pg-btn.hint {
+  background: #f1c40f;
+}
+
+.pg-btn.check {
+  background: var(--success);
+  color: #fff;
+}
+
+.pg-btn.reset {
+  background: var(--error);
+  color: #fff;
+}
+
+.pg-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Message & hint */
+.pg-message {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.pg-message.good {
+  color: var(--success);
+}
+
+.pg-message.bad {
+  color: var(--error);
+}
+
+.hint-card {
+  max-width: 600px;
+  margin: 0 auto 16px;
+  padding: 12px;
+  background: #e8f6ff;
+  border-left: 4px solid var(--primary);
+  border-radius: 6px;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+/* Celebration burst */
+.burst-layer {
+  position: relative;
+  height: 0;
+  pointer-events: none;
+}
+
+.burst-emoji {
+  position: absolute;
+  font-size: 1.6rem;
+}
+
+/* Footer note */
+.pg-footer-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #555;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+/* Game over overlay */
+.gameover-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.gameover-card {
+  background: var(--card);
+  padding: 30px 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.gameover-card h2 {
+  margin-top: 0;
+  color: var(--error);
+}
+
+.gameover-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.gameover-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.gameover-actions button:hover {
+  background: var(--primary-dark);
+}

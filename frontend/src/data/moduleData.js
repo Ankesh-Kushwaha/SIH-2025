@@ -2,11 +2,15 @@ import DragAndDropWasteGame from "@/components/gamesModule/game";
 import gamesData from "./GameModuleData";
 import RecycleRush from "@/components/gamesModule/RecycleRush";
 import WasteSortingGame from "@/components/gamesModule/wasteSegregation2";
-import { data } from "react-router-dom";
 import ClimateCrisisSimulator from "@/components/gamesModule/ClimateCrisisSimulator";
 import EnergyConservationGame from "@/components/gamesModule/EnergyConservationGame";
 import PlantationGame from "@/components/gamesModule/PlantationGame";
 import WaterConservation1 from "@/components/gamesModule/waterConservation1";
+import NaturesPathGame from "@/components/gamesModule/NaturesPathGame";
+import EcosystemAwareness from "@/components/gamesModule/EcoSystemAwerness";
+import EcosystemAwareness1 from "@/components/gamesModule/EcoSystemAwarness1";
+import EchoEffectGame from "@/components/gamesModule/EchoEffectGame";
+import PurifyPipelineGame from "@/components/gamesModule/PurifyPipelineGame";
 
 export const modulesData = [
   {
@@ -172,10 +176,103 @@ export const modulesData = [
           { step: "Final Impact", impact: 100 },
         ],
       },
+      {
+        id: 106,
+        title: "EchoEffect Game ",
+        description: "Learn in a interactive way of Eco-effect",
+        gameId: gamesData.EchoEffectGame.gameId,
+        steps: [
+          "shows the grid ",
+          "Red is the area of leaking",
+          "make a logical way to connect and closed all the leaks.",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
+      {
+        id: 107,
+        title: "PurifyPipeLine Game",
+        description: "Learn in a interactive way of Purify-Pipeline",
+        gameId: gamesData.PurifyPipelineGame.gameId,
+        steps: [
+          "shows the grid ",
+          "Red is the area of leaking",
+          "make a logical way to connect and closed all the leaks.",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
+    ]
+  },
+
+  {
+    id: 5,
+    title: "EcoSystem",
+    lessons: [
+       {
+        id: 108,
+        title: "Story based game.",
+        description: "Sort the whole grid to conserve maximum water",
+        gameId: gamesData.NaturesPathGame.gameId,
+        steps: [
+          "Read step by step instruction  ",
+          "and implement your thinking on that basis",
+          "make a logical way to win the game.",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
+      
+     {
+        id: 109,
+        title: "EcoSystem Awarness",
+        description: "assign species to habitats under constraints.",
+        gameId: gamesData.EcosystemAwareness.gameId,
+        steps: [
+          "choose a specific animal ",
+          "try to keep them in their specific eco-group",
+          "make a logical way to win the game.",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
+
+      {
+        id: 110,
+        title: "EcoSystem Awarness2",
+        description: "assign species to habitats under constraints.",
+        gameId: gamesData.EcosystemAwareness1.gameId,
+        steps: [
+          "choose a specific animal ",
+          "try to keep them in their specific eco-group",
+          "make a logical way to win the game.",
+        ],
+        impactGraph: [
+          { step: "Start", impact: 0 },
+          { step: "Collect", impact: 25 },
+          { step: "Recycle", impact: 70 },
+          { step: "Final Impact", impact: 100 },
+        ],
+      },
     ]
   }
 ];
-
 
 
 export const xpImages = [
@@ -244,5 +341,30 @@ export const gameComponent = [
     gameComponentId: gamesData.WaterConservation1.gameId,
     component: WaterConservation1,
     data: gamesData.WaterConservation1.data
-  }
+  },
+    {
+    gameComponentId: gamesData.NaturesPathGame.gameId,
+    component: NaturesPathGame,
+    data: gamesData.NaturesPathGame.data.storyData
+  },
+  {
+    gameComponentId: gamesData.EcosystemAwareness.gameId,
+    component: EcosystemAwareness,
+    data: gamesData.EcosystemAwareness.data,
+  },
+  {
+    gameComponentId: gamesData.EcosystemAwareness1.gameId,
+    component: EcosystemAwareness1,
+    data: gamesData.EcosystemAwareness1.data,
+  },
+  {
+    gameComponentId: gamesData.EchoEffectGame.gameId,
+    component:EchoEffectGame,
+    data: gamesData.EchoEffectGame.data,
+  },
+   {
+    gameComponentId: gamesData.PurifyPipelineGame.gameId,
+    component:PurifyPipelineGame,
+    data: gamesData.PurifyPipelineGame.data,
+  },
 ];

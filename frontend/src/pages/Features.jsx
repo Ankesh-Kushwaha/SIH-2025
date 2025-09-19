@@ -377,7 +377,7 @@ export default function Features() {
             {/* Why EcoVerse */}
             <motion.div className="bg-green-50 border border-green-200 p-5 rounded-2xl shadow-sm">
               <h4 className="text-xl font-bold text-green-800">
-                Why EcoVerse?
+                Why Planet Guardian?
               </h4>
               <p className="text-green-700 mt-2">
                 We combine gamified learning with community impact. Students

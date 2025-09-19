@@ -18,7 +18,7 @@ import {
 export default function SchoolDashboard() {
   // inject Google fonts (Space Grotesk + Noto Sans) if not already added
   useEffect(() => {
-    const id = "echoverse-google-fonts";
+    const id = "Planet guardian-google-fonts";
     if (!document.getElementById(id)) {
       const link = document.createElement("link");
       link.id = id;
@@ -277,9 +277,9 @@ export default function SchoolDashboard() {
                 Welcome to your Dashboard!
               </p>
               <p className="text-[var(--text-secondary)] text-base mt-2 max-w-3xl">
-                Here's a snapshot of EchoVerse's performance. Monitor school
-                metrics, track student progress, and get insights into our
-                gamified learning.
+                Here's a snapshot of Planet guardian's performance. Monitor
+                school metrics, track student progress, and get insights into
+                our gamified learning.
               </p>
             </div>
 
