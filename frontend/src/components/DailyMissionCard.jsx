@@ -14,20 +14,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, CheckCircle, Rocket, User } from "lucide-react";
-import {useAuth} from '@clerk/clerk-react'
+import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
 const backend_url = import.meta.env.VITE_API_BASE_URL;
-import profileImg from '../../public/images/master.png'
+import profileImg from "../../public/images/master.png";
 
-// --- Hardcoded demo data ---
 const student = {
   name: "Emma Johnson",
   level: 5,
   xp: 2450,
-  avatar: "https://i.pravatar.cc/150?img=32",
 };
-
-
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
@@ -49,30 +45,21 @@ export default function Dashboard() {
     }
   };
 
-  
-
   const handleSubmit = async () => {
     if (!submission) {
       alert("⚠️ Please upload an image submission");
       return;
     }
-
     const formData = new FormData();
     formData.append("mission_id", mission._id);
     formData.append("image", submission);
     formData.append("description", description);
 
-    const token = await getToken(); // token from Clerk
-
+    const token = await getToken();
     try {
-      const res = await axios.post(`${backend_url}/task/submission`, formData, {
-        headers: {
-          // ✅ lowercase key
-          Authorization: `Bearer ${token}`,
-        },
+      await axios.post(`${backend_url}/task/submission`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      // Axios throws on non-2xx, so if we are here it's success:
       alert("✅ Submission successful!");
       setOpen(false);
       setSubmission(null);
@@ -84,60 +71,47 @@ export default function Dashboard() {
     }
   };
 
-
   const fetchTodayMission = async () => {
     const token = await getToken();
     try {
       const res = await axios.get(`${backend_url}/daily-mission/get`, {
-        headers: {
-           Authorization:`Bearer ${token}`
-         }
-      })
-      
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setMission(res.data.mission);
-      console.log(res.data.mission);
+    } catch (err) {
+      alert("Error while fetching mission");
     }
-    catch (err) {
-      alert('error while fetching mission');
-      console.log("error while fetching today mission", err.message);
-    }
-  }
+  };
 
   const getUserProfile = async () => {
-      const token = await getToken();
-      try {
-        const res =await axios.get(`${backend_url}/user/get`, {
-          headers: {
-              Authorization:`Bearer ${token}`
-            }
-        })
-        
-        setUser(res.data.user);
-       
-      }
-      catch (err) {
-        alert("error while fetching user profile");
-        console.log("error while getting user profile", err.message);
-      }
+    const token = await getToken();
+    try {
+      const res = await axios.get(`${backend_url}/user/get`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(res.data.user);
+    } catch (err) {
+      alert("Error while fetching user profile");
     }
+  };
 
   useEffect(() => {
     fetchTodayMission();
     getUserProfile();
-  },[])
+  }, []);
 
   return (
-    <div className="flex flex-col gap-8 p-6 max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
       {/* --- Student Profile Card --- */}
-      <motion.div whileHover={{ scale: 1.01 }}>
-        <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50">
+      <motion.div whileHover={{ scale: 1.01 }} className="h-full">
+        <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50 h-full flex flex-col">
           <CardHeader className="flex flex-row items-center gap-2">
             <User className="w-6 h-6 text-green-600" />
             <CardTitle className="text-2xl font-bold text-green-700">
               Student Profile
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col items-center">
+          <CardContent className="flex flex-col items-center justify-between flex-1">
             <motion.img
               src={profileImg}
               alt="Avatar"
@@ -157,77 +131,70 @@ export default function Dashboard() {
       </motion.div>
 
       {/* --- Today’s Challenge Section --- */}
-      {mission.map((mission) => {
-        return (
-          <motion.div key={mission._id} whileHover={{ scale: 1.01 }}>
-            <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50 overflow-hidden">
-              {/* Header */}
-              <div className="bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3">
-                <h2 className="text-xl sm:text-2xl font-extrabold flex items-center gap-2">
-                  🌟 Today’s Challenge
-                </h2>
+      {mission.map((m) => (
+        <motion.div key={m._id} whileHover={{ scale: 1.01 }} className="h-full">
+          <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50 h-full flex flex-col">
+            <div className="bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3">
+              <h2 className="text-xl sm:text-2xl font-extrabold flex items-center gap-2">
+                🌟 Today’s Challenge
+              </h2>
+            </div>
+
+            <div className="relative">
+              <img
+                src={m.banner_url}
+                alt="Mission Banner"
+                className="w-full h-56 object-cover"
+              />
+              <div className="absolute top-3 right-3 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-green-700 font-semibold shadow">
+                +{m.ecoPoints} XP
               </div>
+            </div>
 
-              {/* Banner */}
-              <div className="relative">
-                <img
-                  src={mission.banner_url}
-                  alt="Mission Banner"
-                  className="w-full h-56 object-cover"
-                />
-                <div className="absolute top-3 right-3 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-green-700 font-semibold shadow">
-                  +{mission.ecoPoints} XP
-                </div>
-              </div>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl font-extrabold text-green-700 flex items-center gap-2">
+                <Trophy className="w-6 h-6 text-yellow-500" />
+                {m.title}
+              </CardTitle>
+            </CardHeader>
 
-              {/* Mission Info */}
-              <CardHeader className="pb-2">
-                <CardTitle className="text-2xl font-extrabold text-green-700 flex items-center gap-2">
-                  <Trophy className="w-6 h-6 text-yellow-500" />
-                  {mission.title}
-                </CardTitle>
-              </CardHeader>
+            <CardContent className="flex flex-col items-center gap-4 flex-1">
+              <p className="text-gray-600 text-sm text-center leading-relaxed">
+                Complete today’s mission and earn rewards for your eco-friendly
+                actions 🌍
+              </p>
 
-              <CardContent className="flex flex-col items-center gap-4">
-                <p className="text-gray-600 text-sm text-center leading-relaxed">
-                  Complete today’s mission and earn rewards for your
-                  eco-friendly actions 🌍
-                </p>
-
-                <div className="flex gap-3 w-full justify-center">
-                  {/* Take Challenge Button */}
-                  {!accepted ? (
-                    <Button
-                      variant="outline"
-                      className="rounded-xl flex items-center gap-2 px-4 py-2 border-green-500 text-green-600 hover:bg-green-50"
-                      onClick={() => setAccepted(true)}
-                    >
-                      <Rocket className="w-4 h-4" /> Take Challenge
-                    </Button>
-                  ) : (
-                    <Button
-                      disabled
-                      className="rounded-xl flex items-center gap-2 px-4 py-2 bg-green-900 text-green-100 border border-green-300 shadow-inner"
-                    >
-                      ✅ Challenge Accepted
-                    </Button>
-                  )}
-
-                  {/* Complete Mission Button */}
+              <div className="flex gap-3 w-full justify-center mt-auto">
+                {!accepted ? (
                   <Button
-                    className="bg-green-600 text-white rounded-xl flex items-center gap-2 px-4 py-2 hover:bg-green-700 shadow"
-                    onClick={() => setOpen(true)}
+                    variant="outline"
+                    className="rounded-xl flex items-center gap-2 px-4 py-2 border-green-500 text-green-600 hover:bg-green-50"
+                    onClick={() => setAccepted(true)}
                   >
-                    <CheckCircle className="w-4 h-4" /> Complete Mission
+                    <Rocket className="w-4 h-4" /> Take Challenge
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        );
-      })}
+                ) : (
+                  <Button
+                    disabled
+                    className="rounded-xl flex items-center gap-2 px-4 py-2 bg-green-900 text-green-100 border border-green-300 shadow-inner"
+                  >
+                    ✅ Challenge Accepted
+                  </Button>
+                )}
 
-      {/* --- Popup (Dialog) for Submission --- */}
+                <Button
+                  className="bg-green-600 text-white rounded-xl flex items-center gap-2 px-4 py-2 hover:bg-green-700 shadow"
+                  onClick={() => setOpen(true)}
+                >
+                  <CheckCircle className="w-4 h-4" /> Complete Mission
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+
+      {/* --- Submission Dialog --- */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg rounded-2xl bg-gradient-to-b from-white to-green-50 shadow-2xl border border-green-100 p-6">
           <DialogHeader>
@@ -237,7 +204,6 @@ export default function Dashboard() {
           </DialogHeader>
 
           <div className="space-y-6">
-            {/* File Upload with Preview */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Upload Submission (Image)
@@ -263,7 +229,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Description */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Description
