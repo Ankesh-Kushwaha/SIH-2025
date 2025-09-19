@@ -26,7 +26,9 @@ import { motion ,AnimatePresence} from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from '@clerk/clerk-react';
+import DailyMissionCard from "@/components/DailyMissionCard";
 const backend_url = import.meta.env.VITE_API_BASE_URL;
+
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -38,6 +40,7 @@ const StudentDashboard = () => {
   const [activeDrive, setActiveDrive] = useState(null);
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+ 
 
    const getALLQuize = async () => {
         const token = await getToken();
@@ -151,6 +154,9 @@ const StudentDashboard = () => {
     }
   };
 
+    const handleCardClick = (id) => {
+      navigate(`/drive/${id}`); // Navigate to dedicated drive page
+    };
 
   useEffect(() => {
     getALLQuize();
@@ -185,32 +191,10 @@ const StudentDashboard = () => {
   return (
     <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 bg-gradient-to-br from-green-50 via-white to-emerald-50 min-h-screen">
       {/* Student Profile */}
-      <motion.div whileHover={{ scale: 1.02 }} className="lg:col-span-1">
-        <Card className="shadow-2xl rounded-2xl border border-gray-200 bg-gradient-to-b from-white to-green-50">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-green-700">
-              Student Profile
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center">
-            <motion.img
-              src={avatar}
-              alt="Avatar"
-              whileHover={{ rotate: 2, scale: 1.05 }}
-              className="w-28 h-28 rounded-full border-4 border-green-400 shadow-lg"
-            />
-            <h2 className="text-xl font-bold mt-4">{student.name}</h2>
-            <p className="text-gray-600 text-sm">Level {student.level}</p>
-            <div className="mt-4 w-full">
-              <Progress value={(student.xp % 1000) / 10} className="h-3" />
-              <p className="text-sm mt-1 text-gray-500">XP: {student.xp}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      <DailyMissionCard />
 
       {/* XP Progress Chart */}
-      <Card className="lg:col-span-2 shadow-2xl rounded-2xl border border-gray-200 bg-white">
+      <Card className="lg:col-span-2 w-full h-100 shadow-2xl rounded-2xl border border-gray-200 bg-white">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-green-700">
             XP Progress This Week
@@ -246,57 +230,56 @@ const StudentDashboard = () => {
             </AreaChart>
           </ResponsiveContainer>
         </CardContent>
-      </Card>
+        {/* Badges Section */}
+        <Card className="lg:col-span-1 m-5 shadow-2xl rounded-2xl border border-gray-200 bg-white">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl font-bold text-yellow-600">
+              <Medal /> Earned Badges
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-3">
+              {student.badges.map((badge, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.1, rotate: 1 }}
+                  className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-xl text-sm font-semibold shadow"
+                >
+                  <Award className="w-4 h-4" /> {badge}
+                </motion.div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Badges Section */}
-      <Card className="lg:col-span-1 shadow-2xl rounded-2xl border border-gray-200 bg-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl font-bold text-yellow-600">
-            <Medal /> Earned Badges
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-3">
-            {student.badges.map((badge, index) => (
+        {/* Games Section */}
+        <Card className="lg:col-span-2 shadow-2xl rounded-2xl border border-gray-200 bg-white">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-xl font-bold text-purple-700">
+              <Gamepad2 /> Play Games to Earn XP
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {student.games.map((game) => (
               <motion.div
-                key={index}
-                whileHover={{ scale: 1.1, rotate: 1 }}
-                className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-xl text-sm font-semibold shadow"
+                key={game.id}
+                whileHover={{ scale: 1.03 }}
+                className="flex justify-between items-center bg-purple-50 p-4 rounded-xl shadow hover:shadow-xl transition"
               >
-                <Award className="w-4 h-4" /> {badge}
+                <div>
+                  <h3 className="font-semibold text-lg">{game.title}</h3>
+                  <p className="text-sm text-gray-500">+{game.xpBoost} XP</p>
+                </div>
+                <Button
+                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-5 py-2"
+                  onClick={() => navigate("/gamesection")}
+                >
+                  Play Now
+                </Button>
               </motion.div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Games Section */}
-      <Card className="lg:col-span-2 shadow-2xl rounded-2xl border border-gray-200 bg-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-xl font-bold text-purple-700">
-            <Gamepad2 /> Play Games to Earn XP
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {student.games.map((game) => (
-            <motion.div
-              key={game.id}
-              whileHover={{ scale: 1.03 }}
-              className="flex justify-between items-center bg-purple-50 p-4 rounded-xl shadow hover:shadow-xl transition"
-            >
-              <div>
-                <h3 className="font-semibold text-lg">{game.title}</h3>
-                <p className="text-sm text-gray-500">+{game.xpBoost} XP</p>
-              </div>
-              <Button
-                className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-5 py-2"
-                onClick={() => navigate("/gamesection")}
-              >
-                Play Now
-              </Button>
-            </motion.div>
-          ))}
-        </CardContent>
+          </CardContent>
+        </Card>
       </Card>
 
       {/* Available Quizzes */}
@@ -352,7 +335,8 @@ const StudentDashboard = () => {
               <motion.div
                 key={d._id}
                 whileHover={{ scale: 1.03 }}
-                className="flex-shrink-0 w-72 p-4 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-md flex flex-col gap-3 transition-all"
+                className="flex-shrink-0 w-72 p-4 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-md flex flex-col gap-3 transition-all cursor-pointer"
+                onClick={() => handleCardClick(d._id)} // Navigate on click
               >
                 {/* Title + delete */}
                 <div className="flex justify-between items-start">
@@ -360,7 +344,10 @@ const StudentDashboard = () => {
                     {d.title}
                   </p>
                   <button
-                    onClick={() => deleteDrive(d._id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card navigation when deleting
+                      deleteDrive(d._id);
+                    }}
                     className="p-1.5 rounded-full hover:bg-red-100 transition"
                   >
                     <Trash2 className="w-5 h-5 text-red-500" />
@@ -390,7 +377,10 @@ const StudentDashboard = () => {
                   </p>
                 ) : (
                   <button
-                    onClick={() => handleEnter(d._id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent card navigation
+                      handleEnter(d._id);
+                    }}
                     className="w-full py-2 text-sm rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 transition"
                   >
                     🚀 Enter
@@ -398,7 +388,10 @@ const StudentDashboard = () => {
                 )}
 
                 <button
-                  onClick={() => handleComplete(d)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card navigation
+                    handleComplete(d);
+                  }}
                   className="w-full py-2 text-sm rounded-xl font-semibold text-white bg-yellow-500 hover:bg-yellow-600 transition"
                 >
                   ✅ Complete
@@ -472,7 +465,6 @@ const StudentDashboard = () => {
           )}
         </AnimatePresence>
       </Card>
-
 
       {/* Community Posts */}
       <Card className="lg:col-span-3 shadow-2xl rounded-2xl border border-gray-200 bg-white">

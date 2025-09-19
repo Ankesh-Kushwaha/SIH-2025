@@ -28,10 +28,11 @@ export default function CommunityDrivesWrapper() {
 }
 
 /* Modal component */
-/* Modal component */
 function CommunityDrivesModal({ onClose }) {
   const { getToken } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [bannerFile, setBannerFile] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
   const [drive, setDrive] = useState({
     title: "",
     organiser: "",
@@ -46,7 +47,7 @@ function CommunityDrivesModal({ onClose }) {
   const handleChange = (field, value) =>
     setDrive((prev) => ({ ...prev, [field]: value }));
 
-  const resetForm = () =>
+  const resetForm = () => {
     setDrive({
       title: "",
       organiser: "",
@@ -57,9 +58,23 @@ function CommunityDrivesModal({ onClose }) {
       description: "",
       ecoPoints: "",
     });
+    setBannerFile(null);
+    setBannerPreview(null);
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setBannerFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => setBannerPreview(reader.result);
+    reader.readAsDataURL(file);
+  };
 
   const createDrive = async (e) => {
     e.preventDefault();
+
     const required = [
       "title",
       "organiser",
@@ -75,9 +90,15 @@ function CommunityDrivesModal({ onClose }) {
     setLoading(true);
     try {
       const token = await getToken();
-      await axios.post(`${backend_url}/drives/create-drive`, drive, {
+
+      const formData = new FormData();
+      Object.keys(drive).forEach((key) => formData.append(key, drive[key]));
+      if (bannerFile) formData.append("banner", bannerFile);
+
+      await axios.post(`${backend_url}/drives/create-drive`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       alert("✅ Community drive created successfully!");
       resetForm();
       onClose();
@@ -114,13 +135,16 @@ function CommunityDrivesModal({ onClose }) {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center items-center gap-2 mb-2">
-            <span className="material-icons text-green-600 text-4xl">groups</span>
+            <span className="material-icons text-green-600 text-4xl">
+              groups
+            </span>
             <h2 className="text-3xl font-extrabold text-green-700">
               Create Community Drive
             </h2>
           </div>
           <p className="text-gray-600 text-sm sm:text-base">
-            Launch impactful drives and engage participants for real-world change 🌍
+            Launch impactful drives and engage participants for real-world
+            change 🌍
           </p>
         </div>
 
@@ -182,6 +206,26 @@ function CommunityDrivesModal({ onClose }) {
             placeholder="e.g. Central Park, Mumbai"
           />
 
+          {/* Banner Upload */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Banner Image (optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleBannerChange}
+              className="w-full rounded-xl border px-4 py-2 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none transition"
+            />
+            {bannerPreview && (
+              <img
+                src={bannerPreview}
+                alt="Banner Preview"
+                className="mt-2 w-full h-48 object-cover rounded-xl shadow-md"
+              />
+            )}
+          </div>
+
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Description (optional)
@@ -220,13 +264,12 @@ function CommunityDrivesModal({ onClose }) {
 /* Input Component */
 const Input = memo(({ label, ...props }) => (
   <div>
-    <label className="block text-sm font-semibold text-gray-700 mb-2">{label}</label>
+    <label className="block text-sm font-semibold text-gray-700 mb-2">
+      {label}
+    </label>
     <input
       {...props}
       className="w-full rounded-xl border px-4 py-2 text-gray-800 shadow-sm focus:ring-2 focus:ring-green-400 focus:outline-none transition"
     />
   </div>
 ));
-
-
-

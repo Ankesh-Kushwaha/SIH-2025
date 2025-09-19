@@ -1,3 +1,4 @@
+import { uploadToCloudinary } from "../config/cloudinary.js";
 import { Drives } from "../model/Schema.js";
 import User from "../model/userSchema.js";
 import mongoose from "mongoose";
@@ -15,6 +16,13 @@ export const createDriveController = async (req, res) => {
        })
     };
     
+    let image_upload;
+    if (req.file.buffer) {
+      image_upload = await uploadToCloudinary(req.file.buffer);
+    }
+
+    const banner_url = image_upload.secure_url;
+
     //create drive
     const newDrive = await Drives.create({
       title,
@@ -25,7 +33,8 @@ export const createDriveController = async (req, res) => {
       location,
       description,
       ecoPoints,
-      creator:user._id
+      creator: user._id,
+      banner_url,
     })
 
     if (!newDrive) {
@@ -79,7 +88,7 @@ export const getAllDrives = async (req, res) => {
 
 export const getASingleDrive = async (req, res) => {
   try {
-    const driveId = req.params;
+    const { driveId }= req.params;
     const drive = await Drives.findById(driveId);
     if (!drive) {
       return res.status(404).json({
@@ -151,6 +160,8 @@ export const DeleteDriveController = async (req, res) => {
 export const submitDriveReport = async (req, res) => {
   
 }
+
+
 
 
 

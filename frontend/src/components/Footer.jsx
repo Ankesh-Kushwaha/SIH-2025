@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="flex flex-col items-start w-full md:w-1/3 mb-6 md:mb-0">
           <div className="flex items-center gap-2 mb-2">
             <Leaf className="text-orange-400 h-6 w-6" />
-            <h2 className="text-2xl font-bold text-white">EcoVerse</h2>
+            <h2 className="text-2xl font-bold text-white">Planet Guardian</h2>
           </div>
           <p className="text-sm text-gray-300">
             Building a greener future through community, awareness, and action.

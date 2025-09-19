@@ -93,6 +93,7 @@ const GameSchema = new Schema({
   ecoPointsReward: Number
 });
 
+
 const UserGameProgressSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   game: { type: Schema.Types.ObjectId, ref: "Game" },
@@ -142,6 +143,7 @@ const CommunityDriveSchema = new Schema(
     description: { type: String, trim: true },
     ecoPoints: { type: Number, default: 0, min: 0 },
     event: { type: Schema.Types.ObjectId, ref: "Event" },
+     banner_url: { type: String, required: true },
   },
   {
     timestamps: true, 
@@ -169,6 +171,19 @@ const PostSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const dailyMissionSchema = new Schema({
+  title: { type: String, required: true },
+  created_by:{ type: Schema.Types.ObjectId, ref: "User" }, 
+  ecoPoints: { type: Number, required: true },
+  required_Submission_Type: { type: String, required: true },
+  banner_url: { type: String, required: true },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 86400, // ⏳ Auto delete after 24 hours
+  },
+})
+
 
 
 const Posts = mongoose.model('Posts', PostSchema);
@@ -182,6 +197,7 @@ const Badges = mongoose.model('Badges', BadgeSchema);
 const Leaderboard = mongoose.model('LeaderBoard', LeaderboardSchema);
 const Quize = mongoose.model('Quize', QuizeSchema);
 const Schools = mongoose.model('Schools', SchoolSchema);
+const dailyMission = mongoose.model('DailyMission', dailyMissionSchema);
 
 export {
   Schools,
@@ -194,5 +210,6 @@ export {
   TaskSubmission,
   Events,
   Drives,
- Posts
+  Posts,
+ dailyMission
 }

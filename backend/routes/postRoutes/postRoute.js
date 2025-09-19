@@ -21,4 +21,5 @@ router.post('/likes/:postId', postLikeController);
 router.post('/comments/:postId', postCommentController);
 router.get('/get-user-post', getALLPostofCurrentUser);
 
+
 export default router;

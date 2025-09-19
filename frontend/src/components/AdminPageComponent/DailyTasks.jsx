@@ -44,12 +44,11 @@ export default function DailyTasks() {
       formData.append("title", mission.title);
       formData.append("ecoPoints", mission.ecoPoints);
       formData.append("proofType", mission.proofType);
-      if (mission.banner) formData.append("banner", mission.banner);
+      if (mission.banner) formData.append("image", mission.banner);
 
-      await axios.post(`${backend_url}/mission/create`, formData, {
+      await axios.post(`${backend_url}/daily-mission/create`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
         },
       });
 

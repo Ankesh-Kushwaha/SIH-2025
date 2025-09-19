@@ -24,6 +24,7 @@ import StudentDashboard from "./pages/StudentDashboard";
 import QuizPage from "./pages/QuizPage";
 import SchoolDashboard from "./pages/SchoolDashboard";
 import { useAuth } from "@clerk/clerk-react";
+import DrivePage from "./components/EventDrivePage";
 
 
 // ✅ Protected Route Component
@@ -156,7 +157,8 @@ export default  function App() {
           }
         />
 
-        <Route path="/school/dashboard" element={<SchoolDashboard/>} />
+        <Route path="/school/dashboard" element={<SchoolDashboard />} />
+        <Route path="/drive/:driveId" element={<DrivePage/>} />
       </Routes>
 
       <Footer />

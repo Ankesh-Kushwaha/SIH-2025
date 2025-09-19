@@ -126,3 +126,29 @@ const adminController = async (req, res) => {
     
   }
 }
+
+export const getCurrentUser = async(req, res) => {
+  try {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(402).json({
+        success: true,
+        message:"userId requied"
+       })
+    }
+
+    const user = await User.findById(userId);
+    res.status(200).json({
+      success: true,
+      message: 'user profile get fetched',
+      user,
+    })
+  }
+  catch (err) {
+    console.error('error while getting the user data', err.message);
+    res.status(500).json({
+      success: false,
+      message:"something went wrong"
+    })
+  }
+}
