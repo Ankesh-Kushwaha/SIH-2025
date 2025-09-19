@@ -116,14 +116,15 @@ export default function Dashboard() {
               src={profileImg}
               alt="Avatar"
               whileHover={{ rotate: 2, scale: 1.05 }}
-              className="w-28 h-28 rounded-full border-4 border-green-400 shadow-lg"
+              className="w-50 h-50 rounded-full border-4 border-green-400 shadow-lg"
             />
-            <h2 className="text-xl font-bold mt-4">{user.name}</h2>
+            <h2 className="text-xl font-bold mt-4 text-green-700">{user.name}</h2>
+            <h3 className="text-xl font-semibold mt-2">{user.email}</h3>
             <p className="text-gray-600 text-sm">Level {student.level}</p>
             <div className="mt-4 w-full">
               <Progress value={(student.xp % 1000) / 10} className="h-3" />
               <p className="text-sm mt-1 text-gray-500 text-center">
-                XP: {user.ecoPoints}
+                Eco-points: {user.ecoPoints}
               </p>
             </div>
           </CardContent>
@@ -135,7 +136,7 @@ export default function Dashboard() {
         <motion.div key={m._id} whileHover={{ scale: 1.01 }} className="h-full">
           <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50 h-full flex flex-col">
             <div className="bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3">
-              <h2 className="text-xl sm:text-2xl font-extrabold flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-extrabold rounded-3xl flex items-center gap-2">
                 🌟 Today’s Challenge
               </h2>
             </div>

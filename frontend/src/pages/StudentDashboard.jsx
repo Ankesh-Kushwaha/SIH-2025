@@ -36,7 +36,7 @@ const StudentDashboard = () => {
   const [communityPost, setCommunityPost] = useState([]);
   const [drives, setDrives] = useState([]);
   const [registered, setRegistered] = useState({});
-  const [activeDrive, setActiveDrive] = useState(null); // controls popup
+  const [activeDrive, setActiveDrive] = useState(null);
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
 
@@ -115,7 +115,7 @@ const StudentDashboard = () => {
   };
 
   const handleComplete = (drive) => {
-    setActiveDrive(drive); // open popup
+    setActiveDrive(drive);
   };
 
   const handleSubmitCompletion = async (e) => {
@@ -141,15 +141,15 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="p-6 space-y-8 bg-gradient-to-br from-green-50 via-white to-emerald-50">
+    <div className="p-6 space-y-10 bg-gradient-to-br from-emerald-50 via-green-100 to-blue-50 min-h-screen">
       <DailyMissionCard />
 
       {/* XP Progress + Badges */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 shadow-xl rounded-2xl border bg-white">
+        <Card className="lg:col-span-2 shadow-2xl rounded-3xl border border-green-200 bg-white/80 backdrop-blur-md">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-green-700">
-              XP Progress This Week
+            <CardTitle className="text-2xl font-extrabold text-green-800 drop-shadow-sm">
+              🌱 XP Progress This Week
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -157,30 +157,32 @@ const StudentDashboard = () => {
               <AreaChart data={progressData}>
                 <defs>
                   <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#34d399" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#34d399" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="day" stroke="#6b7280" />
-                <YAxis stroke="#6b7280" />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" />
+                <XAxis dataKey="day" stroke="#065f46" />
+                <YAxis stroke="#065f46" />
+                <Tooltip
+                  contentStyle={{ background: "#f0fdf4", borderRadius: "12px" }}
+                />
                 <Area
                   type="monotone"
                   dataKey="xp"
                   stroke="#059669"
-                  strokeWidth={3}
-                  fillOpacity={1}
+                  strokeWidth={4}
                   fill="url(#xpGradient)"
+                  fillOpacity={0.7}
                 />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="shadow-xl rounded-2xl border bg-white">
+        <Card className="shadow-2xl rounded-3xl border border-yellow-200 bg-white/80 backdrop-blur-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl font-bold text-yellow-600">
+            <CardTitle className="flex items-center gap-2 text-xl font-bold text-yellow-700">
               <Medal /> Earned Badges
             </CardTitle>
           </CardHeader>
@@ -190,7 +192,7 @@ const StudentDashboard = () => {
                 <motion.div
                   key={i}
                   whileHover={{ scale: 1.1 }}
-                  className="flex items-center gap-2 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-xl text-sm font-semibold shadow"
+                  className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition"
                 >
                   <Award className="w-4 h-4" /> {badge}
                 </motion.div>
@@ -202,20 +204,22 @@ const StudentDashboard = () => {
 
       {/* Games */}
       <section>
-        <h2 className="text-2xl font-bold text-purple-700 mb-4">Games</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h2 className="text-2xl font-extrabold text-purple-700 mb-4">
+          🌟 Games
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {student.games.map((game) => (
             <motion.div
               key={game.id}
               whileHover={{ scale: 1.03 }}
-              className="flex flex-col justify-between bg-purple-50 p-4 rounded-xl shadow hover:shadow-lg transition"
+              className="flex flex-col justify-between bg-purple-50 p-5 rounded-3xl shadow-lg hover:shadow-2xl transition-all"
             >
               <div>
-                <h3 className="font-semibold text-lg">{game.title}</h3>
-                <p className="text-sm text-gray-500">+{game.xpBoost} XP</p>
+                <h3 className="font-bold text-lg">{game.title}</h3>
+                <p className="text-sm text-gray-600">+{game.xpBoost} XP</p>
               </div>
               <Button
-                className="mt-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
+                className="mt-4 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white rounded-full shadow-md"
                 onClick={() => navigate("/gamesection")}
               >
                 Play Now
@@ -227,18 +231,18 @@ const StudentDashboard = () => {
 
       {/* Quizzes */}
       <section>
-        <h2 className="text-2xl font-bold text-blue-700 mb-4">
-          Available Quizzes
+        <h2 className="text-2xl font-extrabold text-blue-700 mb-4">
+          📝 Available Quizzes
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {availableQuizzes.map((quiz) => (
             <motion.div
               key={quiz._id}
               whileHover={{ scale: 1.03 }}
-              className="min-w-[250px] bg-blue-50 rounded-xl shadow p-4 flex flex-col justify-between"
+              className="min-w-[250px] bg-blue-50 rounded-3xl shadow-lg p-5 flex flex-col justify-between hover:shadow-2xl transition"
             >
               <h3 className="font-semibold text-lg mb-2">{quiz.topic}</h3>
-              <p className="text-gray-600 mb-3">
+              <p className="text-gray-700 mb-3">
                 Earn{" "}
                 {quiz.level === "Easy"
                   ? quiz.total_questions * 2
@@ -248,7 +252,7 @@ const StudentDashboard = () => {
                 Eco-Points
               </p>
               <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-full shadow-md"
                 onClick={() => navigate(`/takequiz/${quiz._id}`)}
               >
                 Take Quiz
@@ -260,20 +264,21 @@ const StudentDashboard = () => {
 
       {/* Drives */}
       <section>
-        <h2 className="text-2xl font-bold text-red-700 mb-4">
-          Current Event Drives
+        <h2 className="text-2xl font-extrabold text-red-700 mb-4">
+          🌍 Current Event Drives
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {drives.map((d) => (
             <motion.div
               key={d._id}
               whileHover={{ scale: 1.03 }}
-              className="flex-shrink-0 w-72 p-4 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-md flex flex-col gap-3 transition-all cursor-pointer"
+              className="flex-shrink-0 w-72 p-5 rounded-3xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-lg flex flex-col gap-3 hover:shadow-2xl transition cursor-pointer"
+              onClick={() => navigate(`/drive/${d._id}`)} // <-- navigate on click
             >
               <p className="font-semibold text-gray-900">{d.title}</p>
               <p className="text-xs text-gray-600">👥 By {d.creator?.name}</p>
               <p className="text-xs text-gray-600">
-                🌍 Impact: {d.impactLevel}
+                🌱 Impact: {d.impactLevel}
               </p>
               <p className="text-xs text-gray-600">
                 👤 {d.total_participants} slots
@@ -287,15 +292,21 @@ const StudentDashboard = () => {
                 </p>
               ) : (
                 <Button
-                  className="w-full py-2 text-sm rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700"
-                  onClick={() => handleEnter(d._id)}
+                  className="w-full py-2 text-sm rounded-full font-semibold text-white bg-green-600 hover:bg-green-700 shadow-md"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent card click from triggering
+                    handleEnter(d._id);
+                  }}
                 >
                   🚀 Enter
                 </Button>
               )}
               <Button
-                className="w-full py-2 text-sm rounded-xl font-semibold text-white bg-yellow-500 hover:bg-yellow-600"
-                onClick={() => handleComplete(d)}
+                className="w-full py-2 text-sm rounded-full font-semibold text-white bg-yellow-500 hover:bg-yellow-600 shadow-md"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent card click from triggering
+                  handleComplete(d);
+                }}
               >
                 ✅ Complete
               </Button>
@@ -306,20 +317,20 @@ const StudentDashboard = () => {
 
       {/* Community Posts */}
       <section>
-        <h2 className="text-2xl font-bold text-green-700 mb-4">
-          Community Posts
+        <h2 className="text-2xl font-extrabold text-green-700 mb-4">
+          🌿 Community Posts
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {communityPost.map((post) => (
             <motion.div
               key={post._id}
               whileHover={{ scale: 1.03 }}
-              className="relative min-w-[250px] bg-green-50 rounded-xl shadow-lg p-3 flex flex-col"
+              className="relative min-w-[250px] bg-green-50 rounded-3xl shadow-lg p-4 flex flex-col hover:shadow-2xl transition"
             >
               <img
                 src={post.mediaUrl}
                 alt={post.title}
-                className="w-full h-32 object-cover rounded-lg mb-3"
+                className="w-full h-32 object-cover rounded-2xl mb-3"
               />
               <h3 className="font-semibold text-base text-gray-800 mb-1">
                 {post.content.slice(0, 25)}...
@@ -334,10 +345,10 @@ const StudentDashboard = () => {
 
       {/* Completion Popup */}
       <Dialog open={!!activeDrive} onOpenChange={() => setActiveDrive(null)}>
-        <DialogContent className="bg-white max-w-md w-full rounded-2xl p-6">
+        <DialogContent className="bg-white/90 max-w-md w-full rounded-3xl p-6 backdrop-blur-md shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-green-700">
-              Complete Drive
+            <DialogTitle className="text-xl font-bold text-green-800">
+              Complete Drive 🌟
             </DialogTitle>
             <p className="text-sm text-gray-500">
               Submit your completion details for{" "}
@@ -350,26 +361,27 @@ const StudentDashboard = () => {
               placeholder="Write a short description of your contribution..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border-gray-300 focus:ring-green-500"
+              className="border-gray-300 focus:ring-green-500 rounded-xl"
               required
             />
             <Input
               type="file"
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
-              className="border-gray-300"
+              className="border-gray-300 rounded-xl"
             />
             <DialogFooter className="flex justify-end gap-3 mt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setActiveDrive(null)}
+                className="rounded-full"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white rounded-full shadow-md"
               >
                 Submit
               </Button>
