@@ -18,7 +18,7 @@ router.put('/update-post/:postId',upload.single('image'), updatePostController);
 router.delete('/delete-post/:postId', deletePostController);
 router.get('/get-a-single-post/:postId', getSinglePostController);
 router.get('/get-user-post', getALLPostofCurrentUser);
-router.put("/like/:postId/", postLikeController);
+router.put("/like/:postId", postLikeController);
 router.post("/comment/:postId", postCommentController);
 
 export default router;
