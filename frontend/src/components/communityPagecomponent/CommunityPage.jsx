@@ -25,7 +25,6 @@ export default function CommunityPage() {
         },
       });
       setFeedData(res.data.posts || []);
-      console.log(res.data.posts);
     } catch (err) {
       console.error("error while fetching feed data", err);
     }

@@ -7,7 +7,6 @@ export const isLogin = async (req, res, next) => {
   if (req.method === 'OPTIONS') return next();
   try {
     const authResult =  getAuth(req);
-    console.log(authResult);
     const { userId: clerkId } = authResult;
 
     if (!clerkId) {
