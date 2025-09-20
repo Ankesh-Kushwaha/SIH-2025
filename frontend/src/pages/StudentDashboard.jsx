@@ -10,7 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Medal, Award } from "lucide-react";
+import { Medal, Award,Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -66,7 +66,27 @@ const StudentDashboard = () => {
       console.log("error in fetching community Post", err.message);
     }
   };
+ 
+  const handleDelete = async (postId) => {
+    try {
+      const token = await getToken();
+      const res = await axios.delete(
+        `${backend_url}/post/delete-post/${postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      alert('post deleted successfully');
+    }
+    catch (err) {
+      alert('error while deleting post');
+      console.log("error while deleting post", err.message);
+    }
+  }
+   
   const fetchedAllDrive = async () => {
     const token = await getToken();
     try {
@@ -327,6 +347,14 @@ const StudentDashboard = () => {
               whileHover={{ scale: 1.03 }}
               className="relative min-w-[250px] bg-green-50 rounded-3xl shadow-lg p-4 flex flex-col hover:shadow-2xl transition"
             >
+              {/* 🔹 Delete Icon */}
+              <button
+                onClick={() => handleDelete(post._id)}
+                className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+
               <img
                 src={post.mediaUrl}
                 alt={post.title}
