@@ -12,11 +12,8 @@ import {
 import { ScissorsIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Climate Crisis Simulator — Modernized UI with improved visuals
-// Uses TailwindCSS + Framer Motion for smooth transitions
-
 export default function ClimateCrisisSimulator() {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [running, setRunning] = useState(false);
   const [year, setYear] = useState(2025);
   const [scenario, setScenario] = useState("business-as-usual");
@@ -25,6 +22,7 @@ export default function ClimateCrisisSimulator() {
     generateBaseline(2025, 2100, 0.02)
   );
 
+  // Scenario factor updates
   useEffect(() => {
     switch (scenario) {
       case "rapid-mitigation":
@@ -41,6 +39,7 @@ export default function ClimateCrisisSimulator() {
     }
   }, [scenario]);
 
+  // Simulation runner
   useEffect(() => {
     if (!running) return;
     const id = setInterval(() => {
@@ -55,6 +54,7 @@ export default function ClimateCrisisSimulator() {
     return () => clearInterval(id);
   }, [running]);
 
+  // Update dataset on emission factor change
   useEffect(() => {
     setDataPoints(() => generateBaseline(2025, 2100, 0.02, emissionFactor));
   }, [emissionFactor]);
@@ -75,33 +75,37 @@ export default function ClimateCrisisSimulator() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-8">
-      <div className="mx-auto max-w-7xl space-y-8">
-        {/* Header */}
-        <motion.header
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-between"
-        >
-          <div>
-            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-              Climate Crisis Simulator 🌍
-            </h1>
-            <p className="text-slate-600 text-sm mt-1">
-              Explore how carbon emissions influence temperature, sea levels &
-              ecosystems.
-            </p>
+    <div className="h-screen flex flex-col bg-gradient-to-br from-green-50 to-blue-50">
+      {/* Header */}
+      <motion.header
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-between px-4 md:px-8 py-3 md:py-4 shadow bg-white z-10"
+      >
+        <div>
+          <h1 className="text-xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Climate Crisis Simulator 🌍
+          </h1>
+          <p className="text-slate-600 text-xs md:text-sm mt-1">
+            Explore how carbon emissions influence temperature, sea levels &
+            ecosystems.
+          </p>
+        </div>
+        <div className="bg-green-50 rounded-xl shadow px-3 py-1 md:px-4 md:py-2 border text-center">
+          <div className="text-xs text-slate-500">Current Year</div>
+          <div className="text-lg md:text-2xl font-bold text-green-600">
+            {year}
           </div>
-          <div className="bg-white rounded-2xl shadow px-4 py-3 border">
-            <div className="text-xs text-slate-500">Current Year</div>
-            <div className="text-2xl font-bold text-green-600">{year}</div>
-          </div>
-        </motion.header>
+        </div>
+      </motion.header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar Controls */}
-          <aside className="lg:col-span-1 bg-white rounded-2xl p-6 shadow-lg border">
+      {/* Main content scrollable */}
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
+          {/* Sidebar */}
+          <aside className="lg:col-span-1 bg-white rounded-2xl p-4 md:p-6 shadow-lg border sticky top-20">
+            {/* Scenario selector */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Scenario
@@ -118,6 +122,7 @@ export default function ClimateCrisisSimulator() {
               </select>
             </div>
 
+            {/* Emission Factor */}
             <div className="mb-6">
               <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Emission Intensity
@@ -136,29 +141,29 @@ export default function ClimateCrisisSimulator() {
               </div>
             </div>
 
-            <div className="flex gap-3 mb-6">
+            {/* Control buttons */}
+            <div className="flex gap-2 mb-6">
               <button
                 onClick={() => setRunning((r) => !r)}
-                className="flex-1 py-2 rounded-lg cursor-pointer bg-green-600 text-white font-medium shadow hover:bg-green-700 transition"
+                className="flex-1 py-2 rounded-lg bg-green-600 text-white font-medium shadow hover:bg-green-700 transition"
               >
                 {running ? "⏸ Pause" : "▶️ Play"}
               </button>
               <button
                 onClick={resetSimulation}
-                className="flex-1 py-2 rounded-lg cursor-pointer border font-medium hover:bg-slate-50 transition"
+                className="flex-1 py-2 rounded-lg border font-medium hover:bg-slate-50 transition"
               >
                 🔄 Reset
               </button>
               <button
-                onClick={()=>{navigate('/gamesection')}}
-                className="flex-1 py-2 rounded-lg cursor-pointer border font-medium hover:bg-slate-50 transition"
+                onClick={() => navigate("/gamesection")}
+                className="flex-1 py-2 rounded-lg border font-medium hover:bg-slate-50 transition flex items-center justify-center"
               >
-                <div className="flex items-center">
-                  <ScissorsIcon className="w-5 h-5" /> end
-                </div>
+                <ScissorsIcon className="w-5 h-5 mr-1" /> End
               </button>
             </div>
 
+            {/* Quick presets */}
             <div className="space-y-2">
               <button
                 onClick={() => quickSet("rapid-mitigation")}
@@ -176,8 +181,9 @@ export default function ClimateCrisisSimulator() {
           </aside>
 
           {/* Main Visualization */}
-          <main className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-lg border flex flex-col gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <main className="lg:col-span-3 flex flex-col gap-4 md:gap-6">
+            {/* Stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-4">
               <StatCard
                 title="🌡️ Global Temp"
                 value={formatTemp(getLatestTemp(visibleData))}
@@ -192,7 +198,8 @@ export default function ClimateCrisisSimulator() {
               />
             </div>
 
-            <section className="h-80 bg-gradient-to-tr from-green-50 to-blue-50 rounded-xl p-4">
+            {/* Chart */}
+            <section className="h-64 sm:h-80 md:h-96 lg:h-[35vh] bg-gradient-to-tr from-green-50 to-blue-50 rounded-xl p-2 md:p-4">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={visibleData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -210,6 +217,7 @@ export default function ClimateCrisisSimulator() {
               </ResponsiveContainer>
             </section>
 
+            {/* Info Cards */}
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InfoCard
                 title="Scenario Summary"
@@ -225,7 +233,8 @@ export default function ClimateCrisisSimulator() {
               />
             </section>
 
-            <div className="flex items-center justify-between text-xs text-slate-500">
+            {/* Footer */}
+            <div className="flex items-center justify-between text-xs text-slate-500 mt-auto">
               <div>
                 🌿 Educational preview — numbers are illustrative, not real
                 forecasts.
@@ -241,15 +250,19 @@ export default function ClimateCrisisSimulator() {
   );
 }
 
+// --- Helper Components & Functions ---
+
 function StatCard({ title, value }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-xl p-4 bg-gradient-to-br from-white to-slate-50 border shadow-sm hover:shadow-md transition"
+      className="rounded-xl p-3 md:p-4 bg-gradient-to-br from-white to-slate-50 border shadow-sm hover:shadow-md transition"
     >
       <div className="text-xs text-slate-500">{title}</div>
-      <div className="text-2xl font-bold text-slate-900 mt-1">{value}</div>
+      <div className="text-lg md:text-2xl font-bold text-slate-900 mt-1">
+        {value}
+      </div>
     </motion.div>
   );
 }
@@ -259,17 +272,21 @@ function InfoCard({ title, description, highlight, list = [] }) {
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-xl p-5 bg-gradient-to-br from-slate-50 to-white border shadow-sm hover:shadow-md transition"
+      className="rounded-xl p-4 md:p-5 bg-gradient-to-br from-slate-50 to-white border shadow-sm hover:shadow-md transition"
     >
-      <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
+      <h3 className="text-md md:text-lg font-semibold text-slate-800">
+        {title}
+      </h3>
       {description && (
-        <p className="text-sm text-slate-600 mt-2">{description}</p>
+        <p className="text-xs md:text-sm text-slate-600 mt-2">{description}</p>
       )}
       {highlight && (
-        <div className="mt-3 text-green-600 font-semibold">{highlight}</div>
+        <div className="mt-2 md:mt-3 text-green-600 font-semibold">
+          {highlight}
+        </div>
       )}
       {list.length > 0 && (
-        <ul className="mt-3 list-disc list-inside text-sm text-slate-600 space-y-1">
+        <ul className="mt-2 md:mt-3 list-disc list-inside text-xs md:text-sm text-slate-600 space-y-1">
           {list.map((i) => (
             <li key={i}>{i}</li>
           ))}
@@ -312,7 +329,6 @@ function generateBaseline(
   let temp = 1.1;
   let co2 = 420;
   let sea = 15;
-
   for (let y = startYear; y <= endYear; y++) {
     const yearlyCo2Increase = baseGrowth * 10 * emissionFactor;
     co2 += yearlyCo2Increase;
@@ -331,24 +347,17 @@ function generateBaseline(
 }
 
 function getLatestTemp(data) {
-  if (!data || data.length === 0) return "—";
-  return data[data.length - 1].tempAnomaly;
+  return data?.[data.length - 1]?.tempAnomaly ?? "—";
 }
 function getLatestCO2(data) {
-  if (!data || data.length === 0) return "—";
-  return data[data.length - 1].co2;
+  return data?.[data.length - 1]?.co2 ?? "—";
 }
 function getLatestSeaLevel(data) {
-  if (!data || data.length === 0) return "—";
-  return data[data.length - 1].seaLevel;
+  return data?.[data.length - 1]?.seaLevel ?? "—";
 }
-
 function formatTemp(val) {
-  if (val === "—") return val;
-  return `${Number(val).toFixed(2)}°C`;
+  return val === "—" ? val : `${Number(val).toFixed(2)}°C`;
 }
-
 function peek2100(data) {
-  const p = data.find((d) => d.year === 2100);
-  return p ? p.tempAnomaly : "—";
+  return data.find((d) => d.year === 2100)?.tempAnomaly ?? "—";
 }

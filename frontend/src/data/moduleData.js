@@ -81,7 +81,7 @@ export const modulesData = [
         id: 204,
         title: "Energy Crisis simulator",
         description: "Learn tips to reduce power consumption.",
-        gameId: 201,
+        gameId: gamesData.ClimateCrisisSimulator.gameId,
         steps: [
           "Switch off unused appliances",
           "Use LED lights",

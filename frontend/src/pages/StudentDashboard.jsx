@@ -10,7 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Medal, Award,Trash2 } from "lucide-react";
+import { Medal, Award, Trash2, Star, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -66,27 +66,21 @@ const StudentDashboard = () => {
       console.log("error in fetching community Post", err.message);
     }
   };
- 
+
   const handleDelete = async (postId) => {
     try {
       const token = await getToken();
-      const res = await axios.delete(
-        `${backend_url}/post/delete-post/${postId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${backend_url}/post/delete-post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("🗑️ Post deleted successfully");
+    } catch (err) {
+      alert("❌ Error while deleting post");
+    }
+  };
 
-      alert('post deleted successfully');
-    }
-    catch (err) {
-      alert('error while deleting post');
-      console.log("error while deleting post", err.message);
-    }
-  }
-   
   const fetchedAllDrive = async () => {
     const token = await getToken();
     try {
@@ -161,49 +155,66 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="p-6 space-y-10 bg-gradient-to-br from-emerald-50 via-green-100 to-blue-50 min-h-screen">
+    <div className="p-8 space-y-12 bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen text-white">
+      {/* Hero Section */}
+      <section className="text-center">
+        <motion.h1
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="text-4xl font-extrabold tracking-widest text-green-400 drop-shadow-lg"
+        >
+          🌍 Planet Guardians Dashboard
+        </motion.h1>
+        <p className="text-gray-300 mt-2">Gamify your eco-journey 🚀</p>
+      </section>
+
       <DailyMissionCard />
 
       {/* XP Progress + Badges */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 shadow-2xl rounded-3xl border border-green-200 bg-white/80 backdrop-blur-md">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Progress */}
+        <Card className="lg:col-span-2 shadow-2xl rounded-3xl border-0 bg-gradient-to-br from-green-700/70 to-green-500/60 backdrop-blur-md">
           <CardHeader>
-            <CardTitle className="text-2xl font-extrabold text-green-800 drop-shadow-sm">
-              🌱 XP Progress This Week
+            <CardTitle className="text-2xl font-extrabold text-green-200">
+              ⚡ XP Progress This Week
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={progressData}>
                 <defs>
                   <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
+                    <stop offset="5%" stopColor="#34d399" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#34d399" stopOpacity={0.1} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" />
-                <XAxis dataKey="day" stroke="#065f46" />
-                <YAxis stroke="#065f46" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#4ade80" />
+                <XAxis dataKey="day" stroke="#bbf7d0" />
+                <YAxis stroke="#bbf7d0" />
                 <Tooltip
-                  contentStyle={{ background: "#f0fdf4", borderRadius: "12px" }}
+                  contentStyle={{
+                    background: "#064e3b",
+                    color: "white",
+                    borderRadius: "12px",
+                  }}
                 />
                 <Area
                   type="monotone"
                   dataKey="xp"
-                  stroke="#059669"
-                  strokeWidth={4}
+                  stroke="#10b981"
+                  strokeWidth={3}
                   fill="url(#xpGradient)"
-                  fillOpacity={0.7}
                 />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="shadow-2xl rounded-3xl border border-yellow-200 bg-white/80 backdrop-blur-md">
+        {/* Badges */}
+        <Card className="shadow-2xl rounded-3xl border-0 bg-gradient-to-br from-yellow-600/70 to-yellow-400/60 backdrop-blur-md">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl font-bold text-yellow-700">
-              <Medal /> Earned Badges
+            <CardTitle className="flex items-center gap-2 text-xl font-bold text-white">
+              <Medal /> Achievements
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -212,9 +223,9 @@ const StudentDashboard = () => {
                 <motion.div
                   key={i}
                   whileHover={{ scale: 1.1 }}
-                  className="flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition"
+                  className="flex items-center gap-2 bg-yellow-200/20 border border-yellow-400/60 px-4 py-2 rounded-xl text-sm font-semibold shadow-md"
                 >
-                  <Award className="w-4 h-4" /> {badge}
+                  <Award className="w-4 h-4 text-yellow-300" /> {badge}
                 </motion.div>
               ))}
             </div>
@@ -224,25 +235,25 @@ const StudentDashboard = () => {
 
       {/* Games */}
       <section>
-        <h2 className="text-2xl font-extrabold text-purple-700 mb-4">
-          🌟 Games
+        <h2 className="text-2xl font-extrabold text-purple-300 mb-6">
+          🎮 Games
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {student.games.map((game) => (
             <motion.div
               key={game.id}
-              whileHover={{ scale: 1.03 }}
-              className="flex flex-col justify-between bg-purple-50 p-5 rounded-3xl shadow-lg hover:shadow-2xl transition-all"
+              whileHover={{ scale: 1.05 }}
+              className="flex flex-col justify-between bg-purple-900/40 p-6 rounded-3xl shadow-lg border border-purple-400/40 hover:shadow-purple-500/50 transition"
             >
               <div>
-                <h3 className="font-bold text-lg">{game.title}</h3>
-                <p className="text-sm text-gray-600">+{game.xpBoost} XP</p>
+                <h3 className="font-bold text-lg text-white">{game.title}</h3>
+                <p className="text-sm text-gray-300">+{game.xpBoost} XP</p>
               </div>
               <Button
-                className="mt-4 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white rounded-full shadow-md"
+                className="mt-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-full shadow-md"
                 onClick={() => navigate("/gamesection")}
               >
-                Play Now
+                Play Now 🚀
               </Button>
             </motion.div>
           ))}
@@ -251,18 +262,20 @@ const StudentDashboard = () => {
 
       {/* Quizzes */}
       <section>
-        <h2 className="text-2xl font-extrabold text-blue-700 mb-4">
+        <h2 className="text-2xl font-extrabold text-blue-300 mb-6">
           📝 Available Quizzes
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {availableQuizzes.map((quiz) => (
             <motion.div
               key={quiz._id}
-              whileHover={{ scale: 1.03 }}
-              className="min-w-[250px] bg-blue-50 rounded-3xl shadow-lg p-5 flex flex-col justify-between hover:shadow-2xl transition"
+              whileHover={{ scale: 1.05 }}
+              className="min-w-[250px] bg-blue-900/40 border border-blue-400/40 rounded-3xl shadow-lg p-5 hover:shadow-blue-500/50 transition"
             >
-              <h3 className="font-semibold text-lg mb-2">{quiz.topic}</h3>
-              <p className="text-gray-700 mb-3">
+              <h3 className="font-semibold text-lg text-white mb-2">
+                {quiz.topic}
+              </h3>
+              <p className="text-gray-300 mb-3">
                 Earn{" "}
                 {quiz.level === "Easy"
                   ? quiz.total_questions * 2
@@ -272,10 +285,10 @@ const StudentDashboard = () => {
                 Eco-Points
               </p>
               <Button
-                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-full shadow-md"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white rounded-full shadow-md"
                 onClick={() => navigate(`/takequiz/${quiz._id}`)}
               >
-                Take Quiz
+                Take Quiz ✨
               </Button>
             </motion.div>
           ))}
@@ -284,37 +297,37 @@ const StudentDashboard = () => {
 
       {/* Drives */}
       <section>
-        <h2 className="text-2xl font-extrabold text-red-700 mb-4">
-          🌍 Current Event Drives
+        <h2 className="text-2xl font-extrabold text-green-300 mb-6">
+          🌍 Event Drives
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {drives.map((d) => (
             <motion.div
               key={d._id}
-              whileHover={{ scale: 1.03 }}
-              className="flex-shrink-0 w-72 p-5 rounded-3xl bg-gradient-to-br from-green-50 to-green-100 border border-green-200 shadow-lg flex flex-col gap-3 hover:shadow-2xl transition cursor-pointer"
-              onClick={() => navigate(`/drive/${d._id}`)} // <-- navigate on click
+              whileHover={{ scale: 1.05 }}
+              className="flex-shrink-0 w-72 p-6 rounded-3xl bg-gradient-to-br from-green-900/40 to-green-700/40 border border-green-400/40 shadow-lg hover:shadow-green-500/50 transition cursor-pointer"
+              onClick={() => navigate(`/drive/${d._id}`)}
             >
-              <p className="font-semibold text-gray-900">{d.title}</p>
-              <p className="text-xs text-gray-600">👥 By {d.creator?.name}</p>
-              <p className="text-xs text-gray-600">
+              <p className="font-semibold text-lg text-white">{d.title}</p>
+              <p className="text-xs text-gray-300">👥 By {d.creator?.name}</p>
+              <p className="text-xs text-gray-300">
                 🌱 Impact: {d.impactLevel}
               </p>
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-gray-300">
                 👤 {d.total_participants} slots
               </p>
-              <p className="text-xs font-medium text-green-700">
+              <p className="text-xs font-medium text-green-300">
                 ✨ +{d.ecoPoints} eco-points
               </p>
               {registered[d._id] ? (
-                <p className="text-sm font-medium text-green-600 bg-green-100 rounded-lg px-3 py-1 text-center">
+                <p className="text-sm font-medium text-green-400 bg-green-800/40 border border-green-400/50 rounded-lg px-3 py-1 text-center">
                   ✅ Registered
                 </p>
               ) : (
                 <Button
-                  className="w-full py-2 text-sm rounded-full font-semibold text-white bg-green-600 hover:bg-green-700 shadow-md"
+                  className="w-full mt-3 py-2 text-sm rounded-full font-semibold text-white bg-green-600 hover:bg-green-700 shadow-md"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent card click from triggering
+                    e.stopPropagation();
                     handleEnter(d._id);
                   }}
                 >
@@ -322,9 +335,9 @@ const StudentDashboard = () => {
                 </Button>
               )}
               <Button
-                className="w-full py-2 text-sm rounded-full font-semibold text-white bg-yellow-500 hover:bg-yellow-600 shadow-md"
+                className="w-full mt-2 py-2 text-sm rounded-full font-semibold text-white bg-yellow-500 hover:bg-yellow-600 shadow-md"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent card click from triggering
+                  e.stopPropagation();
                   handleComplete(d);
                 }}
               >
@@ -337,33 +350,32 @@ const StudentDashboard = () => {
 
       {/* Community Posts */}
       <section>
-        <h2 className="text-2xl font-extrabold text-green-700 mb-4">
+        <h2 className="text-2xl font-extrabold text-pink-300 mb-6">
           🌿 Community Posts
         </h2>
         <div className="flex gap-4 overflow-x-auto pb-2">
           {communityPost.map((post) => (
             <motion.div
               key={post._id}
-              whileHover={{ scale: 1.03 }}
-              className="relative min-w-[250px] bg-green-50 rounded-3xl shadow-lg p-4 flex flex-col hover:shadow-2xl transition"
+              whileHover={{ scale: 1.05 }}
+              className="relative min-w-[250px] bg-pink-900/40 border border-pink-400/40 rounded-3xl shadow-lg p-4 hover:shadow-pink-500/50 transition"
             >
-              {/* 🔹 Delete Icon */}
+              {/* Delete */}
               <button
                 onClick={() => handleDelete(post._id)}
-                className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition"
+                className="absolute top-3 right-3 text-red-400 hover:text-red-600 transition"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
-
               <img
                 src={post.mediaUrl}
                 alt={post.title}
                 className="w-full h-32 object-cover rounded-2xl mb-3"
               />
-              <h3 className="font-semibold text-base text-gray-800 mb-1">
+              <h3 className="font-semibold text-base text-white mb-1">
                 {post.content.slice(0, 25)}...
               </h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-300">
                 By: {post.user?.name || "Unknown"}
               </p>
             </motion.div>
@@ -373,12 +385,12 @@ const StudentDashboard = () => {
 
       {/* Completion Popup */}
       <Dialog open={!!activeDrive} onOpenChange={() => setActiveDrive(null)}>
-        <DialogContent className="bg-white/90 max-w-md w-full rounded-3xl p-6 backdrop-blur-md shadow-2xl">
+        <DialogContent className="bg-[#1f2937]/95 max-w-md w-full rounded-3xl p-6 backdrop-blur-md shadow-2xl border border-green-500/50">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-green-800">
+            <DialogTitle className="text-xl font-bold text-green-300">
               Complete Drive 🌟
             </DialogTitle>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               Submit your completion details for{" "}
               <span className="font-semibold">{activeDrive?.title}</span>
             </p>
@@ -389,21 +401,21 @@ const StudentDashboard = () => {
               placeholder="Write a short description of your contribution..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border-gray-300 focus:ring-green-500 rounded-xl"
+              className="border-gray-700 focus:ring-green-500 rounded-xl bg-gray-800 text-white"
               required
             />
             <Input
               type="file"
               accept="image/*"
               onChange={(e) => setImage(e.target.files[0])}
-              className="border-gray-300 rounded-xl"
+              className="border-gray-700 bg-gray-800 text-gray-200 rounded-xl"
             />
             <DialogFooter className="flex justify-end gap-3 mt-4">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setActiveDrive(null)}
-                className="rounded-full"
+                className="rounded-full border border-gray-500 text-gray-300"
               >
                 Cancel
               </Button>

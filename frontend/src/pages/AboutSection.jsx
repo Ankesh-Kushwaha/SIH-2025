@@ -3,7 +3,7 @@ import AboutEchoVerse from '@/components/AboutEchoVerse'
 
 const AboutSection = () => {
   return (
-    <div>
+    <div className='bg-slate-900'>
       <AboutEchoVerse/>
     </div>
   )

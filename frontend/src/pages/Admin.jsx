@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
 
-// Import components
+// Components
 import AdminHeader from "../components/AdminPageComponent/AdminHeader";
 import QuizBuilder from "../components/AdminPageComponent/QuizBuilder";
 import DailyTasks from "../components/AdminPageComponent/DailyTasks";
@@ -17,7 +17,6 @@ const backend_url = import.meta.env.VITE_API_BASE_URL;
 export default function Admin() {
   const { getToken } = useAuth();
 
-  // State
   const [xp, setXp] = useState(4200);
   const [points, setPoints] = useState(240);
   const [tasks, setTasks] = useState([
@@ -43,8 +42,7 @@ export default function Admin() {
 
   const xpLevel = useMemo(() => Math.floor(xp / 1000), [xp]);
 
-  // Task completion
-  function completeTask(id) {
+  const completeTask = (id) => {
     setTasks((prev) =>
       prev.map((t) => {
         if (t.id === id && !t.completed) {
@@ -55,9 +53,8 @@ export default function Admin() {
         return t;
       })
     );
-  }
+  };
 
-  // API: Generate quiz
   async function generateQuiz(e) {
     e.preventDefault();
     if (!quizForm.topic) return alert("Please enter a quiz title.");
@@ -69,28 +66,25 @@ export default function Admin() {
       });
       await getAllQuizzes();
     } catch (err) {
-      console.error("Error generating quiz:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }
 
-  // API: Get all quizzes
   async function getAllQuizzes() {
     const token = await getToken();
     try {
       const res = await axios.get(`${backend_url}/quiz/get-all-quiz`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.data && Array.isArray(res.data.quizes)) {
+      if (res.data && Array.isArray(res.data.quizes))
         setQuizzes(res.data.quizes);
-      }
     } catch (err) {
-      console.error("Error fetching quizzes:", err);
+      console.error(err);
     }
   }
 
-  // API: Delete quiz
   async function handleDelete(quizId) {
     const token = await getToken();
     try {
@@ -99,22 +93,36 @@ export default function Admin() {
       });
       setQuizzes((prev) => prev.filter((q) => q._id !== quizId));
     } catch (err) {
-      console.error("Error while deleting quiz:", err);
+      console.error(err);
     }
   }
 
-  const onLaunchVerification = async () => {
-    
-  }
+  const onLaunchVerification = async () => {};
 
   useEffect(() => {
     getAllQuizzes();
   }, []);
 
   return (
-    <section className="mx-auto max-w-7xl p-6">
+    <section className="relative mx-auto max-w-7xl p-6 bg-gradient-to-br from-green-200 via-emerald-100 to-teal-200 rounded-3xl min-h-screen overflow-hidden">
+      {/* Gamified particles background */}
+      {[...Array(15)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-yellow-400 opacity-30 animate-bounce-slow"
+          style={{
+            width: `${5 + Math.random() * 10}px`,
+            height: `${5 + Math.random() * 10}px`,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${3 + Math.random() * 4}s`,
+          }}
+        />
+      ))}
+
+      {/* Loading overlay */}
       {loading && (
-        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/40">
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm rounded-3xl">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white mb-4"></div>
           <h2 className="text-white text-2xl font-bold text-center">
             Generating Quiz...
@@ -125,8 +133,8 @@ export default function Admin() {
 
       <AdminHeader points={points} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left side */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
+        {/* Left column */}
         <div className="lg:col-span-2 space-y-8">
           <QuizBuilder
             quizForm={quizForm}
@@ -140,7 +148,7 @@ export default function Admin() {
           <DailyTasks tasks={tasks} completeTask={completeTask} />
         </div>
 
-        {/* Right side */}
+        {/* Right column */}
         <div className="space-y-8">
           <UserProgress
             xp={xp}
@@ -153,6 +161,14 @@ export default function Admin() {
           <CommunityDriveList />
         </div>
       </div>
+
+      {/* Animations */}
+      <style>
+        {`
+          @keyframes bounce-slow { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-5px);} }
+          .animate-bounce-slow { animation: bounce-slow 4s infinite ease-in-out; }
+        `}
+      </style>
     </section>
   );
 }

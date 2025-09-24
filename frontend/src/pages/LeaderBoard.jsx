@@ -11,42 +11,43 @@ import {
   PieChart,
   Pie,
   Cell,
-  LineChart,
-  Line,
 } from "recharts";
 import {
   Crown,
-  Users,
-  School,
-  Download,
+  Award,
+  PlayCircle,
+  Star,
+  Flame,
   Leaf,
   Droplets,
   TreePine,
-  TrendingUp,
-  PlayCircle,
   Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// ---------- Mock Data ----------
+const COLORS = ["#FFD700", "#4ADE80", "#60A5FA", "#F472B6", "#A78BFA"];
+
+// Mock Player Data
 const samplePlayers = [
   {
     id: 1,
     name: "Aarav",
     score: 980,
-    gamesPlayed: 12,
     ecoPoints: 450,
     carbonSaved: 25,
-    engagement: 92,
+    xp: 780,
+    badges: ["🌍 Earth Hero", "♻️ Waste Warrior"],
+    rank: 1,
   },
   {
     id: 2,
     name: "Ishita",
     score: 940,
-    gamesPlayed: 10,
     ecoPoints: 400,
     carbonSaved: 22,
-    engagement: 88,
+    xp: 620,
+    badges: ["💧 Water Saver"],
+    rank: 2,
   },
   {
     id: 3,
@@ -54,362 +55,260 @@ const samplePlayers = [
     score: 900,
     ecoPoints: 380,
     carbonSaved: 18,
-    engagement: 82,
+    xp: 540,
+    badges: ["🌱 Tree Guardian"],
+    rank: 3,
   },
   {
     id: 4,
     name: "Meera",
     score: 860,
-    gamesPlayed: 8,
     ecoPoints: 360,
     carbonSaved: 15,
-    engagement: 78,
+    xp: 420,
+    badges: ["♻️ Waste Warrior"],
+    rank: 4,
   },
   {
     id: 5,
     name: "Rhea",
     score: 820,
-    gamesPlayed: 7,
     ecoPoints: 340,
     carbonSaved: 12,
-    engagement: 72,
+    xp: 310,
+    badges: [],
+    rank: 5,
   },
 ];
 
-const sampleGameImpacts = [
+// Mock Game Modules
+const gameModules = [
   {
     id: 1,
-    game: "Water Wars",
-    sessions: 1200,
-    waterSavedLiters: 48000,
-    avgLearningGain: 0.8,
-    treesPlanted: 40000,
+    title: "Recycle Rush",
+    desc: "Sort waste in time!",
+    icon: <Leaf className="text-green-500" />,
   },
   {
     id: 2,
-    game: "EcoRacer",
-    sessions: 800,
-    carbonSaved: 50000,
-    treesPlanted: 1200,
-    avgLearningGain: 0.52,
+    title: "Water Warrior",
+    desc: "Save water daily.",
+    icon: <Droplets className="text-blue-400" />,
   },
   {
     id: 3,
-    game: "Zero-Waste Kitchen",
-    sessions: 600,
-    foodSavedKg: 800,
-    carbonReduced: 60,
-    avgLearningGain: 0.35,
+    title: "Tree Tycoon",
+    desc: "Plant & grow virtual trees.",
+    icon: <TreePine className="text-emerald-600" />,
   },
   {
     id: 4,
-    game: "Green Odyssey",
-    sessions: 450,
-    biodiversityImproved: "15%",
-    naturalHabitatEnhanced: 1500,
-    avgLearningGain: 0.2,
+    title: "Energy Saver",
+    desc: "Switch off & save power.",
+    icon: <Flame className="text-orange-500" />,
   },
 ];
 
-const COLORS = ["#1F9D55", "#16A34A", "#059669", "#10B981", "#34D399"];
+// Function to calculate level from XP
+const getLevel = (xp) => {
+  if (xp >= 700) return 5;
+  if (xp >= 500) return 4;
+  if (xp >= 300) return 3;
+  if (xp >= 150) return 2;
+  return 1;
+};
 
 const EcoDashboard = () => {
   const [players, setPlayers] = useState([]);
-  const [gameImpacts, setGameImpacts] = useState([]);
 
   useEffect(() => {
     setPlayers(samplePlayers);
-    setGameImpacts(sampleGameImpacts);
   }, []);
 
-  const totalSessions = gameImpacts.reduce((s, g) => s + (g.sessions || 0), 0);
-  const totalWaterSaved = gameImpacts.reduce(
-    (s, g) => s + (g.waterSavedLiters || 0),
-    0
-  );
-  const totalCarbonSaved = players.reduce(
-    (s, p) => s + (p.carbonSaved || 0),
-    0
-  );
-  const avgLearningGain =
-    gameImpacts.reduce((s, g) => s + (g.avgLearningGain || 0), 0) /
-    Math.max(1, gameImpacts.length);
-
-  const engagementTrendData = [
-    { name: "Jan", engagement: 420 },
-    { name: "Feb", engagement: 400 },
-    { name: "Mar", engagement: 380 },
-    { name: "Apr", engagement: 390 },
-    { name: "May", engagement: 370 },
-    { name: "Jun", engagement: 360 },
-    { name: "Jul", engagement: 350 },
-    { name: "Aug", engagement: 340 },
-  ];
-
   return (
-    <div className="p-10 bg-gradient-to-br from-green-50 via-white to-indigo-50 min-h-screen font-['Poppins',sans-serif] space-y-10">
-      {/* Top Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Planet Guardian */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="p-6 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-              <Crown className="w-5 h-5 text-yellow-500" /> Planet Guardian
-            </h2>
-          </div>
-          <p className="text-3xl font-bold text-indigo-600 mt-4">
-            {players[0]?.name || "—"}
-          </p>
-          <p className="text-gray-500 text-sm">Your score & community impact</p>
-          <div className="grid grid-cols-3 gap-4 mt-6 text-center">
-            <div>
-              <p className="text-gray-500">Score</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {players[0]?.score || 0}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500">Eco Points</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {players[0]?.ecoPoints || 0}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500">Carbon Saved</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {players[0]?.carbonSaved || 0} kg
-              </p>
-            </div>
-          </div>
-        </motion.div>
+    <div className="min-h-screen p-10 bg-gradient-to-br from-gray-900 via-green-900 to-black text-white font-['Poppins'] space-y-12">
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center space-y-3"
+      >
+        <h1 className="text-5xl font-extrabold flex justify-center items-center gap-3 text-green-400 drop-shadow-lg">
+          <Crown className="w-10 h-10 text-yellow-400" />
+          Planet Guardians Hub
+        </h1>
+        <p className="text-gray-300 text-lg">
+          Play • Compete • Save the Planet 🌍
+        </p>
+      </motion.div>
 
-        {/* Platform Reach */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="p-6 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-              <Users className="w-5 h-5 text-indigo-500" /> Platform Reach
-            </h2>
-          </div>
-          <p className="text-5xl font-bold text-indigo-600 mt-4">
-            {totalSessions.toLocaleString()}
-          </p>
-          <p className="text-gray-500 text-sm">Total sessions across modules</p>
-          <Button className="w-full mt-6 flex gap-2 rounded-xl">
-            <Download className="w-4 h-4" /> Export CSV
-          </Button>
-        </motion.div>
-
-        {/* Learning Impact */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="p-6 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-              <School className="w-5 h-5 text-green-500" /> Learning Impact
-            </h2>
-          </div>
-          <p className="text-5xl font-bold text-green-600 mt-4">
-            {(avgLearningGain * 100).toFixed(1)}%
-          </p>
-          <p className="text-gray-500 text-sm">
-            Avg. measured learning gain per session
-          </p>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
-            <div
-              className="bg-green-500 h-2 rounded-full"
-              style={{ width: `${avgLearningGain * 100}%` }}
-            ></div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Bar Chart */}
-        <div className="p-8 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100 lg:col-span-2">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-indigo-500" /> Games Played
-          </h2>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={gameImpacts.map((g) => ({
-                  name: g.game,
-                  sessions: g.sessions,
-                }))}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} />
-                <Tooltip />
-                <Bar
-                  dataKey="sessions"
-                  fill="#4f46e5"
-                  radius={[12, 12, 0, 0]}
-                  barSize={50}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Pie Chart */}
-        <div className="p-8 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-green-500" /> Environmental KPIs
-          </h2>
-          <div className="flex flex-col items-center">
-            <ResponsiveContainer width="100%" height={250}>
-              <PieChart>
-                <Pie
-                  data={samplePlayers}
-                  dataKey="ecoPoints"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label={({ name }) => name}
-                  labelLine={false}
-                >
-                  {samplePlayers.map((p, i) => (
-                    <Cell key={`cell-${i}`} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="mt-4 text-center">
-              <p className="text-gray-500">Water Saved</p>
-              <p className="text-xl font-bold text-gray-800">
-                {totalWaterSaved.toLocaleString()} L
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Game Detail Cards */}
-      <div className="space-y-6">
-        <h3 className="text-2xl font-bold text-gray-800">
-          Game Modules — Effects on Learning & Environment
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {gameImpacts.map((g) => (
+      {/* Leaderboard */}
+      <div>
+        <h2 className="text-2xl font-bold text-yellow-300 mb-6 flex items-center gap-2">
+          <Award className="w-6 h-6" /> Leaderboard
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {players.map((player, i) => (
             <motion.div
-              key={g.id}
-              whileHover={{ scale: 1.02 }}
-              className="p-6 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100"
+              key={player.id}
+              whileHover={{ scale: 1.05, rotate: -1 }}
+              className={`p-6 rounded-2xl shadow-2xl border transform transition-all
+                ${
+                  i === 0
+                    ? "bg-yellow-500/20 border-yellow-400"
+                    : "bg-white/10 border-gray-700"
+                }
+              `}
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="font-bold text-lg text-gray-800 flex items-center gap-2">
-                    <PlayCircle className="w-5 h-5 text-indigo-500" />
-                    {g.game}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Sessions: {g.sessions.toLocaleString()}
-                  </p>
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg
+                      ${
+                        i === 0
+                          ? "bg-yellow-400"
+                          : i === 1
+                          ? "bg-gray-400"
+                          : i === 2
+                          ? "bg-amber-600"
+                          : "bg-green-500"
+                      }
+                    `}
+                  >
+                    {player.name[0]}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold">{player.name}</h3>
+                    <p className="text-sm text-gray-300">Rank #{player.rank}</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-gray-500">Avg. Learning Gain</p>
-                  <p className="font-bold text-green-600 text-xl">
-                    {(g.avgLearningGain * 100).toFixed(1)}%
-                  </p>
+                <Crown className="w-6 h-6 text-yellow-400" />
+              </div>
+
+              {/* Score Progress */}
+              <div className="mt-4">
+                <p className="text-sm text-gray-400">Eco Score</p>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div
+                    className="bg-green-400 h-2 rounded-full"
+                    style={{ width: `${(player.score / 1000) * 100}%` }}
+                  ></div>
                 </div>
+                <p className="text-lg font-bold mt-1">{player.score} pts</p>
               </div>
-              <ul className="space-y-1 text-sm text-gray-600">
-                {g.waterSavedLiters && (
-                  <li>
-                    <Droplets className="w-4 h-4 inline mr-1 text-blue-500" />
-                    <span className="font-semibold">Water Saved:</span>{" "}
-                    {g.waterSavedLiters.toLocaleString()} L
-                  </li>
-                )}
-                {g.treesPlanted && (
-                  <li>
-                    <TreePine className="w-4 h-4 inline mr-1 text-green-500" />
-                    <span className="font-semibold">Trees Planted:</span>{" "}
-                    {g.treesPlanted}
-                  </li>
-                )}
-                {g.foodSavedKg && (
-                  <li>
-                    <span className="font-semibold">Food Waste Avoided:</span>{" "}
-                    {g.foodSavedKg} kg
-                  </li>
-                )}
-                {g.carbonSaved && (
-                  <li>
-                    <span className="font-semibold">Carbon Saved:</span>{" "}
-                    {g.carbonSaved} kg
-                  </li>
-                )}
-                {g.carbonReduced && (
-                  <li>
-                    <span className="font-semibold">Carbon Reduced:</span>{" "}
-                    {g.carbonReduced} kg
-                  </li>
-                )}
-                {g.biodiversityImproved && (
-                  <li>
-                    <span className="font-semibold">Biodiversity:</span>{" "}
-                    {g.biodiversityImproved}
-                  </li>
-                )}
-                {g.naturalHabitatEnhanced && (
-                  <li>
-                    <span className="font-semibold">Habitat Enhanced:</span>{" "}
-                    {g.naturalHabitatEnhanced}
-                  </li>
-                )}
-              </ul>
-              <div className="mt-4 flex gap-2">
-                <Button className="rounded-full text-sm">View Players</Button>
-                <Button className="rounded-full text-sm" variant="secondary">
-                  Run Impact Simulation
-                </Button>
+
+              {/* XP Progress */}
+              <div className="mt-3">
+                <p className="text-sm text-gray-400">
+                  Level {getLevel(player.xp)}
+                </p>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div
+                    className="bg-indigo-400 h-2 rounded-full"
+                    style={{ width: `${((player.xp % 200) / 200) * 100}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-gray-400 mt-1">{player.xp} XP</p>
               </div>
+
+              {/* Badges */}
+              {player.badges.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {player.badges.map((badge, idx) => (
+                    <motion.span
+                      key={idx}
+                      whileHover={{ scale: 1.2 }}
+                      className="px-3 py-1 rounded-full bg-green-600 text-sm shadow-md"
+                    >
+                      {badge}
+                    </motion.span>
+                  ))}
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Engagement Line Chart */}
-      <div className="p-8 rounded-2xl bg-white/70 backdrop-blur-lg shadow-lg border border-gray-100">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <Activity className="w-5 h-5 text-indigo-500" /> Engagement & Learning
-          Trend
+      {/* Game Modules */}
+      <div>
+        <h2 className="text-2xl font-bold text-green-400 mb-6 flex items-center gap-2">
+          <PlayCircle className="w-6 h-6" /> Quests & Games
         </h2>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={engagementTrendData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="engagement"
-                stroke="#4f46e5"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {gameModules.map((game) => (
+            <motion.div
+              key={game.id}
+              whileHover={{ scale: 1.08, rotate: 1 }}
+              className="p-6 rounded-2xl bg-white/10 border border-green-700 shadow-lg text-center space-y-3"
+            >
+              <div className="flex justify-center">{game.icon}</div>
+              <h3 className="text-lg font-bold">{game.title}</h3>
+              <p className="text-sm text-gray-300">{game.desc}</p>
+              <Button className="mt-3 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">
+                Play Now
+              </Button>
+            </motion.div>
+          ))}
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-4">
-        <Button className="rounded-full">Integrate with API</Button>
-        <Button className="rounded-full">Download Report</Button>
+      {/* Eco Impact Stats */}
+      <div>
+        <h2 className="text-2xl font-bold text-blue-400 mb-6 flex items-center gap-2">
+          <Activity className="w-6 h-6" /> Eco Impact
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Bar Chart */}
+          <div className="bg-white/10 rounded-2xl p-6 shadow-lg">
+            <h3 className="text-lg font-bold mb-4">Top Eco Actions</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={players}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                <XAxis dataKey="name" stroke="#bbb" />
+                <YAxis stroke="#bbb" />
+                <Tooltip />
+                <Bar dataKey="ecoPoints" fill="#4ADE80" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Pie Chart */}
+          <div className="bg-white/10 rounded-2xl p-6 shadow-lg">
+            <h3 className="text-lg font-bold mb-4">Carbon Saved</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={players}
+                  dataKey="carbonSaved"
+                  nameKey="name"
+                  outerRadius={120}
+                  label
+                >
+                  {players.map((_, i) => (
+                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
+
+      {/* Footer Banner */}
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        className="p-6 bg-green-700 rounded-2xl shadow-lg text-center"
+      >
+        <h2 className="text-2xl font-bold flex justify-center items-center gap-2">
+          <Star className="w-6 h-6 text-yellow-300" /> Daily Challenge: Save 2L
+          Water Today
+        </h2>
+        <p className="mt-2 text-sm text-green-100">
+          Complete this mission and earn bonus EcoPoints 🌱
+        </p>
+      </motion.div>
     </div>
   );
 };

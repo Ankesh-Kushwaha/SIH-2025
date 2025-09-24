@@ -8,7 +8,7 @@ export const submitTask = async (req, res) => {
     const userId = req.userId;
     const {description,mission_id}  = req.body;
     
-    const imageUrl = req.file?.buffer; //etract the image from the req;
+    const imageUrl = req.file?.buffer; //extract the image from the req;
     if (!description || !imageUrl) {
       return res.status(400).json({
         success: true,

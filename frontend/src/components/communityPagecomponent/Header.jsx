@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
-import {useAuth} from '@clerk/clerk-react'
+import { useAuth } from "@clerk/clerk-react";
+import { motion } from "framer-motion";
 
 const backend_url = import.meta.env.VITE_API_BASE_URL;
 
@@ -21,7 +22,6 @@ export default function Header() {
   const [image, setImage] = useState(null);
   const { getToken } = useAuth();
 
-  // Handle image file selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -32,109 +32,110 @@ export default function Header() {
     }
   };
 
-  // Simulate API post call
   const handlePost = async () => {
-   if (!content.trim()) return alert("Content cannot be empty");
+    if (!content.trim()) return alert("Content cannot be empty");
 
-   const formData = new FormData();
-   formData.append("content", content);
-   if (image?.file) formData.append("image", image.file);
+    const formData = new FormData();
+    formData.append("content", content);
+    if (image?.file) formData.append("image", image.file);
 
-   const token = await getToken();
+    const token = await getToken();
 
-   try {
-     const res = await axios.post(`${backend_url}/post/create`, formData, {
-       headers: {
-         Authorization:`Bearer ${token}`,
-       },
-     });
+    try {
+      await axios.post(`${backend_url}/post/create`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-     alert("Post published successfully ✅");
-     setContent("");
-     setImage(null);
-   } catch (err) {
-     console.error("Post error:", err);
-     alert("Something went wrong ❌");
-   }
- };
-
+      alert("Post published successfully ✅");
+      setContent("");
+      setImage(null);
+    } catch (err) {
+      console.error("Post error:", err);
+      alert("Something went wrong ❌");
+    }
+  };
 
   return (
-    <header className="flex justify-between items-center mb-8">
+    <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 px-4 md:px-8">
       {/* Left: Logo + Title */}
-      <div className="flex items-center space-x-3">
-        <div className="h-10 w-10 rounded-2xl bg-green-500 text-white grid place-items-center shadow-lg">
+      <motion.div
+        className="flex items-center space-x-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="h-14 w-14 rounded-3xl bg-gradient-to-tr from-green-400 to-emerald-600 text-white grid place-items-center shadow-xl hover:scale-110 transition-transform">
           <Leaf className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-extrabold text-white drop-shadow-lg">
             Planet Guardian Community
           </h1>
-          <p className="text-gray-500 text-sm">
-            Where green impacts come together - one leaf at a time on the
-            planet.
+          <p className="text-green-200 text-sm opacity-90">
+            Unite eco-actions, earn points & save the planet!
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Right: Search + New Post */}
-      <div className="flex items-center space-x-4">
-        <div className="relative hidden md:flex">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+      <div className="flex flex-col md:flex-row items-center md:space-x-4 w-full md:w-auto gap-4">
+        <div className="relative flex-1 md:flex hidden">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-300" />
           <Input
-            placeholder="Search people, posts, tags..."
-            className="pl-10 pr-4 py-2 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-green-400 w-64 transition-all"
+            placeholder="Search heroes, posts, tags..."
+            className="pl-10 pr-4 py-2 text-black rounded-full border border-green-300 bg-green-50 focus:outline-none focus:ring-2 focus:ring-emerald-400 w-full shadow-sm transition-all hover:shadow-md"
           />
         </div>
 
-        {/* New Post Button with Dialog */}
+        {/* New Post Button */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="flex items-center bg-green-500 text-white font-semibold px-4 py-2 rounded-full hover:bg-green-600 transition-colors shadow-md">
+            <Button className="flex items-center bg-gradient-to-tr from-green-400 to-emerald-600 text-white font-bold px-4 py-2 rounded-full hover:scale-105 hover:shadow-xl transition-transform shadow-lg">
               <PlusCircle className="mr-2 h-5 w-5" /> New Post
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-md bg-white rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+          <DialogContent className="sm:max-w-md bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
             {/* Header */}
-            <DialogHeader className="p-6 border-b border-gray-200">
-              <DialogTitle className="text-xl font-semibold text-gray-800">
-                Create a Post
+            <DialogHeader className="p-6 border-b border-green-200">
+              <DialogTitle className="text-xl font-extrabold text-green-900">
+                Share Your Eco-Action 🌿
               </DialogTitle>
             </DialogHeader>
 
             {/* Scrollable Body */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-              {/* Top section with avatar */}
-              <div className="flex items-center gap-3 border-b border-gray-200 pb-4">
-                <img
+              <div className="flex items-center gap-3 border-b border-green-200 pb-4">
+                <motion.img
                   src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=60&h=60&fit=crop"
                   alt="User Avatar"
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-green-400 shadow-md"
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3 }}
                 />
                 <div>
-                  <p className="font-medium text-gray-800">You</p>
-                  <p className="text-sm text-gray-500">
-                    Sharing with community
+                  <p className="font-semibold text-green-900">You</p>
+                  <p className="text-sm text-green-700 opacity-90">
+                    Share your impact with the community
                   </p>
                 </div>
               </div>
 
-              {/* Post Form */}
               <Textarea
-                placeholder="What do you want to talk about?"
+                placeholder="What did you do to help the planet today?"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={5}
-                className="border-gray-300 rounded-xl focus:ring-2 focus:ring-green-400"
+                className="border-green-300 rounded-2xl focus:ring-2 focus:ring-emerald-400 bg-green-50 shadow-inner"
               />
 
-              {/* Image upload */}
+              {/* Image Upload */}
               <div className="space-y-2">
-                <label className="block">
-                  <div className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-green-400 transition-colors">
-                    <ImageIcon className="h-8 w-8 text-gray-400" />
-                    <span className="text-sm text-gray-600">
+                <label className="block cursor-pointer">
+                  <div className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-green-300 rounded-2xl hover:border-emerald-400 transition-colors bg-green-100 hover:bg-green-50 shadow-inner hover:shadow-md">
+                    <ImageIcon className="h-8 w-8 text-green-400" />
+                    <span className="text-sm text-green-700 opacity-90">
                       Click to upload or drag & drop
                     </span>
                   </div>
@@ -147,35 +148,39 @@ export default function Header() {
                 </label>
 
                 {image?.preview && (
-                  <div className="mt-3">
+                  <motion.div
+                    className="mt-3 rounded-2xl border border-green-300 overflow-hidden shadow-md"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <img
                       src={image.preview}
                       alt="Preview"
-                      className="rounded-lg border border-gray-200 object-cover w-full max-h-64"
+                      className="object-cover w-full max-h-64"
                     />
-                  </div>
+                  </motion.div>
                 )}
               </div>
             </div>
 
-            {/* Sticky Footer */}
-            <DialogFooter className="p-6 border-t border-gray-200 flex justify-end gap-3 bg-white">
+            {/* Footer */}
+            <DialogFooter className="p-6 border-t border-green-200 flex justify-end gap-3 bg-green-50 rounded-b-3xl">
               <Button
                 variant="outline"
-                className="px-6 py-2 rounded-full border border-gray-300 hover:bg-gray-100"
+                className="px-6 py-2 rounded-full border border-green-300 hover:bg-green-100 hover:shadow-sm transition-all"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handlePost}
-                className="bg-green-500 text-white font-semibold px-6 py-2 rounded-full hover:bg-green-600 transition-colors shadow-md"
+                className="bg-gradient-to-tr from-green-400 to-emerald-600 text-white font-bold px-6 py-2 rounded-full hover:scale-105 hover:shadow-xl transition-transform shadow-lg"
               >
                 Post
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
       </div>
     </header>
   );

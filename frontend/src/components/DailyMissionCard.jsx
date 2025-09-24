@@ -13,27 +13,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, CheckCircle, Rocket, User } from "lucide-react";
+import { Trophy, CheckCircle, Rocket, User, Star } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
-const backend_url = import.meta.env.VITE_API_BASE_URL;
 import profileImg from "../../public/images/master.png";
 
-const student = {
-  name: "Emma Johnson",
-  level: 5,
-  xp: 2450,
-};
+const backend_url = import.meta.env.VITE_API_BASE_URL;
 
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [submission, setSubmission] = useState(null);
   const [description, setDescription] = useState("");
   const [preview, setPreview] = useState(null);
-  const { getToken } = useAuth();
   const [mission, setMission] = useState([]);
   const [accepted, setAccepted] = useState(false);
   const [user, setUser] = useState({});
+  const { getToken } = useAuth();
+
+  const student = {
+    name: "Emma Johnson",
+    level: 5,
+    xp: 2450,
+    badges: ["Eco Hero", "Green Warrior", "Sustainability Star"],
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -101,123 +103,137 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-      {/* --- Student Profile Card --- */}
-      <motion.div whileHover={{ scale: 1.01 }} className="h-full">
-        <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50 h-full flex flex-col">
-          <CardHeader className="flex flex-row items-center gap-2">
-            <User className="w-6 h-6 text-green-600" />
-            <CardTitle className="text-2xl font-bold text-green-700">
-              Student Profile
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-between flex-1">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] p-2 space-y-2">
+      {/* --- Profile & Mission Side by Side --- */}
+      <div className="flex flex-col md:flex-row gap-6 max-w-6xl mx-auto">
+        {/* --- Student Profile Card --- */}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          className="flex-1 flex flex-col"
+        >
+          <Card className="shadow-2xl rounded-3xl border-0 bg-gradient-to-tr from-green-800/80 to-green-600/70 backdrop-blur-md flex-1 flex flex-col p-6 gap-4">
             <motion.img
               src={profileImg}
               alt="Avatar"
-              whileHover={{ rotate: 2, scale: 1.05 }}
-              className="w-50 h-50 rounded-full border-4 border-green-400 shadow-lg"
+              whileHover={{ rotate: 5, scale: 1.1 }}
+              className="w-36 h-36 rounded-full border-4 border-green-400 shadow-xl mx-auto"
             />
-            <h2 className="text-xl font-bold mt-4 text-green-700">{user.name}</h2>
-            <h3 className="text-xl font-semibold mt-2">{user.email}</h3>
-            <p className="text-gray-600 text-sm">Level {student.level}</p>
-            <div className="mt-4 w-full">
-              <Progress value={(student.xp % 1000) / 10} className="h-3" />
-              <p className="text-sm mt-1 text-gray-500 text-center">
-                Eco-points: {user.ecoPoints}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* --- Today’s Challenge Section --- */}
-      {mission.map((m) => (
-        <motion.div key={m._id} whileHover={{ scale: 1.01 }} className="h-full">
-          <Card className="shadow-xl rounded-3xl border border-green-100 bg-gradient-to-b from-white to-green-50 h-full flex flex-col">
-            <div className="bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3">
-              <h2 className="text-xl sm:text-2xl font-extrabold rounded-3xl flex items-center gap-2">
-                🌟 Today’s Challenge
+            <div className="text-center mt-2">
+              <h2 className="text-3xl font-extrabold text-white">
+                {user.name || student.name}
               </h2>
-            </div>
-
-            <div className="relative">
-              <img
-                src={m.banner_url}
-                alt="Mission Banner"
-                className="w-full h-56 object-cover"
-              />
-              <div className="absolute top-3 right-3 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-green-700 font-semibold shadow">
-                +{m.ecoPoints} XP
-              </div>
-            </div>
-
-            <CardHeader className="pb-2">
-              <CardTitle className="text-2xl font-extrabold text-green-700 flex items-center gap-2">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                {m.title}
-              </CardTitle>
-            </CardHeader>
-
-            <CardContent className="flex flex-col items-center gap-4 flex-1">
-              <p className="text-gray-600 text-sm text-center leading-relaxed">
-                Complete today’s mission and earn rewards for your eco-friendly
-                actions 🌍
+              <h3 className="text-lg text-green-200">
+                {user.email || "student@example.com"}
+              </h3>
+              <p className="text-green-300 font-semibold mt-2">
+                Level {student.level}
               </p>
+            </div>
 
-              <div className="flex gap-3 w-full justify-center mt-auto">
-                {!accepted ? (
-                  <Button
-                    variant="outline"
-                    className="rounded-xl flex items-center gap-2 px-4 py-2 border-green-500 text-green-600 hover:bg-green-50"
-                    onClick={() => setAccepted(true)}
-                  >
-                    <Rocket className="w-4 h-4" /> Take Challenge
-                  </Button>
-                ) : (
-                  <Button
-                    disabled
-                    className="rounded-xl flex items-center gap-2 px-4 py-2 bg-green-900 text-green-100 border border-green-300 shadow-inner"
-                  >
-                    ✅ Challenge Accepted
-                  </Button>
-                )}
-
-                <Button
-                  className="bg-green-600 text-white rounded-xl flex items-center gap-2 px-4 py-2 hover:bg-green-700 shadow"
-                  onClick={() => setOpen(true)}
-                >
-                  <CheckCircle className="w-4 h-4" /> Complete Mission
-                </Button>
+            {/* --- Scrollable Content for Badges, XP, etc. --- */}
+            <div className="flex-1 overflow-y-auto w-full mt-2">
+              <div className="mb-4">
+                <Progress
+                  value={(student.xp % 1000) / 10}
+                  className="h-4 rounded-full transition-all duration-1000 ease-in-out"
+                />
+                <p className="text-sm mt-1 text-gray-200 text-center">
+                  Eco-points: {user.ecoPoints || 0}
+                </p>
               </div>
-            </CardContent>
+              <div className="flex flex-wrap justify-center gap-2 mt-4">
+                {student.badges.map((badge, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.1, rotate: 2 }}
+                    className="flex items-center gap-1 bg-yellow-400/20 border border-yellow-300 rounded-xl px-3 py-1 text-sm font-semibold text-yellow-200 shadow-md hover:shadow-lg transition"
+                  >
+                    <Star className="w-4 h-4 text-yellow-300" /> {badge}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </Card>
         </motion.div>
-      ))}
+
+        {/* --- Today’s Mission Card --- */}
+        {mission.map((m) => (
+          <motion.div
+            key={m._id}
+            whileHover={{ scale: 1.02 }}
+            className="flex-1 flex flex-col"
+          >
+            <Card className="shadow-2xl rounded-3xl border-0 bg-gradient-to-tr from-green-700/70 to-green-500/60 backdrop-blur-md flex-1 flex flex-col overflow-hidden">
+              <div className="relative">
+                <img
+                  src={m.banner_url}
+                  alt="Mission Banner"
+                  className="w-full h-56 object-cover"
+                />
+                <div className="absolute top-3 right-3 bg-white/80 backdrop-blur px-3 py-1 rounded-full text-green-700 font-bold shadow-lg">
+                  +{m.ecoPoints} XP
+                </div>
+              </div>
+              <CardContent className="flex flex-col gap-4 p-6 flex-1">
+                <CardTitle className="text-2xl font-extrabold text-white flex items-center gap-2">
+                  <Trophy className="w-6 h-6 text-yellow-400" /> {m.title}
+                </CardTitle>
+                <p className="text-gray-200 text-sm flex-1">
+                  {m.description ||
+                    "Complete today’s mission and earn eco points!"}
+                </p>
+                <div className="flex gap-4 mt-auto">
+                  {!accepted ? (
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl border-green-400 text-green-200 hover:bg-green-800 transition"
+                      onClick={() => setAccepted(true)}
+                    >
+                      <Rocket className="w-5 h-5" /> Accept Challenge
+                    </Button>
+                  ) : (
+                    <Button
+                      disabled
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-900 text-green-100 border border-green-400 shadow-inner"
+                    >
+                      ✅ Challenge Accepted
+                    </Button>
+                  )}
+                  <Button
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-600 text-white hover:bg-green-700 shadow-lg transition duration-300"
+                    onClick={() => setOpen(true)}
+                  >
+                    <CheckCircle className="w-5 h-5" /> Complete Mission
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
 
       {/* --- Submission Dialog --- */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-lg rounded-2xl bg-gradient-to-b from-white to-green-50 shadow-2xl border border-green-100 p-6">
+        <DialogContent className="sm:max-w-lg rounded-2xl bg-gradient-to-b from-green-600/50 to-green-400/40 shadow-2xl backdrop-blur-lg border border-green-500 p-6">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-green-700 flex items-center gap-2">
+            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
               🌿 Submit Your Mission
             </DialogTitle>
           </DialogHeader>
-
-          <div className="space-y-6">
+          <div className="space-y-6 mt-4">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
                 Upload Submission (Image)
               </label>
-              <div className="relative flex flex-col items-center justify-center border-2 border-dashed border-green-300 bg-white/80 rounded-xl p-6 hover:border-green-500 transition cursor-pointer">
+              <div className="relative flex flex-col items-center justify-center border-2 border-dashed border-green-300 rounded-xl p-4 hover:border-green-500 transition cursor-pointer bg-white/20">
                 {preview ? (
                   <img
                     src={preview}
                     alt="Preview"
-                    className="w-full h-44 object-cover rounded-lg shadow-md"
+                    className="w-full h-44 object-cover rounded-lg shadow-lg"
                   />
                 ) : (
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-200 text-sm">
                     Click to upload your image
                   </p>
                 )}
@@ -229,30 +245,28 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-white mb-2">
                 Description
               </label>
               <Textarea
                 placeholder="Describe your eco action..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="rounded-xl border-green-200 focus:ring-green-400"
+                className="rounded-xl border-green-200 focus:ring-green-400 bg-white/20 text-white"
               />
             </div>
           </div>
-
           <DialogFooter className="flex justify-end gap-3 mt-6">
             <Button
               variant="outline"
-              className="rounded-xl border-gray-300 hover:bg-gray-100"
+              className="rounded-xl border-gray-300 hover:bg-gray-100 text-black"
               onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
             <Button
-              className="bg-green-600 text-white hover:bg-green-700 rounded-xl shadow-md px-6"
+              className="bg-green-600 text-white hover:bg-green-700 rounded-xl shadow-lg px-6 transition duration-300"
               onClick={handleSubmit}
             >
               Submit

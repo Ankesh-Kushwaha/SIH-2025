@@ -26,7 +26,10 @@ app.use(cors({
 }))
 
 app.use(clerkMiddleware());
-databaseConnection(); 
+databaseConnection();
+app.use('/health', (req,res) => {
+  res.status(200).json('server is healthy');
+}) 
 
 //all routes requests
 app.use("/api/chat", chatRoute);
@@ -37,7 +40,6 @@ app.use('/api/drives', DrivesRoutes);
 app.use('/api/daily-mission', dailyMissionRoute);
 app.use('/api/task', taskSubmissionRoute);
 app.use('/api/badges', badgeRoute);
-
 
 
 

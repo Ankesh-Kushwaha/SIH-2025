@@ -282,3 +282,8 @@ export const postCommentController = async (req, res) => {
       res.status(500).json({ success: false, message: "Error adding comment" });
   }
 };
+
+
+export const getAllcomment = async (req, res) => {
+  
+}
