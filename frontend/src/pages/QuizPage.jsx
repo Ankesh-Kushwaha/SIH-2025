@@ -50,7 +50,7 @@ const QuizPage = () => {
   const bgMusicRef = useRef(null);
   const resultMusicRef = useRef(null);
 
-  // 🎯 Fetch quiz data
+  // 🎯 Fetch quiz
   useEffect(() => {
     const fetchQuiz = async () => {
       if (!quizId) return;
@@ -193,27 +193,42 @@ const QuizPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-100 via-green-50 to-green-200 p-6 relative">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-500 via-emerald-400 to-teal-500 p-6 overflow-hidden">
+      {/* ✨ Floating particles for gamified vibe */}
+      {[...Array(20)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-white/30 blur-xl animate-pulse"
+          style={{
+            width: `${10 + Math.random() * 30}px`,
+            height: `${10 + Math.random() * 30}px`,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${3 + Math.random() * 5}s`,
+          }}
+        />
+      ))}
+
       {!started ? (
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="flex flex-col items-center text-center space-y-6 bg-white p-10 rounded-3xl shadow-2xl"
+          className="flex flex-col items-center text-center space-y-6 bg-white/90 p-10 rounded-3xl shadow-[0_0_30px_rgba(34,197,94,0.5)]"
         >
-          <Sparkles className="w-12 h-12 text-yellow-500" />
-          <h1 className="text-4xl font-extrabold text-green-700">
-            Welcome to the Eco Quiz! 🌱
+          <Sparkles className="w-12 h-12 text-yellow-400 animate-bounce" />
+          <h1 className="text-4xl font-extrabold text-green-800 drop-shadow-md">
+            🌱 Eco Quiz Arena
           </h1>
-          <p className="text-lg text-gray-600">
-            Test your knowledge, earn Eco-Points, and level up! <br />
-            You’ll have <strong>5 minutes</strong> to complete the quiz.
+          <p className="text-lg text-gray-700">
+            Test your eco-knowledge, earn XP, and level up! <br />
+            You’ll have <strong>5 minutes</strong> to finish.
           </p>
           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
             <Button
               onClick={handleStartQuiz}
-              className="px-8 py-4 text-xl font-bold bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white rounded-2xl shadow-lg"
+              className="px-8 py-4 text-xl font-bold text-white bg-gradient-to-r from-green-500 to-emerald-700 rounded-2xl shadow-lg hover:shadow-green-600/50 transition"
             >
-              🚀 Start Quiz
+              🚀 Start Battle
             </Button>
           </motion.div>
         </motion.div>
@@ -221,16 +236,16 @@ const QuizPage = () => {
         <div className="w-full max-w-3xl space-y-6 mt-16">
           {/* Timer & Music */}
           <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-full shadow">
+            <div className="flex items-center gap-2 bg-white/90 px-4 py-2 rounded-full shadow-lg">
               <Clock className="w-5 h-5 text-green-700" />
-              <span className="font-bold text-green-700">
+              <span className="font-bold text-green-800">
                 {formatTime(timeLeft)}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={toggleMusic}
-                className="bg-green-600 p-2 rounded-full text-white"
+                className="bg-green-600 p-2 rounded-full shadow-lg text-white hover:bg-green-700 transition"
               >
                 {musicMuted ? <VolumeX /> : <Volume2 />}
               </button>
@@ -241,14 +256,14 @@ const QuizPage = () => {
                 step="0.05"
                 value={musicVolume}
                 onChange={(e) => setMusicVolume(parseFloat(e.target.value))}
-                className="w-24 cursor-pointer"
+                className="w-24 cursor-pointer accent-green-600"
               />
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="mb-6">
-            <div className="flex justify-between text-green-800 font-bold mb-1">
+            <div className="flex justify-between text-green-900 font-bold mb-1">
               <span>
                 <Crown className="inline w-4 h-4 text-yellow-500" /> Level{" "}
                 {level}
@@ -257,58 +272,64 @@ const QuizPage = () => {
                 {score}/{maxScore} pts
               </span>
             </div>
-            <div className="w-full h-5 bg-green-200 rounded-full overflow-hidden">
+            <div className="w-full h-5 bg-green-200 rounded-full overflow-hidden shadow-inner">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="h-5 bg-gradient-to-r from-emerald-400 via-green-500 to-green-700 rounded-full"
+                className="h-5 bg-gradient-to-r from-green-400 via-emerald-500 to-green-700 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.7)]"
               />
             </div>
           </div>
 
           {/* Questions */}
           {quizData.map((q, index) => (
-            <Card
+            <motion.div
               key={index}
-              className="shadow-xl rounded-2xl border-green-200 bg-white"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
             >
-              <CardHeader className="bg-green-50 rounded-t-2xl">
-                <CardTitle className="text-lg font-bold flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500" /> Q{index + 1}:{" "}
-                  {q.question}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {q.options.map((opt, optIndex) => {
-                  const selected = answers[index] === optIndex;
-                  const isCorrect = opt === q.correct_answer;
-                  return (
-                    <div
-                      key={optIndex}
-                      className={`p-3 rounded-lg border cursor-pointer ${
-                        selected && isCorrect
-                          ? "bg-green-200 border-green-600"
-                          : selected && !isCorrect
-                          ? "bg-red-200 border-red-600"
-                          : "bg-white border-gray-300 hover:bg-green-50"
-                      }`}
-                      onClick={() => handleOptionSelect(index, optIndex)}
-                    >
-                      {opt}
-                      {selected && isCorrect && (
-                        <CheckCircle className="inline w-5 h-5 ml-2 text-green-600" />
-                      )}
-                      {selected && !isCorrect && (
-                        <XCircle className="inline w-5 h-5 ml-2 text-red-600" />
-                      )}
-                    </div>
-                  );
-                })}
-              </CardContent>
-            </Card>
+              <Card className="shadow-xl rounded-2xl border-green-200 bg-white/95 backdrop-blur-sm hover:shadow-green-400/40 transition">
+                <CardHeader className="bg-green-50 rounded-t-2xl">
+                  <CardTitle className="text-lg font-bold flex items-center gap-2">
+                    <Star className="w-5 h-5 text-yellow-500" /> Q{index + 1}:{" "}
+                    {q.question}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {q.options.map((opt, optIndex) => {
+                    const selected = answers[index] === optIndex;
+                    const isCorrect = opt === q.correct_answer;
+                    return (
+                      <motion.div
+                        key={optIndex}
+                        whileTap={{ scale: 0.97 }}
+                        className={`p-3 rounded-lg border font-medium cursor-pointer transition-all ${
+                          selected && isCorrect
+                            ? "bg-green-200 border-green-600 text-green-900 shadow-inner"
+                            : selected && !isCorrect
+                            ? "bg-red-200 border-red-600 text-red-900 shadow-inner"
+                            : "bg-white border-gray-300 hover:bg-green-50"
+                        }`}
+                        onClick={() => handleOptionSelect(index, optIndex)}
+                      >
+                        {opt}
+                        {selected && isCorrect && (
+                          <CheckCircle className="inline w-5 h-5 ml-2 text-green-600" />
+                        )}
+                        {selected && !isCorrect && (
+                          <XCircle className="inline w-5 h-5 ml-2 text-red-600" />
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
 
+          {/* Submit */}
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -318,27 +339,25 @@ const QuizPage = () => {
               onClick={handleSubmit}
               className="relative w-full py-4 text-lg font-extrabold text-white rounded-2xl
                bg-gradient-to-r from-green-500 via-emerald-600 to-green-700 
-               shadow-[0_0_20px_rgba(16,185,129,0.6)]
+               shadow-[0_0_25px_rgba(16,185,129,0.7)]
                hover:from-green-600 hover:via-emerald-700 hover:to-green-800
                transition-all duration-300"
             >
               🌟 Submit Quiz 🌟
-              <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-30 blur-lg"></span>
             </Button>
           </motion.div>
         </div>
       ) : (
         <div className="w-full relative">
-          {/* Confetti celebration */}
           <Confetti recycle={false} numberOfPieces={300} />
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="text-center space-y-6 w-full max-w-lg bg-white rounded-3xl shadow-2xl p-8 mx-auto mt-16"
+            className="text-center space-y-6 w-full max-w-lg bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 mx-auto mt-16"
           >
-            <Trophy className="w-20 h-20 text-yellow-500 mx-auto" />
+            <Trophy className="w-20 h-20 text-yellow-500 mx-auto animate-bounce" />
             <h2 className="text-3xl font-extrabold text-green-800">
-              Quiz Completed! 🎉
+              Victory! 🎉
             </h2>
             <p className="text-xl">
               You earned{" "}
@@ -348,7 +367,7 @@ const QuizPage = () => {
               🌱
             </p>
             <p className="text-lg text-green-700 font-bold">
-              You reached Level {level}!
+              Reached Level {level}! 🚀
             </p>
             <div className="w-full h-64">
               <ResponsiveContainer width="100%" height="100%">

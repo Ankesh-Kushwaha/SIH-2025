@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2, Pencil, Star, Send } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const backend_url = import.meta.env.VITE_API_BASE_URL;
 
@@ -33,6 +33,7 @@ export default function PostCard({ post, onUpdate }) {
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState(post.comments || []);
+  const [showComments, setShowComments] = useState(false);
   const { getToken } = useAuth();
 
   const userName =
@@ -88,6 +89,7 @@ export default function PostCard({ post, onUpdate }) {
         setComments(res.data.comments);
         setComment("");
         setShowCommentBox(false);
+        setShowComments(true); // auto-expand comments when new one is added
       }
     } catch (err) {
       console.error(err);
@@ -101,24 +103,28 @@ export default function PostCard({ post, onUpdate }) {
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="bg-gradient-to-tr from-green-50 to-emerald-100 p-6 rounded-3xl shadow-lg border border-green-200 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-        <CardContent className="p-0 space-y-5">
+      <Card className=" cursor-grab relative bg-gradient-to-tr from-green-50 to-emerald-100 p-4 rounded-2xl shadow-md border border-green-200 transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(16,185,129,0.6)]">
+        <CardContent className="p-0 space-y-3">
           {/* Header */}
           <div className="flex items-start justify-between">
-            <div className="flex items-start space-x-4">
-              <Avatar className="w-14 h-14 rounded-full ring-4 ring-green-300">
-                <AvatarFallback className="bg-green-600 text-white text-lg font-semibold">
+            <div className="flex items-start space-x-3">
+              <Avatar className="w-10 h-10 rounded-full ring-2 ring-green-300">
+                <AvatarFallback className="bg-green-600 text-white text-sm font-semibold">
                   {avatarText}
                 </AvatarFallback>
               </Avatar>
               <div>
                 <div className="flex items-center space-x-2">
-                  <h3 className="text-md text-gray-800">{userName}</h3>
-                  <span className="text-xs text-gray-500">· {timeString}</span>
+                  <h3 className="text-sm font-semibold text-gray-800">
+                    {userName}
+                  </h3>
+                  <span className="text-[11px] text-gray-500">
+                    · {timeString}
+                  </span>
                 </div>
-                <div className="mt-1 flex items-center space-x-1">
-                  <Star className="h-4 w-4 text-yellow-500 animate-pulse" />
-                  <span className="text-sm font-semibold text-emerald-700">
+                <div className="mt-0.5 flex items-center space-x-1">
+                  <Star className="h-3.5 w-3.5 text-yellow-500 animate-pulse" />
+                  <span className="text-xs font-semibold text-emerald-700">
                     {likes} Eco-Points
                   </span>
                 </div>
@@ -127,16 +133,16 @@ export default function PostCard({ post, onUpdate }) {
 
             <Button
               variant="outline"
-              size="sm"
-              className="flex items-center space-x-1 hover:bg-green-100"
+              size="xs"
+              className="flex items-center space-x-1 text-xs hover:bg-green-100 px-2 py-1"
               onClick={handleUpdate}
             >
-              <Pencil className="h-4 w-4" /> <span>Update</span>
+              <Pencil className="h-3.5 w-3.5" /> <span>Update</span>
             </Button>
           </div>
 
           {/* Content */}
-          <p className="text-lg leading-relaxed tracking-wide">
+          <p className="text-sm leading-relaxed tracking-wide">
             {formatContent(post.content)}
           </p>
 
@@ -145,23 +151,24 @@ export default function PostCard({ post, onUpdate }) {
               <img
                 src={post.mediaUrl}
                 alt="post"
-                className="rounded-2xl w-full object-cover max-h-80 border-2 border-green-300 shadow-md"
+                className="rounded-xl w-full object-cover max-h-56 border border-green-200 shadow-sm"
               />
             </div>
           )}
 
           {/* Footer actions */}
-          <div className="flex justify-between items-center text-emerald-800 pt-3 border-t border-green-200">
-            <div className="flex items-center space-x-4">
+          <div className="flex justify-between items-center text-emerald-800 pt-2 border-t border-green-200">
+            <div className="flex items-center space-x-3">
               <Button
                 variant="ghost"
-                className={`flex items-center space-x-1 hover:text-red-600 ${
+                size="sm"
+                className={`flex items-center space-x-1 text-xs hover:text-red-600 ${
                   liked ? "text-red-600" : ""
                 }`}
                 onClick={handleLike}
               >
                 <Heart
-                  className={`h-5 w-5 transition ${
+                  className={`h-4 w-4 transition ${
                     liked ? "fill-red-500 text-red-500" : ""
                   }`}
                 />
@@ -169,55 +176,74 @@ export default function PostCard({ post, onUpdate }) {
               </Button>
               <Button
                 variant="ghost"
-                className="flex items-center space-x-1 hover:text-green-900"
+                size="sm"
+                className="flex items-center space-x-1 text-xs hover:text-green-900"
                 onClick={() => setShowCommentBox(!showCommentBox)}
               >
-                <MessageCircle className="h-5 w-5" />
+                <MessageCircle className="h-4 w-4" />
                 <span>{comments.length}</span>
               </Button>
             </div>
             <Button
               variant="ghost"
-              className="flex items-center space-x-1 hover:text-green-900"
+              size="sm"
+              className="flex items-center space-x-1 text-xs hover:text-green-900"
+              onClick={() => setShowComments(!showComments)}
             >
-              <Share2 className="h-5 w-5" />
-              <span>Share</span>
+              <Share2 className="h-4 w-4" />
+              <span>{showComments ? "Hide" : "Comments"}</span>
             </Button>
           </div>
 
           {/* Comment Box */}
-          {showCommentBox && (
-            <div className="mt-3 space-y-3">
-              <input
-                type="text"
-                placeholder="Write a comment..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                className="w-full rounded-xl border text-black border-green-300 px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none"
-              />
-              <Button
-                size="sm"
-                onClick={handleCommentSubmit}
-                className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
+          <AnimatePresence>
+            {showCommentBox && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-2 space-y-2 overflow-hidden"
               >
-                <Send className="h-4 w-4" /> Post
-              </Button>
-            </div>
-          )}
+                <input
+                  type="text"
+                  placeholder="Write a comment..."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full rounded-lg border text-sm text-black border-green-300 px-2 py-1.5 focus:ring-2 focus:ring-green-500 outline-none"
+                />
+                <Button
+                  size="sm"
+                  onClick={handleCommentSubmit}
+                  className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-xs px-3 py-1.5"
+                >
+                  <Send className="h-3.5 w-3.5" /> Post
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Comments */}
-          {comments.length > 0 && (
-            <div className="mt-3 space-y-2">
-              {comments.map((c, i) => (
-                <div
-                  key={i}
-                  className="bg-white/70 px-3 py-2 rounded-lg text-sm text-gray-700 shadow-sm"
-                >
-                  {c.content}
-                </div>
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {showComments && comments.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-2 space-y-1.5 overflow-hidden"
+              >
+                {comments.map((c, i) => (
+                  <div
+                    key={i}
+                    className="bg-white/70 px-2 py-1.5 rounded-md text-xs text-gray-700 shadow-sm"
+                  >
+                    {c.content}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </CardContent>
       </Card>
     </motion.div>

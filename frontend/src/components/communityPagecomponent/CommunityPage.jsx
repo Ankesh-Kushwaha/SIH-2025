@@ -68,7 +68,19 @@ export default function CommunityPage() {
           </aside>
 
           {/* Feed */}
-          <main className="lg:col-span-6 h-[calc(100vh-8rem)] overflow-y-auto pr-2 scroll-smooth custom-scrollbar space-y-6">
+          <main
+            className="lg:col-span-6  
+             h-[calc(100vh-2rem)]   /* 🔥 Full height minus header/footer */
+             overflow-y-auto 
+             pr-2 
+             scroll-smooth 
+             custom-scrollbar 
+             space-y-6
+             bg-gray-900/40 
+             rounded-2xl 
+             p-4
+             shadow-inner"
+          >
             {feedData.length === 0 && (
               <motion.div
                 className="bg-gray-800 rounded-2xl p-6 text-center text-gray-300 shadow-lg"

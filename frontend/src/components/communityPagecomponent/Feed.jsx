@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function Feed({ posts = [], onUpdatePost }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {posts.map((p) => (
         <motion.div
           key={p._id}
