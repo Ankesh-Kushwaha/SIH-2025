@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 import { number } from 'zod';
 
+
 //left
 const SchoolSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -65,7 +66,7 @@ const QuizeSchema = new mongoose.Schema({
 
 
 //left
-const LeaderboardSchema = new Schema({
+const LeaderboardSchema = new mongoose.Schema({
   school: { type: Schema.Types.ObjectId, ref: "School" },
   rankings: [
     {
@@ -110,8 +111,8 @@ const UserGameProgressSchema = new Schema({
 });
 
 //competed partially-> taskSubmissionStatus updation and ecopoints updation left
-const TaskSubmissionSchema=new Schema({
-  user: { type: Schema.Types.ObjectId, ref: "User" },
+const TaskSubmissionSchema = new mongoose.Schema({
+  user:{type: Schema.Types.ObjectId, ref: "User" },
   drives: { type: Schema.Types.ObjectId, ref: "Drives" },
   mission_id: { type: String, required: true },
   ecoPoints:{type:Number,required:true},

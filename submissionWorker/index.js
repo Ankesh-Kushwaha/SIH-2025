@@ -4,48 +4,92 @@ import axios from "axios";
 import { runMLModel } from "./model.js";
 
 const client = createClient();
+const blockingClient = client.duplicate();
+
 client.on("error", (err) => console.error("Redis error:", err));
+blockingClient.on("error", (err) => console.error("Blocking Redis error:", err));
+
 await client.connect();
+await blockingClient.connect();
+
 console.log("🤖 ML Worker started — waiting for submissions...");
 
+// Process a single submission safely
+async function handleSubmission(submission) {
+  const { mission_id, evidenceUrl, _id: submissionId } = submission;
+  console.log(`🚀 Processing submission ${submissionId}...`);
+
+  if (!evidenceUrl) {
+    console.warn(`⚠️ Submission ${submissionId} missing evidenceUrl`);
+    return;
+  }
+
+  try {
+    // Run ML model
+    console.log("🧠 Running ML model on:", evidenceUrl);
+    const mlResult = await runMLModel(evidenceUrl);
+
+    const status = mlResult.isValid ? "success" : "failed";
+
+    // Update backend
+    await axios.put("http://localhost:5000/api/task/updation", {
+      status,
+      mlOutput: mlResult,
+      mission_id,
+    });
+
+    console.log(`✅ Submission ${submissionId} updated → ${status}`);
+  } catch (err) {
+    const errorMsg = err.response?.data || err.message;
+    console.error(`❌ ML failed for submission ${submissionId}:`, errorMsg);
+
+    // Attempt to mark submission as failed
+    try {
+      await axios.put("http://localhost:5000/api/task/updation", {
+        status: "failed",
+        mission_id,
+        error: errorMsg,
+      });
+      console.log(`⚠️ Submission ${submissionId} marked as failed in backend`);
+    } catch (innerErr) {
+      console.error(`⚠️ Failed to mark submission ${submissionId} as failed:`, innerErr.message);
+    }
+  }
+}
+
+// Continuously process submissions from Redis
 async function startWorker() {
   while (true) {
     try {
-      // Wait for next job (blocks until available)
-      const result = await client.brPop("submissionQueue", 0);
+      // Blocking pop waits until a submission exists
+      const result = await blockingClient.brPop("submissionQueue", 0);
 
       if (!result || !result.element) {
-        console.warn("⚠️ No result found, continuing...");
+        console.warn("⚠️ No submission found, continuing...");
         continue;
       }
 
       const submission = JSON.parse(result.element);
       console.log("🧾 Received submission:", submission);
 
-      const { mission_id, evidenceUrl, _id: submissionId } = submission;
+      // Await processing to prevent overlapping requests
+      await handleSubmission(submission);
 
-      if (!evidenceUrl) {
-        console.warn("⚠️ Missing evidenceUrl in submission:", submission);
-        continue;
-      }
-
-      // Step 1: Run ML model
-      const mlResult = await runMLModel(evidenceUrl);
-
-      // Step 2: Determine status
-      const status = mlResult.isValid ? "success" : "failed";
-
-      // Step 3: Update API
-      await axios.put(`http://localhost:5000/api/task/updation`, {
-        status,
-        mlOutput: mlResult,
-        mission_id,
-      });
-
-      console.log(`✅ Updated submission ${submissionId} → ${status}`);
     } catch (err) {
-      console.error("❌ Worker error:", err);
-      await new Promise((r) => setTimeout(r, 2000)); // small delay to avoid loops
+      console.error("❌ Worker error:", err.message);
+
+      if (err.message.includes("connection") || err.code === "ECONNRESET") {
+        console.log("🔁 Reconnecting Redis blocking client...");
+        try {
+          await blockingClient.connect();
+        } catch (e) {
+          console.error("⚠️ Failed to reconnect, retrying in 3s...");
+          await new Promise((r) => setTimeout(r, 3000));
+        }
+      } else {
+        // Avoid tight loop
+        await new Promise((r) => setTimeout(r, 2000));
+      }
     }
   }
 }
