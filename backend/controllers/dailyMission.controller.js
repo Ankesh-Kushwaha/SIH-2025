@@ -1,6 +1,7 @@
 import { uploadToCloudinary } from "../config/cloudinary.js";
-import { dailyMission } from "../model/Schema.js";
+import { dailyMission} from "../model/Schema.js";
 import User from "../model/userSchema.js";
+
 
 export const createDailyMission = async(req, res) =>{
   try {
@@ -48,7 +49,7 @@ export const createDailyMission = async(req, res) =>{
       required_Submission_Type: proofType,
       banner_url
     });
-
+    
     if (!newDailyMission) {
       return res.status(400).json({
         success: false,
@@ -122,3 +123,4 @@ export const deleteDailyMission = async (req, res) => {
     });
   }
 };
+

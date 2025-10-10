@@ -138,6 +138,8 @@ const StudentDashboard = () => {
 
     const formData = new FormData();
     formData.append("description", description);
+    formData.append("ecoPoints", activeDrive.ecoPoints);
+    formData.append("mission_id", activeDrive._id);
     if (image) formData.append("image", image);
     const token = await getToken();
 

@@ -1,4 +1,4 @@
-import { uploadToCloudinary } from "../config/cloudinary.js";
+import { deleteImageFromCloudinary, uploadToCloudinary } from "../config/cloudinary.js";
 import { Drives } from "../model/Schema.js";
 import User from "../model/userSchema.js";
 import mongoose from "mongoose";
@@ -125,6 +125,7 @@ export const DeleteDriveController = async (req, res) => {
     }
 
     const drive = await Drives.findById(driveId);
+    const imageUrl = drive.banner_url;
     if (!drive) {
       return res.status(404).json({
         success: false,
@@ -138,7 +139,9 @@ export const DeleteDriveController = async (req, res) => {
         message: "You are not authorized to delete this drive",
       });
     }
-
+  
+    //destroy the image from the cloudinary;
+    await deleteImageFromCloudinary(imageUrl);
     const deletedDrive = await Drives.findByIdAndDelete(driveId);
 
     res.status(200).json({

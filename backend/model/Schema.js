@@ -113,8 +113,9 @@ const UserGameProgressSchema = new Schema({
 const TaskSubmissionSchema=new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   drives: { type: Schema.Types.ObjectId, ref: "Drives" },
-  dailyMission: { type: Schema.Types.ObjectId, ref: "dailyMission" },
-  uploadedBy:{type:String,required:true},
+  mission_id: { type: String, required: true },
+  ecoPoints:{type:Number,required:true},
+  participant_id:{type:String,required:true},
   description:{type:String,required:true},
   evidenceUrl: {type:String,required:true}, // photo/video of task
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
@@ -191,10 +192,8 @@ const dailyMissionSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 86400, // ⏳ Auto delete after 24 hours
   },
 })
-
 
 
 const Posts = mongoose.model('Posts', PostSchema);
@@ -210,6 +209,7 @@ const Quize = mongoose.model('Quize', QuizeSchema);
 const Schools = mongoose.model('Schools', SchoolSchema);
 const dailyMission = mongoose.model('DailyMission', dailyMissionSchema);
 
+
 export {
   Schools,
   Quize,
@@ -222,5 +222,5 @@ export {
   Events,
   Drives,
   Posts,
- dailyMission
+  dailyMission,
 }

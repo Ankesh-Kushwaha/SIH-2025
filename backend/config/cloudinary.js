@@ -23,6 +23,34 @@ async function uploadToCloudinary(fileBuffer) {
 }
 
 
+const extractPublicId = (secureUrl) => {
+  const parts = secureUrl.split("/");
+  const uploadIndex = parts.indexOf("upload");
+  const afterUpload = parts.slice(uploadIndex + 1);
+  const withoutVersion = afterUpload.filter((segment) => !/^v\d+$/.test(segment));
+  const publicIdWithExt = withoutVersion.join("/");
+  return publicIdWithExt.substring(0, publicIdWithExt.lastIndexOf("."));
+};
+
+export const deleteImageFromCloudinary = async (secure_url) => {
+  try {
+    const publicId = extractPublicId(secure_url);
+    if (!publicId) throw new Error("Invalid secure_url");
+
+    const result = await cloudinary.uploader.destroy(publicId);
+    if (result.result === "ok") {
+      console.log(`✅ Image deleted successfully: ${publicId}`);
+    } else {
+      console.warn(`⚠️ Could not delete image or not found: ${publicId}`);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("❌ Error deleting image:", error.message);
+    throw error;
+  }
+};
+
 export {
   cloudinary,
   uploadToCloudinary

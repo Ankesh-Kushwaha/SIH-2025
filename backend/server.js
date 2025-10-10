@@ -14,9 +14,11 @@ import DrivesRoutes from './routes/drives.route.js'
 import dailyMissionRoute from './routes/dailyMission.route.js'
 import taskSubmissionRoute from './routes/taskSubmission.route.js'
 import badgeRoute from './routes/badges.route.js'
+import {connectRedis} from "./config/redis.js"
 
 const app = express();
 const PORT = 5000;
+
 
 app.use(express.json());
 app.use(cors({
@@ -43,8 +45,9 @@ app.use('/api/badges', badgeRoute);
 
 
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+const server = app.listen(PORT, async () => {
+  await connectRedis();
+  console.log(`server is running on http://localhost:${PORT}`)
 });
 
 // WebSocket Server
