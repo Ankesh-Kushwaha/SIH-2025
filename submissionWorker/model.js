@@ -1,14 +1,20 @@
-// mlModel.js
-export const runMLModel = async (evidenceUrl) => {
-  console.log("🧠 Running ML model on:", evidenceUrl);
+let modelInstance = null;
 
-  // Dummy logic for illustration
-  const isValid = Math.random() > 0.5;
+export async function loadModel() {
+  if (modelInstance) return modelInstance;
 
-  return {
-    isValid,
-    confidence: Math.random().toFixed(2),
-    analyzedAt: new Date().toISOString(),
-  };
-};
-  
+  // Load your ML model once (e.g. TensorFlow, ONNX, etc.)
+  // modelInstance = await tf.loadGraphModel('path/to/model');
+  modelInstance = { fakeModel: true }; // example placeholder
+
+  return modelInstance;
+}
+
+export async function runMLModel(evidenceUrl) {
+  // use the loaded modelInstance
+  // e.g. const result = await modelInstance.predict(...);
+  console.log("🧠 Running model on:", evidenceUrl);
+
+  // simulate output
+  return { isValid: Math.random() > 0.5, confidence: Math.random() };
+}
