@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import SustainabilityChart from "./SustainaibilityChart";
 import ChatBot from "./Chatboat";

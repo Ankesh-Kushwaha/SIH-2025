@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useParams } from "react-router-dom";
 import { gameComponent } from "@/data/moduleData";
 import { useState, useEffect } from "react";

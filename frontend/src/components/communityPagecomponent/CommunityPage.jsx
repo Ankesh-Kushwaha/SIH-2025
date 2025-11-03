@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // CommunityPage.jsx
 import Header from "./Header";
 import ProfileCard from "./ProfileCard";

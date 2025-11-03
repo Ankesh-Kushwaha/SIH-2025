@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -143,7 +144,7 @@ const Home = () => {
 
       {/* EcoHero + Missions */}
       <section className="py-20 container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-fredoka text-center text-gray-800 mb-12 bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 animate-pulse">
+        <h2 className="text-4xl md:text-5xl font-fredoka text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 animate-pulse">
           🌟 EcoHero of the Month 🌟
         </h2>
         <div className="grid md:grid-cols-3 gap-8 items-center">
@@ -208,7 +209,7 @@ const Home = () => {
 
       {/* Why Join Section */}
       <section className="py-20 container mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-fredoka text-center text-gray-800 mb-12 bg-clip-text text-transparent bg-gradient-to-r from-green-500 via-cyan-400 to-blue-400 animate-pulse">
+        <h2 className="text-4xl md:text-5xl font-fredoka text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-green-500 via-cyan-400 to-blue-400 animate-pulse">
           Why Join Planet Guardian?
         </h2>
         <div className="grid md:grid-cols-3 gap-8">

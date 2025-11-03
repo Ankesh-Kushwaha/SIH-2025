@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";

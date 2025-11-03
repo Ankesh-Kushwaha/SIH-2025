@@ -19,11 +19,10 @@ import GameSectionPage from "./pages/GameSectionPage";
 import AboutSection from "./pages/AboutSection";
 import GamePage from "./pages/GamePage";
 import Dashboard from "./pages/Dashboard";
-import Admin from "./pages/admin";
+import Admin from "./pages/Admin";
 import StudentDashboard from "./pages/StudentDashboard";
 import QuizPage from "./pages/QuizPage";
 import SchoolDashboard from "./pages/SchoolDashboard";
-import { useAuth } from "@clerk/clerk-react";
 import DrivePage from "./components/EventDrivePage";
 
 

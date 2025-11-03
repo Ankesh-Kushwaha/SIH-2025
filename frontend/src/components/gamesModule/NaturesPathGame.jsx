@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './NaturesPathGame.css';
-import gamesData from '@/data/GameModuleData';
+
 
 // --- Story Data ---
 const storyData ={
