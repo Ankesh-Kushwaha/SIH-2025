@@ -4,7 +4,7 @@ import Header from "./Header";
 import ProfileCard from "./ProfileCard";
 import EventsCard from "./EventsCard";
 import Feed from "./Feed";
-import LeaderboardCard from "./LeaderboardCard";
+import LeaderboardCard from "./LeaderBoardCard.jsx";
 import LearningHubCard from "./LearningHubCard";
 import { useAuth } from "@clerk/clerk-react";
 import { me, initialChats } from "../../data/communityPageData.js";
