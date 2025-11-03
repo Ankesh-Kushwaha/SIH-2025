@@ -35,7 +35,7 @@ async function handleSubmission(submission) {
     const status = mlResult.isValid ? "success" : "failed";
 
     // Update backend
-    await axios.put("http://localhost:5000/api/task/updation", {
+    await axios.put("https://sih-2025-d510.onrender.com/api/task/updation", {
       status,
       mlOutput: mlResult,
       mission_id,
