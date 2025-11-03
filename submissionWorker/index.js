@@ -3,7 +3,10 @@ import { createClient } from "redis";
 import axios from "axios";
 import { runMLModel } from "./model.js";
 
-const client = createClient();
+const client = createClient({
+  url: process.env.REDIS_URL || "redis://localhost:6379",
+});
+
 const blockingClient = client.duplicate();
 
 client.on("error", (err) => console.error("Redis error:", err));
