@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import DOMPurify from "dompurify";
 import ReactMarkdown from "react-markdown";
+const url = import.meta.env.VITE_API_BASE_URL_WS;
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([
@@ -21,7 +22,7 @@ const ChatBot = () => {
 
   useEffect(() => {
     // Connect to WebSocket server
-    ws.current = new WebSocket("ws://localhost:5000/api/chat");
+    ws.current = new WebSocket(`${url}`);
 
     ws.current.onopen = () => console.log("✅ Connected to WebSocket server");
 
