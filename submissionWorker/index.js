@@ -2,6 +2,15 @@
 import { createClient } from "redis";
 import axios from "axios";
 import { runMLModel } from "./model.js";
+import dotenv from 'dotenv'
+import express from 'express';
+import cors from 'cors'
+dotenv.config();
+const app = express();
+
+
+app.use(express.json());
+app.use(cors());
 
 const client = createClient({
   url: process.env.REDIS_URL || "redis://localhost:6379",
@@ -97,4 +106,13 @@ async function startWorker() {
   }
 }
 
-startWorker();
+app.use('/health', (req, res) => {
+  res.status(200).json("worker is fucking healthy");
+})
+
+app.listen(3000., () => {
+  console.log("Worker is listening on port: 3000");
+  startWorker();
+})
+
+
