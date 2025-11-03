@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+// Header.jsx
 import { useState } from "react";
 import { PlusCircle, Search, Leaf, Image as ImageIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -17,9 +19,10 @@ import { motion } from "framer-motion";
 
 const backend_url = import.meta.env.VITE_API_BASE_URL;
 
-export default function Header() {
+export default function Header({ onSearchChange }) {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const { getToken } = useAuth();
 
   const handleImageChange = (e) => {
@@ -55,35 +58,23 @@ export default function Header() {
     }
   };
 
-  return (
-    <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 px-4 md:px-8">
-      {/* Left: Logo + Title */}
-      <motion.div
-        className="flex items-center space-x-4"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="h-14 w-14 rounded-3xl bg-gradient-to-tr from-green-400 to-emerald-600 text-white grid place-items-center shadow-xl hover:scale-110 transition-transform">
-          <Leaf className="h-6 w-6" />
-        </div>
-        <div>
-          <h1 className="text-3xl font-extrabold text-white drop-shadow-lg">
-            Planet Guardian Community
-          </h1>
-          <p className="text-green-200 text-sm opacity-90">
-            Unite eco-actions, earn points & save the planet!
-          </p>
-        </div>
-      </motion.div>
+  // 🔍 Handle search change
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    onSearchChange(value); // send value up to CommunityPage
+  };
 
-      {/* Right: Search + New Post */}
+  return (
+    <header className="flex flex-col md:flex-row justify-end items-start md:items-center mb-8 gap-6 px-4 md:px-8">
       <div className="flex flex-col md:flex-row items-center md:space-x-4 w-full md:w-auto gap-4">
         <div className="relative flex-1 md:flex hidden">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-300" />
           <Input
             placeholder="Search heroes, posts, tags..."
-            className="pl-10 pr-4 py-2 text-black rounded-full border border-green-300 bg-green-50 focus:outline-none focus:ring-2 focus:ring-emerald-400 w-full shadow-sm transition-all hover:shadow-md"
+            className="pl-10 w-250 pr-4 py-2 text-black rounded-full border border-green-300 bg-green-50 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm transition-all hover:shadow-md"
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
         </div>
 
@@ -96,14 +87,12 @@ export default function Header() {
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-md bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-            {/* Header */}
             <DialogHeader className="p-6 border-b border-green-200">
               <DialogTitle className="text-xl font-extrabold text-green-900">
                 Share Your Eco-Action 🌿
               </DialogTitle>
             </DialogHeader>
 
-            {/* Scrollable Body */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               <div className="flex items-center gap-3 border-b border-green-200 pb-4">
                 <motion.img
@@ -164,7 +153,6 @@ export default function Header() {
               </div>
             </div>
 
-            {/* Footer */}
             <DialogFooter className="p-6 border-t border-green-200 flex justify-end gap-3 bg-green-50 rounded-b-3xl">
               <Button
                 variant="outline"

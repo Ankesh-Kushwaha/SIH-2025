@@ -1,3 +1,4 @@
+// CommunityPage.jsx
 import Header from "./Header";
 import ProfileCard from "./ProfileCard";
 import EventsCard from "./EventsCard";
@@ -5,15 +6,18 @@ import Feed from "./Feed";
 import LeaderboardCard from "./LeaderboardCard";
 import LearningHubCard from "./LearningHubCard";
 import { useAuth } from "@clerk/clerk-react";
-import { leaderboard, me, initialChats } from "../../data/communityPageData.js";
+import { me, initialChats } from "../../data/communityPageData.js";
 import { useEffect, useState } from "react";
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
 const backend_url = import.meta.env.VITE_API_BASE_URL;
 
 export default function CommunityPage() {
   const [feedData, setFeedData] = useState([]);
+  const [filteredFeed, setFilteredFeed] = useState([]);
+  const [topScorer, setTopScorer] = useState([]);
   const { getToken } = useAuth();
 
   const fetchData = async () => {
@@ -23,8 +27,21 @@ export default function CommunityPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFeedData(res.data.posts || []);
+      setFilteredFeed(res.data.posts || []);
     } catch (err) {
       console.error("Error fetching feed data", err);
+    }
+  };
+
+  const fetchLeaderBoard = async () => {
+    try {
+      const res = await axios.get(`${backend_url}/ecopoints/top-performer`);
+      setTopScorer(res.data.topUser);
+    } catch (err) {
+      console.error(
+        "something went wrong while getting top scorer",
+        err.message
+      );
     }
   };
 
@@ -34,18 +51,34 @@ export default function CommunityPage() {
     );
   };
 
+  // 🔍 Handle search input from Header
+  const handleSearch = (query) => {
+    if (!query.trim()) {
+      setFilteredFeed(feedData);
+      return;
+    }
+
+    const lower = query.toLowerCase();
+    const filtered = feedData.filter(
+      (p) =>
+        p.content?.toLowerCase().includes(lower) ||
+        p.author?.name?.toLowerCase().includes(lower) ||
+        p.tags?.some((tag) => tag.toLowerCase().includes(lower))
+    );
+
+    setFilteredFeed(filtered);
+  };
+
   useEffect(() => {
     fetchData();
-    const interval = setInterval(() => {
-      fetchData();
-    }, 25000);
-    return () => clearInterval(interval);
+    fetchLeaderBoard();
   }, []);
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-100 font-[Poppins]">
       <div className="mx-auto max-w-7xl px-4 py-6 md:py-8 space-y-8">
-        <Header />
+        {/* Pass search handler to Header */}
+        <Header onSearchChange={handleSearch} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Sidebar */}
@@ -68,30 +101,18 @@ export default function CommunityPage() {
           </aside>
 
           {/* Feed */}
-          <main
-            className="lg:col-span-6  
-             h-[calc(100vh-2rem)]   /* 🔥 Full height minus header/footer */
-             overflow-y-auto 
-             pr-2 
-             scroll-smooth 
-             custom-scrollbar 
-             space-y-6
-             bg-gray-900/40 
-             rounded-2xl 
-             p-4
-             shadow-inner"
-          >
-            {feedData.length === 0 && (
+          <main className="lg:col-span-6 h-[calc(150vh-2rem)] overflow-y-auto pr-2 scroll-smooth custom-scrollbar space-y-6 bg-gray-900/40 rounded-2xl p-4 shadow-inner">
+            {filteredFeed.length === 0 && (
               <motion.div
                 className="bg-gray-800 rounded-2xl p-6 text-center text-gray-300 shadow-lg"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                No posts yet. Be the first to share your eco-action!
+                No matching posts found.
               </motion.div>
             )}
 
-            {feedData.map((post) => (
+            {filteredFeed.map((post) => (
               <motion.div
                 key={post._id}
                 initial={{ opacity: 0, y: 20 }}
@@ -111,7 +132,7 @@ export default function CommunityPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <LeaderboardCard leaderboard={leaderboard} gamified />
+              <LeaderboardCard leaderboard={topScorer} gamified />
             </motion.div>
 
             <motion.div

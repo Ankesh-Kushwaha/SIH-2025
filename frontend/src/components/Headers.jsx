@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+ 
 import React, { useEffect, useState } from "react";
 import {
   SignedIn,
@@ -30,8 +32,7 @@ const Headers = () => {
           const res = await axios.get(`${backend_url}/user/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log(res.data);
-          setEcoPoints(res.data.ecoPoints || 0); // Assume backend sends ecoPoints
+          setEcoPoints(res.data.data.ecoPoints||0); 
         } catch (err) {
           console.error("Error fetching /me:", err);
         }

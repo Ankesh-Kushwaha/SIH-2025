@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import ImpactGraph from "./ImpactGraph";
 import { Button } from "@/components/ui/button";
@@ -14,16 +15,7 @@ const GameHeader = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-3xl shadow-2xl p-8 border border-green-100"
     >
-      {/* Header Section */}
-      <div className="text-center mb-10">
-        <h1 className="text-5xl font-extrabold text-green-800 tracking-tight drop-shadow-lg">
-          🌍 Planet Guardian Adventure
-        </h1>
-        <p className="text-gray-700 text-lg mt-4 max-w-2xl mx-auto">
-          Play fun games and **see your actions impact the real world!** 🌱
-          Unlock badges, level up, and track your environmental impact.
-        </p>
-      </div>
+    
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">

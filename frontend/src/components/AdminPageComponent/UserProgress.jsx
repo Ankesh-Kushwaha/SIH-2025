@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Sparkles } from "lucide-react"; // decorative icons

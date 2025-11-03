@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -97,7 +98,7 @@ const StudentDashboard = () => {
     getALLQuize();
     getAllCommunityPost();
     fetchedAllDrive();
-  }, []);
+  },[]);
 
   // -------- Static Student Data ----------
   const [student] = useState({
@@ -157,19 +158,7 @@ const StudentDashboard = () => {
   };
 
   return (
-    <div className="p-8 space-y-12 bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen text-white">
-      {/* Hero Section */}
-      <section className="text-center">
-        <motion.h1
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-4xl font-extrabold tracking-widest text-green-400 drop-shadow-lg"
-        >
-          🌍 Planet Guardians Dashboard
-        </motion.h1>
-        <p className="text-gray-300 mt-2">Gamify your eco-journey 🚀</p>
-      </section>
-
+    <div className="p-8 space-y-10 bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen text-white">
       <DailyMissionCard />
 
       {/* XP Progress + Badges */}

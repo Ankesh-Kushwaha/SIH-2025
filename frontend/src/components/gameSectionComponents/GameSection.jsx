@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { modulesData } from "@/data/moduleData";
@@ -65,7 +66,7 @@ const GameSection = ({ modules: initialModules }) => {
         />
       ))}
 
-      {/* Sparks trailing mouse */}
+    
       {sparks.map((spark) => (
         <div
           key={spark.id}

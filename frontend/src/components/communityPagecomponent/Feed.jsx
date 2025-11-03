@@ -1,9 +1,10 @@
 import PostCard from "./PostCard";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
 export default function Feed({ posts = [], onUpdatePost }) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-20 h-full">
       {posts.map((p) => (
         <motion.div
           key={p._id}

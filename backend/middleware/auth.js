@@ -54,7 +54,7 @@ export const authController = async (req, res) => {
       });
     }
 
-    // ✅ Use findOne instead of find
+    
     const existingUser = await User.findOne({ email });
 
     if (!existingUser) {
@@ -82,6 +82,7 @@ export const authController = async (req, res) => {
           name: newUser.name,
           email: newUser.email,
           role: newUser.role,
+          ecoPoints:newUser.ecoPoints
         },
       });
     }
@@ -99,6 +100,7 @@ export const authController = async (req, res) => {
         name: existingUser.name,
         email: existingUser.email,
         role: existingUser.role,
+        ecoPoints:existingUser.ecoPoints
       },
     });
   } catch (err) {

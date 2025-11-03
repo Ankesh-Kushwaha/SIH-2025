@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, Share2, Pencil, Star, Send } from "lucide-react";
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 
 const backend_url = import.meta.env.VITE_API_BASE_URL;

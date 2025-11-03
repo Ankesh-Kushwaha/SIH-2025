@@ -52,7 +52,7 @@ async function handleSubmission(submission) {
       });
       console.log(`⚠️ Submission ${submissionId} marked as failed in backend`);
     } catch (innerErr) {
-      console.error(`⚠️ Failed to mark submission ${submissionId} as failed:`, innerErr.message);
+      console.error(`⚠️ Failed to mark submission ${submissionId} as failed:`, innerErr);
     }
   }
 }

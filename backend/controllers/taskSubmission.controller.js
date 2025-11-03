@@ -7,9 +7,10 @@ import mongoose from "mongoose";
 export const submitTask = async (req, res) => {
   try {
     const userId = req.userId;
+    console.log(req.body);
     const {description,mission_id,ecoPoints}  = req.body;
   
-    const imageUrl = req.file?.buffer; //extract the image from the req;
+    const imageUrl = req.file?.buffer; 
     if (!description || !imageUrl) {
       return res.status(400).json({
         success: true,
@@ -72,14 +73,12 @@ export const submitTask = async (req, res) => {
 }
 
 
-
 export const updateTaskStatus = async (req, res) => {
   const { status, mlOutput, mission_id } = req.body;
-  console.log("Status of verification:", status);
+  console.log("Status of verification:", status, "Mission ID:", mission_id);
 
   try {
     const mission = await TaskSubmission.findOne({ mission_id }).populate('user');
-    console.log(mission);
     if (!mission) {
       return res.status(404).json({ success: false, message: "Mission does not exist" });
     }
@@ -88,50 +87,60 @@ export const updateTaskStatus = async (req, res) => {
       return res.status(400).json({ success: false, message: "User not linked" });
     }
 
-    const userId = mission.user._id; // ✅ safe ObjectId
+    const userId = mission.user._id;
+    const ecoPoints = mission.ecoPoints || 0;
 
     let updatedSubmission;
 
-    if (status==="failed") {
-      // Verification failed
+    if (status === "failed") {
       updatedSubmission = await TaskSubmission.findOneAndUpdate(
         { mission_id },
-        { status: "Rejected" },
+        { $set: { status: "Rejected" } },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedSubmission) {
+        console.log("⚠️ No submission found for mission_id:", mission_id);
+      }
+
+      await User.findByIdAndUpdate(
+        userId,
+        { $inc: { ecoPoints: -ecoPoints } },
         { new: true }
       );
 
-      // const user = await User.findById(userId);
-      // if (user) {
-      //   user.ecoPoints = Math.max(user.ecoPoints - mission.ecoPoints, 0);
-      //   await user.save();
-      // }
+      console.log("✅ Submission rejected:", updatedSubmission.status);
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      return res.status(400).json({ success: false, message: "Evidence verification failed", updatedSubmission });
+      return res.status(200).json({ success: false, message: "Evidence verification failed", updatedSubmission });
     } else {
-      // Verification passed
       updatedSubmission = await TaskSubmission.findOneAndUpdate(
         { mission_id },
-        { status: "Accepted" },
+        { $set: { status: "Accepted" } },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedSubmission) {
+        console.log("⚠️ No submission found for mission_id:", mission_id);
+      }
+
+      await User.findByIdAndUpdate(
+        userId,
+        { $inc: { ecoPoints } },
         { new: true }
       );
 
-      await User.findOneAndUpdate(
-        { _id: userId },
-        { $inc: { ecoPoints: mission.ecoPoints } },
-        { new: true }
-      );
+      console.log("✅ Submission accepted:", updatedSubmission.status);
 
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log(updatedSubmission);
       return res.status(200).json({ success: true, message: "Submission accepted", updatedSubmission });
     }
   } catch (err) {
-    console.error("Error while verifying the submission:", err);
+    console.error("❌ Error while verifying the submission:", err);
     return res.status(500).json({ success: false, message: "Something went wrong" });
   }
 };
+
 
 
 

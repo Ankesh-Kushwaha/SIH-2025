@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Leaf } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 
 const backend_url = import.meta.env.VITE_API_BASE_URL;
@@ -31,7 +32,7 @@ export default function EventsCard() {
     getAllDrive(); // initial fetch
     const interval = setInterval(getAllDrive, 10000); // reload every 10s
     return () => clearInterval(interval); // cleanup on unmount
-  }, []);
+  },[]);
 
   if (!events.length) {
     return (

@@ -14,7 +14,8 @@ import DrivesRoutes from './routes/drives.route.js'
 import dailyMissionRoute from './routes/dailyMission.route.js'
 import taskSubmissionRoute from './routes/taskSubmission.route.js'
 import badgeRoute from './routes/badges.route.js'
-import {connectRedis} from "./config/redis.js"
+import { connectRedis } from "./config/redis.js"
+import ecoPointRoute from './routes/ecoPoints.route.js'
 
 const app = express();
 const PORT = 5000;
@@ -42,6 +43,7 @@ app.use('/api/drives', DrivesRoutes);
 app.use('/api/daily-mission', dailyMissionRoute);
 app.use('/api/task', taskSubmissionRoute);
 app.use('/api/badges', badgeRoute);
+app.use('/api/ecopoints',ecoPointRoute)
 
 
 

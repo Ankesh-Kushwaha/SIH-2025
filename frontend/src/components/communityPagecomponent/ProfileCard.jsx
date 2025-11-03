@@ -7,6 +7,7 @@ import ProgressDonut from "./ProgressDonut";
 import { useAuth } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import profileImage from "../../../public/images/master.png";
 
@@ -31,7 +32,7 @@ export default function ProfileCard({ me, gamified }) {
 
   useEffect(() => {
     getUserProfile();
-  }, []);
+  },[]);
 
   return (
     <motion.div
@@ -90,8 +91,8 @@ export default function ProfileCard({ me, gamified }) {
             icon={<Users className="h-5 w-5 text-green-700 mx-auto" />}
           />
           <NumberStat
-            label="Points"
-            value={me.points}
+            label="EcoPoints"
+            value={user?.ecoPoints}
             icon={<Award className="h-5 w-5 text-yellow-500 mx-auto" />}
           />
         </div>

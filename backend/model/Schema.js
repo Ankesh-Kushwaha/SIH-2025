@@ -118,8 +118,8 @@ const TaskSubmissionSchema = new mongoose.Schema({
   ecoPoints:{type:Number,required:true},
   participant_id:{type:String,required:true},
   description:{type:String,required:true},
-  evidenceUrl: {type:String,required:true}, // photo/video of task
-  status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+  evidenceUrl: {type:String,required:true},
+  status: { type: String, default: "pending" },
   createdAt: { type: Date, default: Date.now }
 });
 

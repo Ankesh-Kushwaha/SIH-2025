@@ -66,14 +66,7 @@ function HomeRedirect() {
 }
 
 export default  function App() {
-   const { getToken } = useAuth();
 
-   const token_generate = async () => {
-     const token = await getToken();
-     console.log(token);
-  };
-  
-  token_generate();
   return (
     <>
       <Headers />

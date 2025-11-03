@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Trash2 } from "lucide-react";
 import {useAuth} from '@clerk/clerk-react'
@@ -56,7 +57,7 @@ export default function CommunityDriveList() {
 
   useEffect(() => {
     fetchedAllDrive();
-  },[])
+  })
 
   return (
     <motion.div

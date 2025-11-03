@@ -53,8 +53,9 @@ export default function Dashboard() {
       return;
     }
     const formData = new FormData();
-    formData.append("mission_id", mission._id);
+    formData.append("mission_id", mission[0]._id);
     formData.append("image", submission);
+    formData.append("ecoPoints",mission[0].ecoPoints)
     formData.append("description", description);
 
     const token = await getToken();
@@ -103,7 +104,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] p-2 space-y-2">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] p-2 space-y-2 ">
       {/* --- Profile & Mission Side by Side --- */}
       <div className="flex flex-col md:flex-row gap-6 max-w-6xl mx-auto">
         {/* --- Student Profile Card --- */}
