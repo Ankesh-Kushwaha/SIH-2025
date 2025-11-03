@@ -1,4 +1,4 @@
-import CommunityPage from '@/components/communityPagecomponent/CommunityPage'
+import CommunityPage from '../components/communityPagecomponent/CommunityPage'
 import React from 'react'
 
 const Community = () => {
